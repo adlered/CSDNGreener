@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.0.2
-var version = "1.0.2";
+// @version      1.0.3
+var version = "1.0.3";
 // @description  CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
@@ -14,7 +14,7 @@ var version = "1.0.2";
 // ==/UserScript==
 
 (function() {
-    console.log("欢迎, 正在执行CSDN净化插件! PoweredBy Adler WeChat: 1101635162");
+    console.log("欢迎, 正在执行CSDN净化插件! Powered By Adler WeChat: 1101635162");
     var count = 0;
     if (count == 0){
         console.log("正在进行第一次Kill操作......");
@@ -46,7 +46,9 @@ var version = "1.0.2";
     document.getElementById("btn-readmore").click();
     } catch (err) {}
     //去除剪贴板劫持
-    csdn.copyright.init("", "", "");
+    try {
+        csdn.copyright.init("", "", "");
+    } catch (err) {}
 
     var starting = setInterval(function(){
         count++;
