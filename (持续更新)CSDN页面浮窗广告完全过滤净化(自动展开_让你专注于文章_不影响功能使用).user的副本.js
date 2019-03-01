@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.0.0
-var version = "1.0.0";
+// @version      1.0.1
+var version = "1.0.1";
 // @description  CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
 
@@ -40,7 +41,9 @@ var version = "1.0.0";
     $("main").css("width", "100%");
     $("aside").remove();
     //展开所有内容
+    try {
     document.getElementById("btn-readmore").click();
+    } catch (err) {}
 
     var starting = setInterval(function(){
         count++;
@@ -50,22 +53,9 @@ var version = "1.0.0";
             clearInterval(starting);
         } else {
             if (count == 5) {
-                //将猜你在追置顶(观看历史)
-                console.log("正在置顶观看历史......");
-                var today = $(".qy-focus-today").prop("outerHTML");
-                $(".qy-focus-today").remove();
-                $("#block-CZ").after(today);
-                $(".qy-index-content").prepend(history);
-                //所有页脚添加本插件信息
-                $(".footer-copyright").append("<br>CSDN净化插件V" + version + "成功执行完毕 By Adler WeChat: 1101635162");
-                $("#AR_copyright").append("<br>CSDN净化插件V" + version + "成功执行完毕 By Adler WeChat: 1101635162");
-                //插件菜单
-                var menuHead = '<div class="func-item func-like-v1" onclick="javascript:alert(\'CSDN净化插件V' + version + '已成功加载!\\n如有问题请联系WeChat: 1101635162\');"><div rseat="80521_function_like" class="func-inner"><span class="func-name" id="green">净化中...</span></div></div>';
-                $(".qy-flash-func").append(menuHead);
-                $("#green").html("净化10%");
+                //预留
             }
             //进度条
-            if (count == 10)$("#green").html("净化20%");if (count == 15)$("#green").html("净化30%");if (count == 20)$("#green").html("净化40%");if (count == 25)$("#green").html("净化50%");if (count == 30)$("#green").html("净化60%");if (count == 35)$("#green").html("净化70%");if (count == 40)$("#green").html("净化80%");if (count == 45)$("#green").html("净化90%");
             console.log("正在干掉遗漏的浮窗(不会影响性能, 请无视该消息)......");
             killAll();
         }
@@ -114,6 +104,9 @@ function killAll() {
         "recommend-ad-box",
         "box-shadow",
         "type_hot_word",
+        "fourth_column",
+        //高分辨率时右侧文章推荐
+        "right-item",
         // ****** 下载 ******
         "fixed_dl",
         "indexSuperise",
@@ -125,6 +118,8 @@ function killAll() {
         //广告
         "asideFooter",
         "ad-div",
+        "479",
+        "480",
     );
 
     for(var i = 0; i < classList.length; i++) {
