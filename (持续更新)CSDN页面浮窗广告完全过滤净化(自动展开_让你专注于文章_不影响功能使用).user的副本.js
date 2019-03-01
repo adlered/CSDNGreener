@@ -1,19 +1,23 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.0.2
-var version = "1.0.2";
-// @description  CSDN页面浮窗广告完全过滤净化 By Adler
+// @version      1.0.3
+var version = "1.0.3";
+// @description  轻量级TamperMonkey插件：CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-03-01 1.0.3 添加页面选择性过滤规则
 // @note         19-03-01 1.0.2 增加了净化剪贴板功能
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
 
 (function() {
+    var currentURL = window.location.href;
+    console.log("你正在访问 " + currentURL + " , 正在为你匹配过滤规则......");
+    var article = /article/;
     console.log("欢迎, 正在执行CSDN净化插件! Powered By Adler WeChat: 1101635162");
     var count = 0;
     if (count == 0){
@@ -39,8 +43,10 @@ var version = "1.0.2";
     //    rightBox[1].remove();
     //}, 1000)
     //干掉右侧栏，并让左侧栏填充屏幕
-    $("main").css("width", "100%");
-    $("aside").remove();
+    if (article.test(currentURL)) {
+        $("main").css("width", "100%");
+        $("aside").remove();
+    }
     //展开所有内容
     try {
     document.getElementById("btn-readmore").click();
