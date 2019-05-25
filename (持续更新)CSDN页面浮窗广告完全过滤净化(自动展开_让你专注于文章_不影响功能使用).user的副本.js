@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.1.0
-var version = "1.1.0";
+// @version      1.1.1
+var version = "1.1.1";
 // @description  轻量级TamperMonkey插件：CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
@@ -67,7 +67,6 @@ var version = "1.1.0";
         } else {
             if (count >= 10 && count <= 40) {
                 //论坛自动展开
-                console.log("zk");
                 $(".js_show_topic").click();
             }
             //进度条
