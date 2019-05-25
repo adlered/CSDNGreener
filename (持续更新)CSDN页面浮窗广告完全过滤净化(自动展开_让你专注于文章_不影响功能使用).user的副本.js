@@ -1,14 +1,15 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.0.9
-var version = "1.0.9";
+// @version      1.1.0
+var version = "1.1.0";
 // @description  轻量级TamperMonkey插件：CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
-// @note         19-03-01 1.0.9 感谢油叉用户“渣渣不准说话”的反馈，修复了收藏按钮消失的问题
+// @note         19-05-25 1.1.0 1. 修复了主页广告的问题 2. 论坛自动展开 3. 论坛广告消除
+// @note         19-05-25 1.0.9 感谢油叉用户“渣渣不准说话”的反馈，修复了收藏按钮消失的问题
 // @note         19-03-01 1.0.3 添加页面选择性过滤规则
 // @note         19-03-01 1.0.2 增加了净化剪贴板功能
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
@@ -64,20 +65,25 @@ var version = "1.0.9";
             $("#green").html("已净化");
             clearInterval(starting);
         } else {
-            if (count == 5) {
-                //预留
+            if (count >= 10 && count <= 40) {
+                //论坛自动展开
+                console.log("zk");
+                $(".js_show_topic").click();
             }
             //进度条
             console.log("正在干掉遗漏的浮窗(不会影响性能, 请无视该消息)......");
             killAll();
         }
     }, 100);
+
     //由于部分交互非即时打开, 所以一直循环
     setInterval(function(){
         //主页中间的广告
         $(".J_adv").remove();
         //主页有新的内容横条
         $(".feed-fix-box").remove();
+        //主页广告iframe
+        $("iframe").remove();
     }, 500);
 })();
 
@@ -122,6 +128,9 @@ function killAll() {
         // ****** 下载 ******
         "fixed_dl",
         "indexSuperise",
+        // ****** 论坛 ******
+        //推荐广告
+        "bbs_feed_ad_box",
     );
 
     //IDS
