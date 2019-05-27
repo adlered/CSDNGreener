@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.1.1
-var version = "1.1.1";
+// @version      1.1.2
+var version = "1.1.2";
 // @description  轻量级TamperMonkey插件：CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-05-27 1.1.2 感谢油叉用户“夏伟杰”的反馈，修复了富文本编辑器无法使用的问题
 // @note         19-05-25 1.1.0 1. 修复了主页广告的问题 2. 论坛自动展开 3. 论坛广告消除
 // @note         19-05-25 1.0.9 感谢油叉用户“渣渣不准说话”的反馈，修复了收藏按钮消失的问题
 // @note         19-03-01 1.0.3 添加页面选择性过滤规则
@@ -20,6 +21,7 @@ var version = "1.1.1";
     var currentURL = window.location.href;
     console.log("你正在访问 " + currentURL + " , 正在为你匹配过滤规则......");
     var article = /article/;
+    var postedit = /postedit/;
     console.log("欢迎, 正在执行CSDN净化插件! Powered By Adler WeChat: 1101635162");
     var count = 0;
     if (count == 0){
@@ -82,7 +84,9 @@ var version = "1.1.1";
         //主页有新的内容横条
         $(".feed-fix-box").remove();
         //主页广告iframe
-        $("iframe").remove();
+        if (currentURL == "https://www.csdn.net/") {
+            $("iframe").remove();
+        }
     }, 500);
 })();
 
