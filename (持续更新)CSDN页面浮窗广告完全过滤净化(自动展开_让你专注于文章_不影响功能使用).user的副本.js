@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.1.7
-var version = "1.1.7";
-// @description  轻量级TamperMonkey插件：CSDN页面浮窗广告完全过滤净化 By Adler
+// @version      1.1.8
+var version = "1.1.8";
+// @description  CSDN博客|论坛全面净化/沉浸阅读/自动展开/净化剪贴板 >> 由于CSDN“反净化机制”日益强大，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
