@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.1.3
-var version = "1.1.3";
+// @version      1.1.4
+var version = "1.1.4";
 // @description  轻量级TamperMonkey插件：CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-06-04 1.1.4 感谢GitHub朋友“iamsunxing”的反馈，增加了论坛广告匹配规则
 // @note         19-06-03 1.1.3 感谢GitHub朋友“wangwei135”的反馈，去除了评论区上方的广告
 // @note         19-05-27 1.1.2 感谢油叉用户“夏伟杰”的反馈，修复了富文本编辑器无法使用的问题
 // @note         19-05-25 1.1.0 1. 修复了主页广告的问题 2. 论坛自动展开 3. 论坛广告消除
@@ -136,6 +137,10 @@ function killAll() {
         // ****** 论坛 ******
         //推荐广告
         "bbs_feed_ad_box",
+        'recommend-ad-box', //底部相关文章里面的广告
+        'type_hot_word', //底部相关文字里面的热词提示
+        'recommend-box', //底部相关文章
+        'pulllog-box', //底部蓝色flex属性的广告栏+登录注册框
     );
 
     //IDS
