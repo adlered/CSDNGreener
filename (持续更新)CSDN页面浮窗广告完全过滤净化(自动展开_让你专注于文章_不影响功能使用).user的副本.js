@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.1.8
-var version = "1.1.8";
-// @description  CSDN博客|论坛全面净化/沉浸阅读/自动展开/净化剪贴板 >> 由于CSDN“反净化机制”日益强大，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<
+// @version      1.1.9
+var version = "1.1.9";
+// @description  CSDN博客|论坛全面净化/沉浸阅读/自动展开/净化剪贴板 >>>>>!!!>>>>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<<<!!!<<<<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
-// @note         19-06-04 1.1.7 修复了无法自动展开的BUG（自闭了）
+// @note         19-06-04 1.1.9 修复了无法自动展开的BUG（自闭了）
 // @note         19-06-04 1.1.6 CSDN太坏了，把“消息”按钮的Class设置成了“GitChat”，所以修复了“消息”按钮消失的问题
 // @note         19-06-04 1.1.5 1. 优化了论坛体验 2.美化、优化代码结构
 // @note         19-06-04 1.1.4 感谢GitHub朋友“iamsunxing”的反馈，增加了论坛广告匹配规则
