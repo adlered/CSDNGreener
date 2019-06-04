@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.1.5
-var version = "1.1.5";
+// @version      1.1.6
+var version = "1.1.6";
 // @description  轻量级TamperMonkey插件：CSDN页面浮窗广告完全过滤净化 By Adler
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-06-04 1.1.6 CSDN太坏了，把“消息”按钮的Class设置成了“GitChat”，所以修复了“消息”按钮消失的问题
 // @note         19-06-04 1.1.5 1. 优化了论坛体验 2.美化、优化代码结构
 // @note         19-06-04 1.1.4 感谢GitHub朋友“iamsunxing”的反馈，增加了论坛广告匹配规则
 // @note         19-06-03 1.1.3 感谢GitHub朋友“wangwei135”的反馈，去除了评论区上方的广告
@@ -33,8 +34,8 @@ var version = "1.1.5";
 	}
 
 	//赚零钱改为GitChat(仅运行一次)
-	var gitChat = document.getElementsByClassName("gitChat");
-	gitChat[0].remove();
+	//var gitChat = document.getElementsByClassName("gitChat");
+	//gitChat[0].remove();
 	//主页右侧的今日推荐
 	var rightBox = document.getElementsByClassName("right_box");
 	//rightBox[0].remove();
