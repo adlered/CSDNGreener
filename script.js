@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.2.0
-var version = "1.2.0";
+// @version      1.2.1
+var version = "1.2.1";
 // @description  CSDN博客|论坛全面净化/沉浸阅读/自动展开/净化剪贴板 >>>>>!!!>>>>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<<<!!!<<<<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-06-07 1.2.1 感谢油叉用户"永远的殿下"的反馈，在一上午的努力攻克下，终于实现了未登录展开评论的语句
 // @note         19-06-05 1.2.0 修复了评论无法自动展开的BUG
 // @note         19-06-04 1.1.9 修复了无法自动展开的BUG（自闭了）
 // @note         19-06-04 1.1.6 CSDN太坏了，把“消息”按钮的Class设置成了“GitChat”，所以修复了“消息”按钮消失的问题
@@ -57,7 +58,7 @@ var version = "1.2.0";
 		csdn.copyright.init("", "", "");
 	} catch (err) {}
 
-    document.getElementById("btnMoreComment").click();
+    //document.getElementById("btnMoreComment").click();
 
 	var starting = setInterval(function() {
 		count++;
@@ -71,6 +72,16 @@ var version = "1.2.0";
                 try {
                     //这条不能使用JQuery语句，否则出错
                     document.getElementById("btn-readmore").click();
+                    //*** 非登录情况下评论展开，请勿借鉴 ***
+                    //删除查看更多按钮
+                    $("#btnMoreComment").parent("div.opt-box").remove();
+                    //展开内容
+                    $("div.comment-list-box").css("max-height", "none");
+                    //**关闭登录提示框**
+                    //改回背景颜色
+                    $(".login-mark").remove();
+                    //删除登录框
+                    $(".login-box").remove();
                 } catch (err) {}
 				//论坛自动展开
 				$(".js_show_topic").click();
