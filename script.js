@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.2.3
-var version = "1.2.3";
+// @version      1.2.4
+var version = "1.2.4";
 // @description  CSDN博客|论坛独家未登录自动展开文章、评论/全面净化/沉浸阅读/净化剪贴板 >>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-06-07 1.2.4 修复了登录后评论无法正常打开的问题
 // @note         19-06-07 1.2.3 感谢油叉用户"永远的殿下"的反馈，在一上午的努力攻克下，终于实现了未登录展开评论的语句
 // @note         19-06-05 1.2.0 修复了评论无法自动展开的BUG
 // @note         19-06-04 1.1.9 修复了无法自动展开的BUG（自闭了）
@@ -58,8 +59,6 @@ var version = "1.2.3";
 		csdn.copyright.init("", "", "");
 	} catch (err) {}
 
-    //document.getElementById("btnMoreComment").click();
-
 	var starting = setInterval(function() {
 		count++;
 		if (count > 50) {
@@ -70,6 +69,8 @@ var version = "1.2.3";
 			if (count >= 10 && count <= 40) {
                 		//展开所有内容，包括评论
                 		try {
+                            //已登录用户展开评论
+                            document.getElementById("btnMoreComment").click();
                 		    //这条不能使用JQuery语句，否则出错
                 		    document.getElementById("btn-readmore").click();
                 		    //*** 非登录情况下评论展开，请勿借鉴 ***
