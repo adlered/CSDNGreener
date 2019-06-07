@@ -68,21 +68,21 @@ var version = "1.2.3";
 			clearInterval(starting);
 		} else {
 			if (count >= 10 && count <= 40) {
-                //展开所有内容，包括评论
-                try {
-                    //这条不能使用JQuery语句，否则出错
-                    document.getElementById("btn-readmore").click();
-                    //*** 非登录情况下评论展开，请勿借鉴 ***
-                    //删除查看更多按钮
-                    $("#btnMoreComment").parent("div.opt-box").remove();
-                    //展开内容
-                    $("div.comment-list-box").css("max-height", "none");
-                    //**关闭登录提示框**
-                    //改回背景颜色
-                    $(".login-mark").remove();
-                    //删除登录框
-                    $(".login-box").remove();
-                } catch (err) {}
+                		//展开所有内容，包括评论
+                		try {
+                		    //这条不能使用JQuery语句，否则出错
+                		    document.getElementById("btn-readmore").click();
+                		    //*** 非登录情况下评论展开，请勿借鉴 ***
+                		    //删除查看更多按钮
+                		    $("#btnMoreComment").parent("div.opt-box").remove();
+                		    //展开内容
+                		    $("div.comment-list-box").css("max-height", "none");
+                		    //**关闭登录提示框**
+                		    //改回背景颜色
+                		    $(".login-mark").remove();
+                		    //删除登录框
+                		    $(".login-box").remove();
+                		} catch (err) {}
 				//论坛自动展开
 				$(".js_show_topic").click();
 			}
