@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.2.5
-var version = "1.2.5";
+// @version      1.2.6
+var version = "1.2.6";
 // @description  CSDN博客|论坛独家未登录自动展开文章、评论/全面净化/沉浸阅读/净化剪贴板 >>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
-// @note         19-06-08 1.2.5 感谢油叉用户“DeskyAki”的反馈，修复了文章无法自动展开的问题
+// @note         19-06-08 1.2.6 感谢油叉用户“DeskyAki”的反馈，修复了文章无法自动展开的问题
 // @note         19-06-07 1.2.4 修复了登录后评论无法正常打开的问题
 // @note         19-06-07 1.2.3 感谢油叉用户"永远的殿下"的反馈，在一上午的努力攻克下，终于实现了未登录展开评论的语句
 // @note         19-06-05 1.2.0 修复了评论无法自动展开的BUG
@@ -44,7 +44,9 @@ var version = "1.2.5";
 	//主页右侧的今日推荐
 	var rightBox = document.getElementsByClassName("right_box");
     //查看更多，这条不能使用JQuery语句，否则出错
-    document.getElementById("btn-readmore").click();
+    try {
+        document.getElementById("btn-readmore").click();
+    } catch(err) {}
 	//rightBox[0].remove();
 	//setTimeout(function (){
 	//    rightBox[0].remove();
@@ -52,8 +54,8 @@ var version = "1.2.5";
 	//}, 1000)
 	//干掉右侧栏，并让左侧栏填充屏幕
 	if (article.test(currentURL)) {
-		$("main").css("width", "100%");
 		$("aside").remove();
+		$("main").css("width", "100%");
         //去除评论区上面的广告
 		$("div#dmp_ad_58").remove();
 	}
