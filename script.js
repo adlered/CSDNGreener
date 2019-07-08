@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.2.8
-var version = "1.2.8";
+// @version      1.2.9
+var version = "1.2.9";
 // @description  CSDN博客|论坛独家未登录自动展开文章、评论/全面净化/沉浸阅读/净化剪贴板 >>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<
 // @author       Adler
 // @connect      www.csdn.net
@@ -158,16 +158,16 @@ function killAll() {
 	"personalized-recommend-box",
 	//发帖减半提示
 	"totast-box", );
-
+	
 	//IDS
 	var idList = new Array(
 	// ****** 文章页 ******
 	//广告
 	"asideFooter", "ad-div", "479", "480",
-    // ****** 论坛 ******
-    //底部推荐
-    "post_feed_wrap", );
-
+   	 // ****** 论坛 ******
+ 	   //底部推荐
+        "post_feed_wrap", );
+	
 	for (var i = 0; i < classList.length; i++) {
 		var tempName = classList[i];
 		$("." + tempName).remove();
