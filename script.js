@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.2.9
-var version = "1.2.9";
+// @version      1.3.0
+var version = "1.3.0";
 // @description  CSDN博客|论坛独家未登录自动展开文章、评论/全面净化/沉浸阅读/净化剪贴板 >>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
+// @note         19-07-13 1.3.0 感谢Github朋友“Holaplace”的反馈，修复了文章无法自动展开的问题（CSDN总改这个，令人头疼）
 // @note         19-06-08 1.2.6 感谢油叉用户“DeskyAki”的反馈，修复了文章无法自动展开的问题
 // @note         19-06-07 1.2.4 修复了登录后评论无法正常打开的问题
 // @note         19-06-07 1.2.3 感谢油叉用户"永远的殿下"的反馈，在一上午的努力攻克下，终于实现了未登录展开评论的语句
@@ -43,10 +44,6 @@ var version = "1.2.9";
 	//gitChat[0].remove();
 	//主页右侧的今日推荐
 	var rightBox = document.getElementsByClassName("right_box");
-    //查看更多，这条不能使用JQuery语句，否则出错
-    try {
-        document.getElementById("btn-readmore").click();
-    } catch(err) {}
 	//rightBox[0].remove();
 	//setTimeout(function (){
 	//    rightBox[0].remove();
@@ -72,21 +69,29 @@ var version = "1.2.9";
 			clearInterval(starting);
 		} else {
 			if (count >= 5 && count <= 40) {
-                		//展开所有内容，包括评论
-                		try {
-                            //已登录用户展开评论
-                            document.getElementById("btnMoreComment").click();
-                		    //*** 非登录情况下评论展开，请勿借鉴 ***
-                		    //删除查看更多按钮
-                		    $("#btnMoreComment").parent("div.opt-box").remove();
-                		    //展开内容
-                		    $("div.comment-list-box").css("max-height", "none");
-                		    //**关闭登录提示框**
-                		    //改回背景颜色
-                		    $(".login-mark").remove();
-                		    //删除登录框
-                		    $(".login-box").remove();
-                		} catch (err) {}
+                //展开所有内容，包括评论
+                try {
+                    //已登录用户展开评论
+                    document.getElementById("btnMoreComment").click();
+                    //*** 非登录情况下评论展开，请勿借鉴 ***
+                    //删除查看更多按钮
+                    $("#btnMoreComment").parent("div.opt-box").remove();
+                    //展开内容
+                    $("div.comment-list-box").css("max-height", "none");
+                    //**关闭登录提示框**
+                    //改回背景颜色
+                    $(".login-mark").remove();
+                    //删除登录框
+                    $(".login-box").remove();
+                } catch (err) {}
+
+                //查看更多，CSDN经常换来换去的，服气
+                try {
+                    $(".btn-readmore").click();
+                    $("#btn-readmore").click();
+                    document.getElementsByClassName("btn-readmore")[0].click();
+                    document.getElementsById("btn-readmore")[0].click();
+                } catch(err) {}
 				//论坛自动展开
 				$(".js_show_topic").click();
 			}
