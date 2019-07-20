@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.4.0
-var version = "1.4.0";
+// @version      1.4.1
+var version = "1.4.1";
 // @description  最好用的脚本，没有之一|CSDN|博客|超级免会员|推荐内容自由开关|论坛独家未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板 >>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://code.jquery.com/jquery-1.11.0.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
-// @note         19-07-13 1.4.0 1. 构架大更新 2. 感谢GitHub朋友"lukemin"的反馈，加入了下方推荐内容是否隐藏开关（实用）
+// @note         19-07-20 1.4.1 修复了推荐内容开关跨文章无效问题（忘了配置Cookie作用域）
+// @note         19-07-19 1.4.0 1. 构架大更新 2. 感谢GitHub朋友"lukemin"的反馈，加入了下方推荐内容是否隐藏开关（实用）
 // @note         19-07-13 1.3.0 感谢Github朋友“Holaplace”的反馈，修复了文章无法自动展开的问题（CSDN总改这个，令人头疼）
 // @note         19-06-08 1.2.6 感谢油叉用户“DeskyAki”的反馈，修复了文章无法自动展开的问题
 // @note         19-06-07 1.2.4 修复了登录后评论无法正常打开的问题
@@ -67,7 +68,9 @@ var version = "1.4.0";
 	var removeCookie = $.cookie("remove");
 	var remove;
 	if (removeCookie == undefined) {
-		$.cookie('remove', true);
+		$.cookie('remove', true, {
+            path : '/'
+        });
 		remove = true;
 	}
 	if (removeCookie == "true") {
@@ -113,9 +116,13 @@ var version = "1.4.0";
 	//开关监听
 	$(".hide-recommend-button").click(function() {
 		if ($.cookie('remove') == "true") {
-			$.cookie('remove', false);
+            $.cookie('remove', false, {
+                path : '/'
+            });
 		} else {
-			$.cookie('remove', true);
+            $.cookie('remove', true, {
+                path : '/'
+            });
 		}
 		location.reload();
 	});
