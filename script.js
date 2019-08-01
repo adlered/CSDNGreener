@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.4.2
-var version = "1.4.2";
+// @version      1.4.3
+var version = "1.4.3";
 // @description  最好用的脚本，没有之一|CSDN|博客|✔️超级免会员|✔️防外链重定向|✔️推荐内容自由开关|✔️论坛独家未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板 >>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         19-08-01 1.4.3 感谢油叉用户“ddddy”的反馈，去除了更多推广广告
 // @note         19-07-30 1.4.2 感谢油叉用户“周义杰”的反馈，增加了防CSDN外链重定向的功能（CSDN臭流氓）
 // @note         19-07-20 1.4.1 修复了推荐内容开关跨文章无效问题（忘了配置Cookie作用域）
 // @note         19-07-19 1.4.0 1. 构架大更新 2. 感谢GitHub朋友"lukemin"的反馈，加入了下方推荐内容是否隐藏开关（实用）
@@ -44,6 +45,8 @@ var version = "1.4.2";
 
     //CSDN臭不要脸重定向外链
     $("#content_views").off();
+    //去除推广广告
+    $("li[data-type='ad']").remove();
 
 	//赚零钱改为GitChat(仅运行一次)
 	//var gitChat = document.getElementsByClassName("gitChat");
