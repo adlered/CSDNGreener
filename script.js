@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.4.6
-var version = "1.4.6";
+// @version      1.4.7
+var version = "1.4.7";
 // @description  拥有数项独家功能的最强脚本|CSDN|博客|✔️超级免会员|✔️独家免登录复制|✔️防外链重定向|✔️推荐内容自由开关|✔️论坛独家未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板 >>> 请注意！由于CSDN“反净化机制”日益强大，网站结构修改频率很高，请选择经常更新的脚本！较旧的脚本可能已经失去维护，无法起到净化效果！ <<<
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         19-08-20 1.4.7 感谢油叉用户“SupremeSir”的反馈，修复了右侧悬浮栏遮挡文章的问题
 // @note         19-08-14 1.4.6 无语。刚更新的免登录复制，又改了。修复！
 // @note         19-08-13 1.4.5 更新了独家功能：免登录复制
 // @note         19-08-13 1.4.4 感谢Github朋友“iamsunxing”的反馈，修复了顶部不贴边的问题
@@ -68,6 +69,9 @@ var version = "1.4.6";
 		//去除评论区上面的广告
 		$("div#dmp_ad_58").remove();
 	}
+    //右侧栏靠右
+    $(".tool-box").css("right", "0px");
+
 	//去除剪贴板劫持
 	try {
 		csdn.copyright.init("", "", "");
