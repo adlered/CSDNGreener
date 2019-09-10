@@ -1,14 +1,15 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.4.8
-var version = "1.4.8";
-// @description  拥有数项独家功能的最强脚本，不信就对比试试！|CSDN|博客|✔️独家原创文章免登录展开|✔️超级免会员|✔️独家免登录复制|✔️防外链重定向|✔️推荐内容自由开关|✔️论坛独家未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
+// @version      1.4.9
+var version = "1.4.9";
+// @description  拥有数项独家功能的最强脚本，不信就对比试试！|CSDN|博客|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家超级免会员|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
-// @note	 19-09-04 1.4.8 感谢来自GitHub的朋友“dwdcth”的细致复现反馈，现在查看原创文章不会无限弹登录窗口了，且加强了自动展开功能
+// @note         19-09-10 1.4.9 感谢来自GitHub的朋友“programmerZe”的细致复现反馈，修复了评论区点击查看回复后，已经展开的评论会收起的问题
+// @note         19-09-04 1.4.8 感谢来自GitHub的朋友“dwdcth”的细致复现反馈，现在查看原创文章不会无限弹登录窗口了，且加强了自动展开功能
 // @note         19-08-20 1.4.7 感谢油叉用户“SupremeSir”的反馈，修复了右侧悬浮栏遮挡文章的问题
 // @note         19-08-14 1.4.6 无语。刚更新的免登录复制，又改了。修复！
 // @note         19-08-13 1.4.5 更新了独家功能：免登录复制
@@ -104,7 +105,7 @@ var version = "1.4.8";
 
     //推荐内容开关
     $(".blog-content-box").after("<div class='blog-content-box' id='switch'></div>");
-    $("#switch").after("<center>第一次点击“显示推荐内容”按钮可能失效，请刷新后再次点击<br>已为您自动优化CSDN阅读体验！版本" + version + "，<a href='https://greasyfork.org/zh-CN/scripts/378351-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0-csdn%E9%A1%B5%E9%9D%A2%E6%B5%AE%E7%AA%97%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E5%87%80%E5%8C%96-%E5%87%80%E5%8C%96%E5%A4%8D%E5%88%B6%E5%86%85%E5%AE%B9-%E8%87%AA%E5%8A%A8%E5%B1%95%E5%BC%80-%E8%AE%A9%E4%BD%A0%E4%B8%93%E6%B3%A8%E4%BA%8E%E6%96%87%E7%AB%A0-%E4%B8%8D%E5%BD%B1%E5%93%8D%E5%8A%9F%E8%83%BD%E4%BD%BF%E7%94%A8'>如果好用，点这里给个收藏吧！</a></center>");
+    $(".comment-edit-box").after("<center><font size='1px'>第一次点击“显示推荐内容”按钮可能失效，请刷新后再次点击<br>CSDN优化脚本已为您全面提升阅读体验！<br><a href='https://greasyfork.org/zh-CN/scripts/378351-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0-csdn%E9%A1%B5%E9%9D%A2%E6%B5%AE%E7%AA%97%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E5%87%80%E5%8C%96-%E5%87%80%E5%8C%96%E5%A4%8D%E5%88%B6%E5%86%85%E5%AE%B9-%E8%87%AA%E5%8A%A8%E5%B1%95%E5%BC%80-%E8%AE%A9%E4%BD%A0%E4%B8%93%E6%B3%A8%E4%BA%8E%E6%96%87%E7%AB%A0-%E4%B8%8D%E5%BD%B1%E5%93%8D%E5%8A%9F%E8%83%BD%E4%BD%BF%E7%94%A8'>点这里收藏脚本支持我！</a> V" + version + "</font></center>");
     if (remove) {
         $("#switch").append("<button class='hide-recommend-button'>显示推荐内容</button>");
     } else {
@@ -198,6 +199,8 @@ var version = "1.4.8";
         if (currentURL == "https://www.csdn.net/") {
             $("iframe").remove();
         }
+        //评论查看更多展开监听
+        $("div.comment-list-box").css("max-height", "none");
     }, 500);
 })();
 
