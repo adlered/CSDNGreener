@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.4.9
-var version = "1.4.9";
+// @version      1.5.0
+var version = "1.5.0";
 // @description  拥有数项独家功能的最强脚本，不信就对比试试！|CSDN|博客|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家超级免会员|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         19-10-04 1.5.0 移除了底部主题信息和打赏
 // @note         19-09-10 1.4.9 感谢来自GitHub的朋友“programmerZe”的细致复现反馈，修复了评论区点击查看回复后，已经展开的评论会收起的问题
 // @note         19-09-04 1.4.8 感谢来自GitHub的朋友“dwdcth”的细致复现反馈，现在查看原创文章不会无限弹登录窗口了，且加强了自动展开功能
 // @note         19-08-20 1.4.7 感谢油叉用户“SupremeSir”的反馈，修复了右侧悬浮栏遮挡文章的问题
@@ -252,7 +253,11 @@ function killAll() {
         //发帖减半提示
         "totast-box",
         //顶部广告
-        "recommend-right", );
+        "recommend-right",
+        //打赏
+        "postTime",
+        //底部主题信息
+        "template-box", );
 
     //IDS
     var idList = new Array(
