@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      1.5.1
-var version = "1.5.1";
+// @version      1.5.2
+var version = "1.5.2";
 // @description  拥有数项独家功能的最强脚本，不信就对比试试！|CSDN|博客|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家超级免会员|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         19-10-27 1.5.2 删除分享海报提示&&感谢GitHub的朋友“CHN-STUDENT”的反馈，去除底部课程推荐
 // @note         19-10-27 1.5.1 感谢来自GitHub的朋友“CHN-STUDENT”的细致复现反馈，去除了底部的课程推荐广告
 // @note         19-10-04 1.5.0 移除了底部主题信息和打赏
 // @note         19-09-10 1.4.9 感谢来自GitHub的朋友“programmerZe”的细致复现反馈，修复了评论区点击查看回复后，已经展开的评论会收起的问题
@@ -259,6 +260,8 @@ function killAll() {
         "postTime",
         //课程推荐广告
         "t0",
+        //分享海报提示
+        "shareSuggest",
         //底部主题信息
         "template-box", );
 
