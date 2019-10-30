@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.0.3
-var version = "2.0.3";
+// @version      2.0.4
+var version = "2.0.4";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         19-10-30 2.0.4 删除CSDN官方在主页推送的文章（大多是广告）
 // @note         19-10-30 2.0.3 添加更多屏蔽脚本
 // @note         19-10-30 2.0.0 祝自己生日快乐~完全重写CSDNGreener，统一使用JQuery，效率更高
 // @note         19-10-27 1.5.2 删除分享海报提示&&感谢GitHub的朋友“CHN-STUDENT”的反馈，去除底部课程推荐
@@ -231,6 +232,14 @@ function loop(num) {
             if (currentURL == "https://www.csdn.net/") {
                 $("iframe").remove();
             }
+            // 删除CSDN官方在主页的文章（大多是广告）
+            $("li.clearfix").each(function(index, ele) {
+                var banned = /csdn<\/a>/;
+                var aMark = $(ele).find(".name").html();
+                if (banned.test(aMark)) {
+                    $(ele).remove();
+                }
+            });
         } else if (num === 2) {
             // 评论查看更多展开监听
             $("div.comment-list-box").css("max-height", "none");
