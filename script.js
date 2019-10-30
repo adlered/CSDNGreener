@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.0.2
-var version = "2.0.2";
+// @version      2.0.3
+var version = "2.0.3";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
-// @note         19-10-30 2.0.2 添加更多屏蔽脚本
+// @note         19-10-30 2.0.3 添加更多屏蔽脚本
 // @note         19-10-30 2.0.0 祝自己生日快乐~完全重写CSDNGreener，统一使用JQuery，效率更高
 // @note         19-10-27 1.5.2 删除分享海报提示&&感谢GitHub的朋友“CHN-STUDENT”的反馈，去除底部课程推荐
 // @note         19-10-27 1.5.1 感谢来自GitHub的朋友“CHN-STUDENT”的细致复现反馈，去除了底部的课程推荐广告
@@ -56,6 +56,7 @@ var list;
     var blog2 = /\/article\/list\//;
     var download = /download\.csdn\.net/;
     var login = /passport\.csdn\.net/;
+    var zone = /me\.csdn\.net/;
 
     // 数组初始化
     list = [];
@@ -84,6 +85,7 @@ var list;
     } else if ((blog.test(currentURL) && blockURL === 4) || blog2.test(currentURL)) {
         l("正在优化个人博客主页体验...");
         // 常规
+        // 左侧广告
         put(".mb8");
         put("#kp_box_503");
         clean(10);
@@ -173,6 +175,12 @@ var list;
         // 登录界面大图广告
         put(".main-tu");
         clean(10);
+        common(5, 10);
+    } else if (zone.test(currentURL)) {
+        l("正在优化个人空间体验...");
+        // 常规
+        clean(10);
+        common(7, 10);
         common(5, 10);
     } else {
         e("不受支持的页面!");
@@ -327,6 +335,8 @@ function common(num, times) {
                 }
                 renderHideButton();
             });
+        } else if (num === 7) {
+            $(".me_r")[1].remove();
         }
     }, 100);
 }
