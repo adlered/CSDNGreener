@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.0.0
-var version = "2.0.0";
+// @version      2.0.1
+var version = "2.0.1";
 // @description  ❤拥有数项独家功能的最强脚本，不信比一比|✔️超级预处理|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家超级免会员|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
 // @author       Adler
 // @connect      www.csdn.net
@@ -76,8 +76,6 @@ var list;
         put(".csdn-side-toolbar");
         // 右侧详情
         put(".persion_article");
-        // 顶部轮播
-        put(".carousel");
         clean(10);
         common(5, 10);
         loop(1);
