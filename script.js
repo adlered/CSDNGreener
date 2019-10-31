@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.0.4
-var version = "2.0.4";
+// @version      2.0.5
+var version = "2.0.5";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         19-10-30 2.0.5 美化隐藏按钮，增加点击动画
 // @note         19-10-30 2.0.4 删除CSDN官方在主页推送的文章（大多是广告）
 // @note         19-10-30 2.0.3 添加更多屏蔽脚本
 // @note         19-10-30 2.0.0 祝自己生日快乐~完全重写CSDNGreener，统一使用JQuery，效率更高
@@ -300,7 +301,7 @@ function common(num, times) {
             // 删除登录框
             $(".login-box").remove();
         } else if (num == 6) {
-            //推荐内容开关cookie
+            // 推荐内容开关cookie
             var removeCookie = $.cookie("remove");
             var remove;
             if (removeCookie == undefined) {
@@ -314,11 +315,11 @@ function common(num, times) {
             } else {
                 remove = false;
             }
-            //删除推荐内容（自定义）
+            // 删除推荐内容（自定义）
             if (remove) {
                 $(".recommend-box").hide();
             }
-            //推荐内容开关
+            // 推荐内容开关
             $(".blog-content-box").after("<div class='blog-content-box' id='switch'></div>");
             $(".comment-edit-box").after("<center><font size='1px'><a href='https://greasyfork.org/zh-CN/scripts/378351'>CSDN Greener V" + version + "</a><br><a href='https://github.com/AdlerED'>By GitHub :: AdlerED</a></font></center><br>");
             if (remove) {
@@ -327,19 +328,19 @@ function common(num, times) {
                 $("#switch").append("<button class='hide-recommend-button'>隐藏推荐内容</button>");
             }
             renderHideButton();
-            //开关监听
+            // 开关监听
             $(".hide-recommend-button").click(function () {
                 if ($.cookie('remove') == "true") {
                     $.cookie('remove', false, {
                         path: '/'
                     });
-                    $(".recommend-box").show();
+                    $(".recommend-box").show(1000);
                     $(".hide-recommend-button").html("隐藏推荐内容");
                 } else {
                     $.cookie('remove', true, {
                         path: '/'
                     });
-                    $(".recommend-box").hide();
+                    $(".recommend-box").hide(1000);
                     $(".hide-recommend-button").html("显示推荐内容");
                 }
                 renderHideButton();
@@ -356,7 +357,7 @@ function renderHideButton() {
         "height": "40px",
         "border-width": "0px",
         "border-radius": "3px",
-        "background": "#f3e3ff",
+        "background": "#F7F7F7",
         "cursor": "pointer",
         "outline": "none",
         "font-family": "Microsoft YaHei",
@@ -367,9 +368,9 @@ function renderHideButton() {
     });
     $(".hide-recommend-button").hover(
         function () {
-            $(".hide-recommend-button").css("background", "#e0d1eb");
+            $(".hide-recommend-button").css("background", "#EEEEEE");
         }, function () {
-            $(".hide-recommend-button").css("background", "#f3e3ff");
+            $(".hide-recommend-button").css("background", "#F7F7F7");
         }
     );
 }
