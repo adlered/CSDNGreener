@@ -43,6 +43,7 @@ var version = "2.0.5";
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
+
 var currentURL = window.location.href;
 var list;
 
