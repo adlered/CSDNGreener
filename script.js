@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.0.5
-var version = "2.0.5";
-// @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板
+// @version      2.0.6
+var version = "2.0.6";
+// @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         19-12-12 2.0.6 感谢来自GitHub的朋友“yexuesong”的建议，将作者信息在文章顶部展示
 // @note         19-10-30 2.0.5 美化隐藏按钮，增加点击动画
 // @note         19-10-30 2.0.4 删除CSDN官方在主页推送的文章（大多是广告）
 // @note         19-10-30 2.0.3 添加更多屏蔽脚本
@@ -43,7 +44,6 @@ var version = "2.0.5";
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-
 var currentURL = window.location.href;
 var list;
 
@@ -139,6 +139,8 @@ var list;
         common(1, 30);
         // 其它
         common(2, 20);
+        // 顶部显示作者信息
+        common(8, 1);
         // 循环线程开始
         loop(2);
     } else if (bbs.test(currentURL)) {
@@ -292,7 +294,7 @@ function common(num, times) {
             $(".js_show_topic").click();
         } else if (num == 4) {
             // 左侧栏填充屏幕
-            $("aside").remove();
+            $("aside").hide();
             $("main").css("width", "95%");
             // 右侧栏靠右
             $(".tool-box").css("right", "0px");
@@ -348,6 +350,26 @@ function common(num, times) {
             });
         } else if (num === 7) {
             $(".me_r")[1].remove();
+        } else if (num === 8) {
+            $(".article-bar-top").append("<br>");
+            $(".article-bar-top").append($(".aside-box-footerClassify").children("dd").html());
+            $("dl").each(function (index, element) {
+            var key = $(this).children("dt");
+            var value = $(this).children("dd").children("span");
+            if (key.html().indexOf("原创") != -1) {
+            	key = $(this).children("dt").children("a")
+            	value = $(this).children("dd").children("a").children("span");
+            	addInfo(key, value);
+            } else
+            if (value.html() != undefined) {
+            	addInfo(key, value);
+            }
+            } );
+            function addInfo(key, value) {
+            	var bind = key.html() + "&nbsp;" + value.html() + "&nbsp;&nbsp;";
+            	$(".article-bar-top").append(bind + " ");
+            }
+            $("aside").remove();
         }
     }, 100);
 }
