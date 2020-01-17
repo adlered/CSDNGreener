@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.0.6
-var version = "2.0.6";
+// @version      2.0.7
+var version = "2.0.7";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         20-01-17 2.0.7 感谢来自GitHub的朋友“gleans”的建议，去掉页头广告
 // @note         19-12-12 2.0.6 感谢来自GitHub的朋友“yexuesong”的建议，将作者信息在文章顶部展示
 // @note         19-10-30 2.0.5 美化隐藏按钮，增加点击动画
 // @note         19-10-30 2.0.4 删除CSDN官方在主页推送的文章（大多是广告）
@@ -289,6 +290,8 @@ function common(num, times) {
                 csdn.copyright.init("", "", "");
             } catch (err) {
             }
+            // 页头广告
+            document.getElementsByClassName("column-advert-box")[0].style.display="none";
         } else if (num == 3) {
             //论坛自动展开
             $(".js_show_topic").click();
