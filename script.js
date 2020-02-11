@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.0.8
-var version = "2.0.8";
+// @version      2.1.0
+var version = "2.1.0";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         20-02-11 2.1.0 若干动画优化，视觉体验更流畅
+// @note         20-02-06 2.0.9 武汉加油！修改推荐内容切换开关位置，减少违和感
 // @note         20-01-17 2.0.8 去除右侧广告
 // @note         20-01-17 2.0.7 感谢来自GitHub的朋友“gleans”的建议，去掉页头广告
 // @note         19-12-12 2.0.6 感谢来自GitHub的朋友“yexuesong”的建议，将作者信息在文章顶部展示
@@ -167,6 +169,8 @@ var list;
         put(".totast-box");
         // 顶部广告
         put(".recommend-right");
+        // 顶部广告
+        put(".ad_top");
         clean(10);
         // 展开
         common(3, 50);
@@ -224,8 +228,13 @@ function clean(times) {
             clearInterval(loop);
         }
         for (var j = 0; j < list.length; j++) {
-            $(list[j]).remove();
+            $(list[j]).hide(1000);
         }
+        setInterval(function () {
+        for (var k = 0; k < list.length; k++) {
+            $(list[k]).remove();
+        }
+        }, 1000);
     }, 100);
 }
 
@@ -236,11 +245,11 @@ function loop(num) {
             $(".J_adv").remove();
             // 主页有新的内容横条
             $(".feed-fix-box").remove();
-            // 主页广告iframe
+            // 主页广告 iframe
             if (currentURL == "https://www.csdn.net/") {
                 $("iframe").remove();
             }
-            // 删除CSDN官方在主页的文章（大多是广告）
+            // 删除 CSDN 官方在主页的文章（大多是广告）
             $("li.clearfix").each(function(index, ele) {
                 var banned = /csdn<\/a>/;
                 var aMark = $(ele).find(".name").html();
@@ -301,16 +310,16 @@ function common(num, times) {
         } else if (num == 4) {
             // 左侧栏填充屏幕
             $("aside").hide();
-            $("main").css("width", "95%");
+            $("main").animate({width: "95%"}, 500);
             // 右侧栏靠右
-            $(".tool-box").css("right", "0px");
+            $(".tool-box").animate({right: "0px"}, 600);
         } else if (num == 5) {
             // 改回背景颜色
             $(".login-mark").remove();
             // 删除登录框
             $(".login-box").remove();
         } else if (num == 6) {
-            // 推荐内容开关cookie
+            // 推荐内容开关 cookie
             var removeCookie = $.cookie("remove");
             var remove;
             if (removeCookie == undefined) {
@@ -329,8 +338,8 @@ function common(num, times) {
                 $(".recommend-box").hide();
             }
             // 推荐内容开关
-            $(".blog-content-box").after("<div class='blog-content-box' id='switch'></div>");
-            $(".comment-edit-box").after("<center><font size='1px'><a href='https://greasyfork.org/zh-CN/scripts/378351'>CSDN Greener V" + version + "</a><br><a href='https://github.com/AdlerED'>By GitHub :: AdlerED</a></font></center><br>");
+            $(".blog-content-box").append("<br><div class='blog-content-box' id='switch'></div>");
+            $(".comment-edit-box").after("<center><font size='1px'><a href='https://greasyfork.org/zh-CN/scripts/378351'>CSDN Greener V" + version + "</a><br><a href='https://github.com/AdlerED'>By GitHub :: AdlerED</a></font></center>");
             if (remove) {
                 $("#switch").append("<button class='hide-recommend-button'>显示推荐内容</button>");
             } else {
@@ -343,13 +352,13 @@ function common(num, times) {
                     $.cookie('remove', false, {
                         path: '/'
                     });
-                    $(".recommend-box").show(1000);
+                    $(".recommend-box").slideDown(2000);
                     $(".hide-recommend-button").html("隐藏推荐内容");
                 } else {
                     $.cookie('remove', true, {
                         path: '/'
                     });
-                    $(".recommend-box").hide(1000);
+                    $(".recommend-box").slideUp(1000);
                     $(".hide-recommend-button").html("显示推荐内容");
                 }
                 renderHideButton();
@@ -357,6 +366,7 @@ function common(num, times) {
         } else if (num === 7) {
             $(".me_r")[1].remove();
         } else if (num === 8) {
+            $(".article-bar-top").hide(1000);
             $(".article-bar-top").append("<br>");
             $(".article-bar-top").append($(".aside-box-footerClassify").children("dd").html());
             $("dl").each(function (index, element) {
@@ -375,6 +385,7 @@ function common(num, times) {
             	var bind = key.html() + "&nbsp;" + value.html() + "&nbsp;&nbsp;";
             	$(".article-bar-top").append(bind + " ");
             }
+            $(".article-bar-top").show(1000);
             $("aside").remove();
         }
     }, 100);
