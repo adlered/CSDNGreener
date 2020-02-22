@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.1.0
-var version = "2.1.0";
+// @version      2.1.1
+var version = "2.1.1";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         20-02-22 2.1.1 紧急修复由于 CSDN 修改前端结构导致的文章错位
 // @note         20-02-11 2.1.0 若干动画优化，视觉体验更流畅
 // @note         20-02-06 2.0.9 武汉加油！修改推荐内容切换开关位置，减少违和感
 // @note         20-01-17 2.0.8 去除右侧广告
@@ -100,6 +101,8 @@ var list;
     } else if (article.test(currentURL)) {
         l("正在优化阅读体验...");
         // 常规
+        // 右侧广告，放到第一个清除
+        put(".recommend-right");
         // 快来写博客吧
         put(".blog_tip_box");
         // 推荐关注用户
@@ -227,14 +230,17 @@ function clean(times) {
         if (times <= 0) {
             clearInterval(loop);
         }
-        for (var j = 0; j < list.length; j++) {
+        /* for (var j = 0; j < list.length; j++) {
             $(list[j]).hide(1000);
         }
         setInterval(function () {
         for (var k = 0; k < list.length; k++) {
             $(list[k]).remove();
         }
-        }, 1000);
+        }, 1000); */
+        for (var k = 0; k < list.length; k++) {
+            $(list[k]).remove();
+        }
     }, 100);
 }
 
@@ -309,10 +315,16 @@ function common(num, times) {
             $(".js_show_topic").click();
         } else if (num == 4) {
             // 左侧栏填充屏幕
-            $("aside").hide();
-            $("main").animate({width: "95%"}, 500);
+            $(".blog_container_aside").hide();
+            var screenWidth = document.body.clientWidth;
+            if (screenWidth <= 1500) {
+                $("main").css("cssText", "width:96% !important;");
+            } else {
+                $("main").css("cssText", "width:100% !important;");
+            }
             // 右侧栏靠右
-            $(".tool-box").animate({right: "0px"}, 600);
+            $(".tool-box").css("right", "0px");
+            $(".csdn-side-toolbar").css("right", "0px");
         } else if (num == 5) {
             // 改回背景颜色
             $(".login-mark").remove();
@@ -366,7 +378,6 @@ function common(num, times) {
         } else if (num === 7) {
             $(".me_r")[1].remove();
         } else if (num === 8) {
-            $(".article-bar-top").hide(1000);
             $(".article-bar-top").append("<br>");
             $(".article-bar-top").append($(".aside-box-footerClassify").children("dd").html());
             $("dl").each(function (index, element) {
@@ -385,8 +396,7 @@ function common(num, times) {
             	var bind = key.html() + "&nbsp;" + value.html() + "&nbsp;&nbsp;";
             	$(".article-bar-top").append(bind + " ");
             }
-            $(".article-bar-top").show(1000);
-            $("aside").remove();
+            $(".blog_container_aside").remove();
         }
     }, 100);
 }
