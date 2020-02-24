@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.1.1
-var version = "2.1.1";
+// @version      2.1.2
+var version = "2.1.2";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         20-02-24 2.1.2 By Github@JalinWang 更改去除剪贴板劫持的方式，使得原文格式在复制时能够保留
 // @note         20-02-22 2.1.1 紧急修复由于 CSDN 修改前端结构导致的文章错位
 // @note         20-02-11 2.1.0 若干动画优化，视觉体验更流畅
 // @note         20-02-06 2.0.9 武汉加油！修改推荐内容切换开关位置，减少违和感
@@ -305,7 +306,12 @@ function common(num, times) {
             $("li[data-type='ad']").remove();
             // 去除剪贴板劫持
             try {
-                csdn.copyright.init("", "", "");
+                // 复制时保留原文格式，参考 https://greasyfork.org/en/scripts/390502-csdnremovecopyright/code
+                Object.defineProperty(window, "articleType", {
+                    value: 0,
+                    writable: false,
+                    configurable: false
+                });
             } catch (err) {
             }
             // 页头广告
