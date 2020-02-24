@@ -8,7 +8,7 @@ var version = "2.1.2";
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
-// @note         20-02-24 2.1.2 更改去除剪贴板劫持的方式，使得原文格式在复制时能够保留
+// @note         20-02-24 2.1.2 By Github@JalinWang 更改去除剪贴板劫持的方式，使得原文格式在复制时能够保留
 // @note         20-02-22 2.1.1 紧急修复由于 CSDN 修改前端结构导致的文章错位
 // @note         20-02-11 2.1.0 若干动画优化，视觉体验更流畅
 // @note         20-02-06 2.0.9 武汉加油！修改推荐内容切换开关位置，减少违和感
