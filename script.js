@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.1.3
-var version = "2.1.3";
+// @version      2.1.4
+var version = "2.1.4";
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @note         20-02-27 2.1.4 优化免登录复制
 // @note         20-02-25 2.1.3 免登录复制更新，现已可用
 // @note         20-02-24 2.1.2 By Github@JalinWang 更改去除剪贴板劫持的方式，使得原文格式在复制时能够保留
 // @note         20-02-22 2.1.1 紧急修复由于 CSDN 修改前端结构导致的文章错位
@@ -309,7 +310,7 @@ function common(num, times) {
             $(".hljs-button").removeClass("signin");
             $(".hljs-button").addClass("{2}");
             $(".hljs-button").attr("data-title", "免登录复制");
-            $(".prism").attr("onclick", "mdcp.copyCode(event)");
+            $("code").attr("onclick", "mdcp.copyCode(event)");
             // 去除剪贴板劫持
             try {
                 // 复制时保留原文格式，参考 https://greasyfork.org/en/scripts/390502-csdnremovecopyright/code
