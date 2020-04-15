@@ -311,9 +311,9 @@ function common(num, times) {
             $(".btn-readmore").removeAttr("rel");
             $(".btn-readmore").click();
             // 已登录用户展开评论
-            try{
+            try {
             document.getElementById("btnMoreComment").click();
-            }catch(e){}
+            } catch (e) {}
             // 删除查看更多按钮
             $("#btnMoreComment").parent("div.opt-box").remove();
             // 展开内容
@@ -348,9 +348,9 @@ function common(num, times) {
             }
             csdn.copyright.init("", "", "");
             // 页头广告
-            try{
+            try {
             document.getElementsByClassName("column-advert-box")[0].style.display="none";
-            }catch(e){}
+            } catch (e) {}
         } else if (num == 3) {
             //论坛自动展开
             $(".js_show_topic").click();
