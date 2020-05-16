@@ -1,13 +1,14 @@
 // ==UserScript==
-// @name         🔥持续更新🔥CSDN广告完全过滤、究极人性化脚本：无需登录CSDN，让你体验令人惊喜的崭新CSDN。
+// @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.2.4
+// @version      2.2.5
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
 // @grant        GM_addStyle
+// @note         20-05-16 2.2.5 删除抢沙发角标，修改显示推荐内容按钮样式
 // @note         20-05-16 2.2.4 感谢来自GitHub的朋友“HeronZhang”的Issue建议，删除所有博客花里胡哨的背景，主页分类中广告清除，CSS样式控制宽度适配代码优化
 // @note         20-05-16 2.2.3 感谢来自GitHub的朋友“RetiredWorld”的代码贡献，使用CSS来控制样式，而不是JS，增大灵活性。
 // @note         20-05-13 2.2.2 屏蔽您的缩放不是100%的提示
@@ -62,7 +63,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.2.4";
+var version = "2.2.5";
 var currentURL = window.location.href;
 var list;
 
@@ -112,11 +113,18 @@ var list;
     } else if ((blog.test(currentURL) && blockURL === 4) || blog2.test(currentURL)) {
         l("正在优化个人博客主页体验...");
         // 常规
+        // 头部广告
+        put(".banner-ad-box");
+        // 右侧广告
+        put(".slide-outer");
+        // 右侧详情
+        put(".persion_article");
         // 左侧广告
         put(".mb8");
         put("#kp_box_503");
         clean(10);
         common(5, 10);
+        loop(1);
     } else if (article.test(currentURL)) {
         l("正在优化阅读体验...");
         GM_addStyle(`
@@ -183,7 +191,16 @@ var list;
         put(".recommend-recommend-box");
         // 右侧广告
         put(".indexSuperise");
+        // 抢沙发角标
+        put(".comment-sofa-flag");
         clean(10);
+        // 引入自定义CSDN样式
+        $("<link>")
+        .attr({ rel: "stylesheet",
+        type: "text/css",
+        href: "https://ftp.stackoverflow.wiki/csdn_addition.css"
+        })
+        .appendTo("head");
         // 填充
         common(4, 5);
         // 评论
@@ -309,7 +326,6 @@ function loop(num) {
         } else if (num === 2) {
             // 评论查看更多展开监听
             $("div.comment-list-box").css("max-height", "none");
-
             // 屏蔽您的缩放不是100%的提示
             $('.leftPop').remove();
         }
@@ -413,30 +429,32 @@ function common(num, times) {
                 $(".recommend-box").hide();
             }
             // 推荐内容开关
-            $(".blog-content-box").append("<br><div class='blog-content-box' id='switch'></div>");
-            //$(".comment-edit-box").after("<center><font size='1px'><a href='https://greasyfork.org/zh-CN/scripts/378351'>CSDN Greener V" + version + "</a><br><a href='https://github.com/AdlerED'>By GitHub :: AdlerED</a></font></center>");
+            $(".blog-content-box").append("<br><div class='blog-content-box' id='switch' style='text-align: right;'></div>");
+            // 初始化按钮
+            $("#switch").append('<input type="checkbox" id="toggle-button"> <label for="toggle-button" class="button-label"> <span class="circle"></span> <span class="text on">&nbsp;</span> <span class="text off">&nbsp;</span> </label>' +
+                               '<p style="margin-top: 5px; font-size: 13px;">显示推荐内容</p>');
             if (remove) {
-                $("#switch").append("<button class='hide-recommend-button'>显示推荐内容</button>");
+                // 隐藏推荐内容
+                $("#toggle-button").prop("checked", false);
             } else {
-                $("#switch").append("<button class='hide-recommend-button'>隐藏推荐内容</button>");
+                // 显示推荐内容
+                $("#toggle-button").prop("checked", true);
             }
-            renderHideButton();
             // 开关监听
-            $(".hide-recommend-button").click(function () {
+            $("#toggle-button").click(function () {
                 if ($.cookie('remove') == "true") {
                     $.cookie('remove', false, {
                         path: '/'
                     });
-                    $(".recommend-box").slideDown(2000);
-                    $(".hide-recommend-button").html("隐藏推荐内容");
+                    $(".recommend-box").slideDown(200);
+                    $("#toggle-button").prop("checked", true);
                 } else {
                     $.cookie('remove', true, {
                         path: '/'
                     });
-                    $(".recommend-box").slideUp(1000);
-                    $(".hide-recommend-button").html("显示推荐内容");
+                    $(".recommend-box").slideUp(200);
+                    $("#toggle-button").prop("checked", false);
                 }
-                renderHideButton();
             });
         } else if (num === 7) {
             $(".me_r")[1].remove();
@@ -462,28 +480,4 @@ function common(num, times) {
             $(".blog_container_aside").remove();
         }
     }, 100);
-}
-
-function renderHideButton() {
-    $(".hide-recommend-button").css({
-        "width": "270px",
-        "height": "40px",
-        "border-width": "0px",
-        "border-radius": "3px",
-        "background": "#F7F7F7",
-        "cursor": "pointer",
-        "outline": "none",
-        "font-family": "Microsoft YaHei",
-        "color": "rgba(15,15,15,0.6)",
-        "font-size": "17px",
-        "display": "block",
-        "margin": "0 auto"
-    });
-    $(".hide-recommend-button").hover(
-        function () {
-            $(".hide-recommend-button").css("background", "#EEEEEE");
-        }, function () {
-            $(".hide-recommend-button").css("background", "#F7F7F7");
-        }
-    );
 }
