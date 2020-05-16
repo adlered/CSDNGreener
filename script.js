@@ -1,14 +1,15 @@
 // ==UserScript==
-// @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
-// @namespace    https://github.com/AdlerED
-// @version      2.2.3
-// @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️分辨率自适配，分屏不用滚动|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
+// @name         🔥持续更新🔥CSDN广告完全过滤、究极人性化脚本：无需登录CSDN，让你体验令人惊喜的崭新CSDN。
+// @namespace    https://github.com/adlered
+// @version      2.2.4
+// @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
 // @grant        GM_addStyle
-// @note         20-05-16 2.2.3 使用css来控制样式，而不是js，增大灵活性。（由于设备限制，测试仅在我自己电脑通过，主要优化分屏（一边csdn一边编译器时原本有小的显示问题）的显示问题）
+// @note         20-05-16 2.2.4 删除所有博客花里胡哨的背景，主页分类中广告清除，CSS样式控制宽度适配代码优化
+// @note         20-05-16 2.2.3 感谢来自GitHub的朋友“RetiredWorld”的代码贡献，使用CSS来控制样式，而不是JS，增大灵活性。
 // @note         20-05-13 2.2.2 屏蔽您的缩放不是100%的提示
 // @note         20-04-29 2.2.1 感谢大家的支持，增加目录显示，自动判断是否存在目录调整页面宽度，屏蔽新增广告，欢迎大家体验并提出意见！
 // @note         20-04-15 2.2.0 一些广告被其他插件屏蔽导致的异常无视之
@@ -61,30 +62,9 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.2.3";
+var version = "2.2.4";
 var currentURL = window.location.href;
 var list;
-
-// 可以在这里添加你的样式
-GM_addStyle(`
-main{
-width:auto!important;
-float:none!important;
-max-width:90vw;
-}
-
-main article img{
-margin:0 auto;
-max-width:100%;
-object-fit:cover;
-}
-@media (max-width: 1700px) and (min-width: 1550px){
-.container{
-width:auto;
-}
-}
-
-`);
 
 (function () {
     'use strict';
@@ -92,6 +72,7 @@ width:auto;
     l("CSDNGreener V" + version);
     var blockURL = currentURL.split("/").length;
     var main = /(www\.csdn\.net\/)$/;
+    var mainNav = /nav/;
     var article = /article/;
     var bbs = /bbs\.csdn\.net/;
     var blog = /blog\.csdn\.net/;
@@ -116,7 +97,7 @@ width:auto;
     // Cookie
     common(6, 1);
 
-    if (main.test(currentURL)) {
+    if (main.test(currentURL) || mainNav.test(currentURL)) {
         l("正在优化主页体验...");
         // 常规
         // 头部广告
@@ -138,6 +119,23 @@ width:auto;
         common(5, 10);
     } else if (article.test(currentURL)) {
         l("正在优化阅读体验...");
+        GM_addStyle(`
+            main{
+                width: auto!important;
+                float: none!important;
+                max-width: 90vw;
+            }
+            main article img{
+                margin: 0 auto;
+                max-width: 100%;
+                object-fit: cover;
+            }
+            @media (max-width: 1700px) and (min-width: 1550px){
+            .container{
+                width: auto;
+            }
+            }
+        `);
         // 常规
         // 右侧广告，放到第一个清除
         // put(".recommend-right");
@@ -344,6 +342,8 @@ function common(num, times) {
             $(".login-mark").remove();
             // 删除登录框
             $(".login-box").remove();
+            // 背景删除
+            $('body').attr('style', 'background-image: none !important; background-color: #f5f6f7 !important; background: #f5f6f7 !important');
         } else if (num === 2) {
             // 挡住评论的“出头推荐”
             if ($(".recommend-box").length > 1) {
