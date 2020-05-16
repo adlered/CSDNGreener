@@ -8,7 +8,7 @@
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
 // @grant        GM_addStyle
-// @note         20-05-16 2.2.4 删除所有博客花里胡哨的背景，主页分类中广告清除，CSS样式控制宽度适配代码优化
+// @note         20-05-16 2.2.4 感谢来自GitHub的朋友“HeronZhang”的建议，删除所有博客花里胡哨的背景，主页分类中广告清除，CSS样式控制宽度适配代码优化
 // @note         20-05-16 2.2.3 感谢来自GitHub的朋友“RetiredWorld”的代码贡献，使用CSS来控制样式，而不是JS，增大灵活性。
 // @note         20-05-13 2.2.2 屏蔽您的缩放不是100%的提示
 // @note         20-04-29 2.2.1 感谢大家的支持，增加目录显示，自动判断是否存在目录调整页面宽度，屏蔽新增广告，欢迎大家体验并提出意见！
