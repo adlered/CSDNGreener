@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         (持续更新)CSDN页面浮窗广告完全过滤净化(净化复制内容|自动展开|让你专注于文章|不影响功能使用)
 // @namespace    https://github.com/AdlerED
-// @version      2.2.2
+// @version      2.2.3
 // @description  ⚡️拥有数项独家功能的最强脚本，不服比一比⚡️|✔️CSDN体验秒杀AdBlock|✔️分辨率自适配，分屏不用滚动|✔️超级预优化|✔️独家超级免会员|✔️独家原创文章免登录展开|✔️独家推荐内容自由开关|✔️独家免登录复制|✔️独家防外链重定向|✔️独家论坛未登录自动展开文章、评论|✔️全面净化|✔️沉浸阅读|✔️净化剪贴板|✔️作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @grant        GM_addStyle
+// @note         20-05-16 2.2.3 使用css来控制样式，而不是js，增大灵活性。（由于设备限制，测试仅在我自己电脑通过，主要优化分屏（一边csdn一边编译器时原本有小的显示问题）的显示问题）
 // @note         20-05-13 2.2.2 屏蔽您的缩放不是100%的提示
 // @note         20-04-29 2.2.1 感谢大家的支持，增加目录显示，自动判断是否存在目录调整页面宽度，屏蔽新增广告，欢迎大家体验并提出意见！
 // @note         20-04-15 2.2.0 一些广告被其他插件屏蔽导致的异常无视之
@@ -59,9 +61,30 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.2.2";
+var version = "2.2.3";
 var currentURL = window.location.href;
 var list;
+
+// 可以在这里添加你的样式
+GM_addStyle(`
+main{
+width:auto!important;
+float:none!important;
+max-width:90vw;
+}
+
+main article img{
+margin:0 auto;
+max-width:100%;
+object-fit:cover;
+}
+@media (max-width: 1700px) and (min-width: 1550px){
+.container{
+width:auto;
+}
+}
+
+`);
 
 (function () {
     'use strict';
@@ -100,8 +123,6 @@ var list;
         put(".banner-ad-box");
         // 右侧广告
         put(".slide-outer");
-        // 右侧浮窗
-        put(".csdn-side-toolbar");
         // 右侧详情
         put(".persion_article");
         clean(10);
@@ -290,16 +311,7 @@ function loop(num) {
         } else if (num === 2) {
             // 评论查看更多展开监听
             $("div.comment-list-box").css("max-height", "none");
-            // 文章宽度自适应
-            if (window.innerWidth < 1100) {
-                $("article").width(window.innerWidth - 150);
-                did = true;
-            } else {
-                if (did === true) {
-                    $("article").removeAttr("style");
-                    did = false;
-                }
-            }
+
             // 屏蔽您的缩放不是100%的提示
             $('.leftPop').remove();
         }
@@ -322,7 +334,7 @@ function common(num, times) {
             $(".btn-readmore").click();
             // 已登录用户展开评论
             try {
-            document.getElementById("btnMoreComment").click();
+                document.getElementById("btnMoreComment").click();
             } catch (e) {}
             // 删除查看更多按钮
             $("#btnMoreComment").parent("div.opt-box").remove();
@@ -359,29 +371,23 @@ function common(num, times) {
             csdn.copyright.init("", "", "");
             // 页头广告
             try {
-            document.getElementsByClassName("column-advert-box")[0].style.display="none";
+                document.getElementsByClassName("column-advert-box")[0].style.display="none";
             } catch (e) {}
             // 自动检测是否有目录，如果没有则删除右边栏，文章居中
             if ($(".recommend-right_aside").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
                 $("#rightAside").remove();
+                $(".container").css("margin", "auto");
             } else if ($("#recommend-right").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
                 $("#rightAside").remove();
+                $(".container").css("margin", "auto");
             }
         } else if (num == 3) {
             //论坛自动展开
             $(".js_show_topic").click();
         } else if (num == 4) {
-            // 左侧栏填充屏幕
-            $(".blog_container_aside").hide();
-            var screenWidth = document.body.clientWidth;
-            if (screenWidth <= 1500) {
-                $("main").css("cssText", "width:96% !important;");
-            } else {
-                $("main").css("cssText", "width:100% !important;");
-            }
-            // 右侧栏靠右
-            $(".tool-box").css("right", "0px");
-            $(".csdn-side-toolbar").css("right", "0px");
+            // 在这里删除原有响应式样式
+            $(".main_father").removeClass("justify-content-center");
+            $("csdn-side-toolbar").css("left", "auto")
         } else if (num == 5) {
             // 改回背景颜色
             $(".login-mark").remove();
@@ -438,20 +444,20 @@ function common(num, times) {
             $(".article-bar-top").append("<br>");
             $(".article-bar-top").append($(".aside-box-footerClassify").children("dd").html());
             $("dl").each(function (index, element) {
-            var key = $(this).children("dt");
-            var value = $(this).children("dd").children("span");
-            if (key.html().indexOf("原创") != -1) {
-            	key = $(this).children("dt").children("a")
-            	value = $(this).children("dd").children("a").children("span");
-            	addInfo(key, value);
-            } else
-            if (value.html() != undefined) {
-            	addInfo(key, value);
-            }
+                var key = $(this).children("dt");
+                var value = $(this).children("dd").children("span");
+                if (key.html().indexOf("原创") != -1) {
+                    key = $(this).children("dt").children("a")
+                    value = $(this).children("dd").children("a").children("span");
+                    addInfo(key, value);
+                } else
+                if (value.html() != undefined) {
+                    addInfo(key, value);
+                }
             } );
             function addInfo(key, value) {
-            	var bind = key.html() + "&nbsp;" + value.html() + "&nbsp;&nbsp;";
-            	$(".article-bar-top").append(bind + " ");
+                var bind = key.html() + "&nbsp;" + value.html() + "&nbsp;&nbsp;";
+                $(".article-bar-top").append(bind + " ");
             }
             $(".blog_container_aside").remove();
         }
