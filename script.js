@@ -9,8 +9,6 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
-// @compatible   firefox, chrome, opera, safari
-// @incompatible
 // @grant        GM_addStyle
 // @note         20-05-17 2.2.7 更新脚本描述
 // @note         20-05-16 2.2.6 修复第一次点击显示推荐内容无反应的问题
