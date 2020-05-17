@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.2.8
+// @version      2.2.9
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -10,6 +10,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-05-17 2.2.9 进度条样式更新，时间延时优化
 // @note         20-05-17 2.2.8 更新脚本描述，展开评论的所有回复，删除创作中心按钮，加载进度条
 // @note         20-05-17 2.2.7 更新脚本描述
 // @note         20-05-16 2.2.6 修复第一次点击显示推荐内容无反应的问题
@@ -68,11 +69,11 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.2.8";
+var version = "2.2.9";
 var currentURL = window.location.href;
 var list;
 
-$('head').append("<style>/* Make clicks pass-through */ #nprogress { pointer-events: none; } #nprogress .bar { background: #29d; position: fixed; z-index: 1031; top: 0; left: 0; width: 100%; height: 2px; } /* Fancy blur effect */ #nprogress .peg { display: block; position: absolute; right: 0px; width: 100px; height: 100%; box-shadow: 0 0 10px #29d, 0 0 5px #29d; opacity: 1.0; -webkit-transform: rotate(3deg) translate(0px, -4px); -ms-transform: rotate(3deg) translate(0px, -4px); transform: rotate(3deg) translate(0px, -4px); } /* Remove these to get rid of the spinner */ #nprogress .spinner { display: block; position: fixed; z-index: 1031; top: 15px; right: 15px; } #nprogress .spinner-icon { width: 18px; height: 18px; box-sizing: border-box; border: solid 2px transparent; border-top-color: #29d; border-left-color: #29d; border-radius: 50%; -webkit-animation: nprogress-spinner 400ms linear infinite; animation: nprogress-spinner 400ms linear infinite; } .nprogress-custom-parent { overflow: hidden; position: relative; } .nprogress-custom-parent #nprogress .spinner, .nprogress-custom-parent #nprogress .bar { position: absolute; } @-webkit-keyframes nprogress-spinner { 0%   { -webkit-transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); } } @keyframes nprogress-spinner { 0%   { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>");
+$('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 
 /* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
  * @license MIT */
@@ -553,211 +554,214 @@ $('head').append("<style>/* Make clicks pass-through */ #nprogress { pointer-eve
 (function () {
     'use strict';
 
-    NProgress.start();
     l("CSDNGreener V" + version);
-    var blockURL = currentURL.split("/").length;
-    var main = /(www\.csdn\.net\/)$/;
-    var mainNav = /nav/;
-    var article = /article/;
-    var bbs = /bbs\.csdn\.net/;
-    var blog = /blog\.csdn\.net/;
-    var blog2 = /\/article\/list\//;
-    var download = /download\.csdn\.net/;
-    var login = /passport\.csdn\.net/;
-    var zone = /me\.csdn\.net/;
+    NProgress.start();
 
-    // 数组初始化
-    list = [];
-    // 头部分
-    // APP
-    put(".app-app");
-    // VIP
-    put(".vip-caise");
-    // 记录你的成长历程（记个毛）
-    put("#writeGuide");
-    // 新通知小圆点（未登录才消掉）
-    if ($(".userinfo a").text() === '登录/注册') {
-        put("#msg-circle");
-    }
-    // Cookie
-    common(6, 1);
-
-    if (main.test(currentURL) || mainNav.test(currentURL)) {
-        l("正在优化主页体验...");
-        // 常规
-        // 头部广告
-        put(".banner-ad-box");
-        // 右侧广告
-        put(".slide-outer");
-        // 右侧详情
-        put(".persion_article");
-        clean(10);
-        common(5, 10);
-        loop(1);
-    } else if ((blog.test(currentURL) && blockURL === 4) || blog2.test(currentURL)) {
-        l("正在优化个人博客主页体验...");
-        // 常规
-        // 头部广告
-        put(".banner-ad-box");
-        // 右侧广告
-        put(".slide-outer");
-        // 右侧详情
-        put(".persion_article");
-        // 左侧广告
-        put(".mb8");
-        put("#kp_box_503");
-        clean(10);
-        common(5, 10);
-        loop(1);
-    } else if (article.test(currentURL)) {
-        l("正在优化阅读体验...");
-        GM_addStyle(`
-            main{
-                width: auto!important;
-                float: none!important;
-                max-width: 90vw;
-            }
-            main article img{
-                margin: 0 auto;
-                max-width: 100%;
-                object-fit: cover;
-            }
-            @media (max-width: 1700px) and (min-width: 1550px){
-            .container{
-                width: auto;
-            }
-            }
-        `);
-        // 常规
-        // 右侧广告，放到第一个清除
-        // put(".recommend-right");
-        put("#addAdBox");
-        put(".aside-box.kind_person.d-flex.flex-column");
-        put(".recommend-top-adbox");
-        put(".recommend-list-box.d-flex.flex-column.aside-box");
-        // 左侧广告
-        put("#container");
-        // 快来写博客吧
-        put(".blog_tip_box");
-        // 推荐关注用户
-        put(".blog-expert-recommend-box");
-        // 右下角VIP
-        put(".meau-gotop-box");
-        // 广告
-        put(".mediav_ad");
-        put(".pulllog-box");
-        put(".recommend-ad-box");
-        put(".box-shadow");
-        put(".type_hot_word");
-        put(".fourth_column");
-        // 高分辨率时右侧文章推荐
-        put(".right-item");
-        // 广告
-        put("#asideFooter");
-        put("#ad-div");
-        put("#479");
-        put("#480");
-        // 打赏
-        put(".postTime");
-        // 课程推荐
-        put(".t0");
-        // 分享海报
-        put(".shareSuggest");
-        // 底部主题
-        put(".template-box");
-        // 评论区广告
-        put("div#dmp_ad_58");
-        // 打赏
-        put(".reward-user-box");
-        // 右侧打赏按钮
-        put(".to-reward");
-        // 推荐内容广告
-        put(".recommend-recommend-box");
-        // 右侧广告
-        put(".indexSuperise");
-        // 抢沙发角标
-        put(".comment-sofa-flag");
-        // 创作中心
-        put(".write-bolg-btn");
-        clean(10);
-        // 引入自定义CSDN样式
-        $("<link>")
-        .attr({ rel: "stylesheet",
-        type: "text/css",
-        href: "https://ftp.stackoverflow.wiki/csdn_addition.css"
-        })
-        .appendTo("head");
-        setTimeout(function() {
-           // 展开评论的所有回复
-           $('.btn-read-reply').click();
-        }, 1500);
-        // 填充
-        common(4, 5);
-        // 评论
-        common(1, 30);
-        // 其它
-        common(2, 20);
-        // 顶部显示作者信息
-        common(8, 1);
-        // 循环线程开始
-        loop(2);
-    } else if (bbs.test(currentURL)) {
-        l("正在优化论坛体验...");
-        // 常规
-        // 评论嵌入小广告
-        put(".post_recommend");
-        // 底部推荐
-        put("#post_feed_wrap");
-        // 底部相关文章里面的广告
-        put(".bbs_feed_ad_box");
-        put(".recommend-ad-box");
-        // 底部相关文字里面的热词提示
-        put(".type_hot_word");
-        // 底部蓝色flex属性的广告栏+登录注册框
-        put(".pulllog-box");
-        // 猜你喜欢
-        put(".personalized-recommend-box");
-        // 发帖减半提示
-        put(".totast-box");
-        // 顶部广告
-        put(".recommend-right");
-        // 顶部广告
-        put(".ad_top");
-        clean(10);
-        // 展开
-        common(3, 50);
-        common(5, 10);
-    } else if (download.test(currentURL)) {
-        l("正在优化下载页体验...");
-        // 常规
-        put(".fixed_dl");
-        put("indexSuperise");
-        clean(10);
-        common(5, 10);
-    } else if (login.test(currentURL)) {
-        l("正在优化登录页体验...");
-        // 常规
-        // 登录界面大图广告
-        put(".main-tu");
-        clean(10);
-        common(5, 10);
-    } else if (zone.test(currentURL)) {
-        l("正在优化个人空间体验...");
-        // 常规
-        clean(10);
-        common(7, 10);
-        common(5, 10);
-    } else {
-        e("不受支持的页面!");
-    }
     setTimeout(function() {
-        NProgress.done();
-    }, 1500);
-    l("超级优化完毕。");
-    l("如果觉得好用，来 https://greasyfork.org/zh-CN/scripts/378351 收藏脚本来支持我吧！");
-    l("开源&&提建议：https://github.com/AdlerED/CSDNGreener");
-    l("我的博客：https://www.stackoverflow.wiki/");
-    l("我的微信：1101635162");
+        var blockURL = currentURL.split("/").length;
+        var main = /(www\.csdn\.net\/)$/;
+        var mainNav = /nav/;
+        var article = /article/;
+        var bbs = /bbs\.csdn\.net/;
+        var blog = /blog\.csdn\.net/;
+        var blog2 = /\/article\/list\//;
+        var download = /download\.csdn\.net/;
+        var login = /passport\.csdn\.net/;
+        var zone = /me\.csdn\.net/;
+
+        // 数组初始化
+        list = [];
+        // 头部分
+        // APP
+        put(".app-app");
+        // VIP
+        put(".vip-caise");
+        // 记录你的成长历程（记个毛）
+        put("#writeGuide");
+        // 新通知小圆点（未登录才消掉）
+        if ($(".userinfo a").text() === '登录/注册') {
+            put("#msg-circle");
+        }
+        // Cookie
+        common(6, 1);
+
+        if (main.test(currentURL) || mainNav.test(currentURL)) {
+            l("正在优化主页体验...");
+            // 常规
+            // 头部广告
+            put(".banner-ad-box");
+            // 右侧广告
+            put(".slide-outer");
+            // 右侧详情
+            put(".persion_article");
+            clean(10);
+            common(5, 10);
+            loop(1);
+        } else if ((blog.test(currentURL) && blockURL === 4) || blog2.test(currentURL)) {
+            l("正在优化个人博客主页体验...");
+            // 常规
+            // 头部广告
+            put(".banner-ad-box");
+            // 右侧广告
+            put(".slide-outer");
+            // 右侧详情
+            put(".persion_article");
+            // 左侧广告
+            put(".mb8");
+            put("#kp_box_503");
+            clean(10);
+            common(5, 10);
+            loop(1);
+        } else if (article.test(currentURL)) {
+            l("正在优化阅读体验...");
+            GM_addStyle(`
+                main{
+                    width: auto!important;
+                    float: none!important;
+                    max-width: 90vw;
+                }
+                main article img{
+                    margin: 0 auto;
+                    max-width: 100%;
+                    object-fit: cover;
+                }
+                @media (max-width: 1700px) and (min-width: 1550px){
+                .container{
+                    width: auto;
+                }
+                }
+            `);
+            // 常规
+            // 右侧广告，放到第一个清除
+            // put(".recommend-right");
+            put("#addAdBox");
+            put(".aside-box.kind_person.d-flex.flex-column");
+            put(".recommend-top-adbox");
+            put(".recommend-list-box.d-flex.flex-column.aside-box");
+            // 左侧广告
+            put("#container");
+            // 快来写博客吧
+            put(".blog_tip_box");
+            // 推荐关注用户
+            put(".blog-expert-recommend-box");
+            // 右下角VIP
+            put(".meau-gotop-box");
+            // 广告
+            put(".mediav_ad");
+            put(".pulllog-box");
+            put(".recommend-ad-box");
+            put(".box-shadow");
+            put(".type_hot_word");
+            put(".fourth_column");
+            // 高分辨率时右侧文章推荐
+            put(".right-item");
+            // 广告
+            put("#asideFooter");
+            put("#ad-div");
+            put("#479");
+            put("#480");
+            // 打赏
+            put(".postTime");
+            // 课程推荐
+            put(".t0");
+            // 分享海报
+            put(".shareSuggest");
+            // 底部主题
+            put(".template-box");
+            // 评论区广告
+            put("div#dmp_ad_58");
+            // 打赏
+            put(".reward-user-box");
+            // 右侧打赏按钮
+            put(".to-reward");
+            // 推荐内容广告
+            put(".recommend-recommend-box");
+            // 右侧广告
+            put(".indexSuperise");
+            // 抢沙发角标
+            put(".comment-sofa-flag");
+            // 创作中心
+            put(".write-bolg-btn");
+            clean(10);
+            // 引入自定义CSDN样式
+            $("<link>")
+            .attr({ rel: "stylesheet",
+            type: "text/css",
+            href: "https://ftp.stackoverflow.wiki/csdn_addition.css"
+            })
+            .appendTo("head");
+            setTimeout(function() {
+               // 展开评论的所有回复
+               $('.btn-read-reply').click();
+            }, 1500);
+            // 填充
+            common(4, 5);
+            // 评论
+            common(1, 30);
+            // 其它
+            common(2, 20);
+            // 顶部显示作者信息
+            common(8, 1);
+            // 循环线程开始
+            loop(2);
+        } else if (bbs.test(currentURL)) {
+            l("正在优化论坛体验...");
+            // 常规
+            // 评论嵌入小广告
+            put(".post_recommend");
+            // 底部推荐
+            put("#post_feed_wrap");
+            // 底部相关文章里面的广告
+            put(".bbs_feed_ad_box");
+            put(".recommend-ad-box");
+            // 底部相关文字里面的热词提示
+            put(".type_hot_word");
+            // 底部蓝色flex属性的广告栏+登录注册框
+            put(".pulllog-box");
+            // 猜你喜欢
+            put(".personalized-recommend-box");
+            // 发帖减半提示
+            put(".totast-box");
+            // 顶部广告
+            put(".recommend-right");
+            // 顶部广告
+            put(".ad_top");
+            clean(10);
+            // 展开
+            common(3, 50);
+            common(5, 10);
+        } else if (download.test(currentURL)) {
+            l("正在优化下载页体验...");
+            // 常规
+            put(".fixed_dl");
+            put("indexSuperise");
+            clean(10);
+            common(5, 10);
+        } else if (login.test(currentURL)) {
+            l("正在优化登录页体验...");
+            // 常规
+            // 登录界面大图广告
+            put(".main-tu");
+            clean(10);
+            common(5, 10);
+        } else if (zone.test(currentURL)) {
+            l("正在优化个人空间体验...");
+            // 常规
+            clean(10);
+            common(7, 10);
+            common(5, 10);
+        } else {
+            e("不受支持的页面!");
+        }
+        setTimeout(function() {
+            NProgress.done();
+        }, 500);
+        l("超级优化完毕。");
+        l("如果觉得好用，来 https://greasyfork.org/zh-CN/scripts/378351 收藏脚本来支持我吧！");
+        l("开源&&提建议：https://github.com/adlered/CSDNGreener");
+        l("我的博客：https://www.stackoverflow.wiki/");
+        l("我的微信：1101635162");
+    }, 600);
 })();
 
 function l(log) {
