@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.2.7
+// @version      2.2.8
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -10,6 +10,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-05-17 2.2.8 更新脚本描述
 // @note         20-05-17 2.2.7 更新脚本描述
 // @note         20-05-16 2.2.6 修复第一次点击显示推荐内容无反应的问题
 // @note         20-05-16 2.2.5 删除抢沙发角标，修改显示推荐内容按钮样式
@@ -67,7 +68,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.2.7";
+var version = "2.2.8";
 var currentURL = window.location.href;
 var list;
 
