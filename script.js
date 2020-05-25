@@ -417,10 +417,10 @@ function common(num, times) {
                 document.getElementsByClassName("column-advert-box")[0].style.display="none";
             } catch (e) {}
             // 自动检测是否有目录，如果没有则删除右边栏，文章居中
-            if ($(".recommend-right_aside").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
+            if ($(".recommend-right_aside").html() && $(".recommend-right_aside").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
                 $("#rightAside").remove();
                 $(".container").css("margin", "auto");
-            } else if ($("#recommend-right").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
+            } else if ($(".recommend-right_aside").html() && $("#recommend-right").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
                 $("#rightAside").remove();
                 $(".container").css("margin", "auto");
             }
