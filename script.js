@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.3.6
+// @version      2.3.7
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -11,6 +11,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-03 2.3.7 感谢 @AlexLWT 增加黑暗模式
 // @note         20-06-02 2.3.6 AdsByGoogle 删除
 // @note         20-05-25 2.3.5 感谢 @RyanIPO 修复 Cannot read property 'replace' of undefined 报错的问题
 // @note         20-05-24 2.3.4 修复免登录复制功能
@@ -77,13 +78,12 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.3.6";
+var version = "2.3.7";
 var currentURL = window.location.href;
 var list;
 
 // 自定义 CSS
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
-$('head').append("<style>#toggle-button{display:none}.button-label{position:relative;display:inline-block;width:82px;background-color:#ccc;border:1px solid #ccc;border-radius:30px;cursor:pointer}.circle{position:absolute;top:0;left:0;width:30px;height:30px;border-radius:50%;background-color:#fff}.button-label .text{line-height:30px;font-size:18px;-webkit-user-select:none;user-select:none}.on{color:#fff;display:none;text-indent:10px}.off{color:#fff;display:inline-block;text-indent:53px}.button-label .circle{left:0;transition:all .3s}#toggle-button:checked+label.button-label .circle{left:50px}#toggle-button:checked+label.button-label .on{display:inline-block}#toggle-button:checked+label.button-label .off{display:none}#toggle-button:checked+label.button-label{background-color:#78d690}</style>");
 
 (function () {
     'use strict';
@@ -118,8 +118,6 @@ $('head').append("<style>#toggle-button{display:none}.button-label{position:rela
         }
         // 顶部谷歌广告
         put(".adsbygoogle");
-        // Cookie
-        common(6, 1);
 
         if (main.test(currentURL) || mainNav.test(currentURL)) {
             l("正在优化主页体验...");
@@ -223,6 +221,8 @@ $('head').append("<style>#toggle-button{display:none}.button-label{position:rela
                // 展开评论的所有回复
                $('.btn-read-reply').click();
             }, 1500);
+            // Cookie
+            common(6, 1);
             // 填充
             common(4, 5);
             // 评论
@@ -385,11 +385,6 @@ function common(num, times) {
             $(".login-mark").remove();
             // 删除登录框
             $(".login-box").remove();
-            // 背景删除
-            $('body').attr('style', 'background-image: none !important; background-color: #f5f6f7 !important; background: #f5f6f7 !important');
-            $('[href^="https://csdnimg.cn/release/phoenix/template/themes_skin/"]').attr('href', 'https://csdnimg.cn/release/phoenix/template/themes_skin/skin-technology/skin-technology-6336549557.min.css');
-            $('#csdn-toolbar').removeClass('csdn-toolbar-skin-black');
-            $('.csdn-logo').attr('src', '//csdnimg.cn/cdn/content-toolbar/csdn-logo.png?v=20200416.1');
         } else if (num === 2) {
             // 挡住评论的“出头推荐”
             if ($(".recommend-box").length > 1) {
@@ -441,7 +436,7 @@ function common(num, times) {
             // 删除登录框
             $(".login-box").remove();
         } else if (num == 6) {
-            // 推荐内容开关 cookie
+            // 推荐内容开关 Cookie
             var removeCookie = $.cookie("remove");
             var remove;
             if (removeCookie == undefined) {
@@ -462,8 +457,7 @@ function common(num, times) {
             // 推荐内容开关
             $(".blog-content-box").append("<br><div class='blog-content-box' id='switch' style='text-align: right;'></div>");
             // 初始化按钮
-            $("#switch").append('<input type="checkbox" id="toggle-button"> <label for="toggle-button" class="button-label"> <span class="circle"></span> <span class="text on">&nbsp;</span> <span class="text off">&nbsp;</span> </label>' +
-                               '<p style="margin-top: 5px; font-size: 13px;">显示推荐内容</p>');
+            $("#switch").append('<input type="checkbox" id="toggle-button"> <span class="modeLabel">推荐内容</label>');
             if (remove) {
                 // 隐藏推荐内容
                 $("#toggle-button").prop("checked", false);
@@ -489,6 +483,57 @@ function common(num, times) {
                     $("#toggle-button").prop("checked", false);
                 }
             });
+
+            // 黑夜模式开关 Cookie
+            var darkModeCookie = $.cookie("darkMode");
+            var darkMode;
+            if (darkModeCookie == undefined) {
+                $.cookie('darkMode', true, {
+                    path: '/'
+                });
+                darkMode = true;
+            }
+            if (darkModeCookie == "true") {
+                darkMode = true;
+            } else {
+                darkMode = false;
+            }
+            setTimeout(function() {
+                if (darkMode) {
+                    deepDeepDarkFantasy();
+                } else {
+                    light();
+                }
+            }, 1500);
+            // 黑夜模式开关
+            $("#switch").append('&nbsp;&nbsp;&nbsp;<input type="checkbox" id="toggle-darkMode-button"> <span class="modeLabel">黑暗模式</span>');
+            if (darkMode) {
+                // 隐藏推荐内容
+                $("#toggle-darkMode-button").prop("checked", true);
+            } else {
+                // 显示推荐内容
+                $("#toggle-darkMode-button").prop("checked", false);
+            }
+            // 开关监听
+            $("#toggle-darkMode-button").click(function () {
+                if (darkMode) {
+                    $.cookie('darkMode', false, {
+                        path: '/'
+                    });
+                    darkMode = false;
+                    light();
+                    $("#toggle-darkMode-button").prop("checked", false);
+                } else {
+                    $.cookie('darkMode', true, {
+                        path: '/'
+                    });
+                    darkMode = true;
+                    deepDeepDarkFantasy();
+                    $("#toggle-darkMode-button").prop("checked", true);
+                }
+            });
+            // 版权信息
+            $("#switch").append('<br>&nbsp;&nbsp;&nbsp;<span class="modeLabel"><a target="_blank" href="https://greasyfork.org/zh-CN/scripts/378351">CSDNGreener ' + version + '</a><br><a target="_blank" href="https://github.com/adlered">By adlered</a></span>');
         } else if (num === 7) {
             $(".me_r")[1].remove();
         } else if (num === 8) {
@@ -514,4 +559,24 @@ function common(num, times) {
         }
     }, 100);
     NProgress.inc();
+}
+
+function light() {
+    // 明亮模式
+    $('[href^="https://csdnimg.cn/release/phoenix/template/themes_skin/"]').attr('href', 'https://csdnimg.cn/release/phoenix/template/themes_skin/skin-technology/skin-technology-6336549557.min.css');
+    $('#csdn-toolbar').removeClass('csdn-toolbar-skin-black');
+    $('.csdn-logo').attr('src', '//csdnimg.cn/cdn/content-toolbar/csdn-logo.png');
+    $('#content_views').removeClass('prism-tomorrow-night');
+    $('#content_views').addClass('prism-atom-one-light');
+    $('.modeLabel').css('color', 'black');
+}
+
+function deepDeepDarkFantasy() {
+    // 黑♂暗模式
+    $('[href^="https://csdnimg.cn/release/phoenix/template/themes_skin/"]').attr('href', 'https://csdnimg.cn/release/phoenix/template/themes_skin/skin-numberfifty/skin-numberfifty-2e8bce0fb9.min.css');
+    $('#csdn-toolbar').addClass('csdn-toolbar-skin-black');
+    $('.csdn-logo').attr('src', '//csdnimg.cn/cdn/content-toolbar/csdnlogo-black.png');
+    $('#content_views').removeClass('prism-atom-one-light');
+    $('#content_views').addClass('prism-tomorrow-night');
+    $('.modeLabel').css('color', 'white');
 }
