@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.3.9
+// @version      2.4.0
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -11,6 +11,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-04 2.4.0 修复推荐按钮错位的问题
 // @note         20-06-04 2.3.9 窄屏适配优化
 // @note         20-06-04 2.3.8 黑夜模式出现问题，紧急回档到 2.3.6
 // @note         20-06-03 2.3.7 感谢 @AlexLWT 增加黑暗模式
@@ -80,7 +81,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.3.9";
+var version = "2.4.0";
 var currentURL = window.location.href;
 var list;
 
@@ -466,9 +467,9 @@ function common(num, times) {
                 $(".recommend-box").hide();
             }
             // 推荐内容开关
-            $(".blog-content-box").append("<br><div class='blog-content-box' id='switch' style='text-align: right;'></div>");
+            $(".blog-content-box").append("<br><div class='blog-content-box' id='recommendSwitch' style='text-align: right;'></div>");
             // 初始化按钮
-            $("#switch").append('<input type="checkbox" id="toggle-button"> <label for="toggle-button" class="button-label"> <span class="circle"></span> <span class="text on">&nbsp;</span> <span class="text off">&nbsp;</span> </label>' +
+            $("#recommendSwitch:last").append('<input type="checkbox" id="toggle-button"> <label for="toggle-button" class="button-label"> <span class="circle"></span> <span class="text on">&nbsp;</span> <span class="text off">&nbsp;</span> </label>' +
                                '<p style="margin-top: 5px; font-size: 13px;">显示推荐内容</p>');
             if (remove) {
                 // 隐藏推荐内容
