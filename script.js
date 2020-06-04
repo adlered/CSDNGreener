@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.3.8
+// @version      2.3.9
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -11,6 +11,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-04 2.3.9 窄屏适配优化
 // @note         20-06-04 2.3.8 黑夜模式出现问题，紧急回档到 2.3.6
 // @note         20-06-03 2.3.7 感谢 @AlexLWT 增加黑暗模式
 // @note         20-06-02 2.3.6 AdsByGoogle 删除
@@ -79,7 +80,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.3.8";
+var version = "2.3.9";
 var currentURL = window.location.href;
 var list;
 
@@ -152,23 +153,6 @@ $('head').append("<style>#toggle-button{display:none}.button-label{position:rela
             loop(1);
         } else if (article.test(currentURL)) {
             l("正在优化阅读体验...");
-            GM_addStyle(`
-                main{
-                    width: auto!important;
-                    float: none!important;
-                    max-width: 90vw;
-                }
-                main article img{
-                    margin: 0 auto;
-                    max-width: 100%;
-                    object-fit: cover;
-                }
-                @media (max-width: 1700px) and (min-width: 1550px){
-                .container{
-                    width: auto;
-                }
-                }
-            `);
             // 常规
             // 右侧广告，放到第一个清除
             // put(".recommend-right");
@@ -357,6 +341,28 @@ function loop(num) {
             $("div.comment-list-box").css("max-height", "none");
             // 屏蔽您的缩放不是100%的提示
             $('.leftPop').remove();
+            // 文章宽度自适应
+            if (window.innerWidth < 1100) {
+                $("article").width(window.innerWidth - 150);
+                GM_addStyle(`
+                main{
+                    width: auto!important;
+                    float: none!important;
+                    max-width: 90vw;
+                }
+                main article img{
+                    margin: 0 auto;
+                    max-width: 100%;
+                    object-fit: cover;
+                }
+                `);
+                did = true;
+            } else {
+                if (did === true) {
+                    $("article").removeAttr("style");
+                    did = false;
+                }
+            }
         }
     }, 500);
 }
@@ -425,10 +431,8 @@ function common(num, times) {
             // 自动检测是否有目录，如果没有则删除右边栏，文章居中
             if ($(".recommend-right_aside").html() && $(".recommend-right_aside").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
                 $("#rightAside").remove();
-                $(".container").css("margin", "auto");
             } else if ($(".recommend-right_aside").html() && $("#recommend-right").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
                 $("#rightAside").remove();
-                $(".container").css("margin", "auto");
             }
         } else if (num == 3) {
             //论坛自动展开
