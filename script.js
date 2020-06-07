@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.4.1
+// @version      2.4.2
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -11,6 +11,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-07 2.4.2 设置解耦，下个版本搞配置中心
 // @note         20-06-06 2.4.1 修复文章内容消失的问题
 // @note         20-06-04 2.4.0 修复推荐按钮错位的问题
 // @note         20-06-04 2.3.9 窄屏适配优化
@@ -82,12 +83,14 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.4.1";
+var version = "2.4.2";
 var currentURL = window.location.href;
 var list;
 
 // 自定义 CSS
+// 进度条
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
+// 按钮（旧）
 $('head').append("<style>#toggle-button{display:none}.button-label{position:relative;display:inline-block;width:82px;background-color:#ccc;border:1px solid #ccc;border-radius:30px;cursor:pointer}.circle{position:absolute;top:0;left:0;width:30px;height:30px;border-radius:50%;background-color:#fff}.button-label .text{line-height:30px;font-size:18px;-webkit-user-select:none;user-select:none}.on{color:#fff;display:none;text-indent:10px}.off{color:#fff;display:inline-block;text-indent:53px}.button-label .circle{left:0;transition:all .3s}#toggle-button:checked+label.button-label .circle{left:50px}#toggle-button:checked+label.button-label .on{display:inline-block}#toggle-button:checked+label.button-label .off{display:none}#toggle-button:checked+label.button-label{background-color:#78d690}</style>");
 
 (function () {
@@ -449,54 +452,25 @@ function common(num, times) {
             // 删除登录框
             $(".login-box").remove();
         } else if (num == 6) {
-            // 推荐内容开关 cookie
-            var removeCookie = $.cookie("remove");
-            var remove;
-            if (removeCookie == undefined) {
-                $.cookie('remove', true, {
-                    path: '/'
-                });
-                remove = true;
-            }
-            if (removeCookie == "true") {
-                remove = true;
-            } else {
-                remove = false;
-            }
-            // 删除推荐内容（自定义）
-            if (remove) {
-                $(".recommend-box").hide();
-            }
-            // 推荐内容开关
+            /** 配置控制 **/
+            let config = new Config();
+
+            let removeCookie = config.get("remove", true);
             $(".blog-content-box").append("<br><div class='blog-content-box' id='recommendSwitch' style='text-align: right;'></div>");
-            // 初始化按钮
             $("#recommendSwitch:last").append('<input type="checkbox" id="toggle-button"> <label for="toggle-button" class="button-label"> <span class="circle"></span> <span class="text on">&nbsp;</span> <span class="text off">&nbsp;</span> </label>' +
                                '<p style="margin-top: 5px; font-size: 13px;">显示推荐内容</p>');
-            if (remove) {
-                // 隐藏推荐内容
+            if (removeCookie) {
+                $(".recommend-box").hide();
+            }
+            if (removeCookie) {
                 $("#toggle-button").prop("checked", false);
             } else {
-                // 显示推荐内容
                 $("#toggle-button").prop("checked", true);
             }
-            // 开关监听
-            $("#toggle-button").click(function () {
-                if (remove) {
-                    $.cookie('remove', false, {
-                        path: '/'
-                    });
-                    remove = false;
-                    $(".recommend-box").slideDown(200);
-                    $("#toggle-button").prop("checked", true);
-                } else {
-                    $.cookie('remove', true, {
-                        path: '/'
-                    });
-                    remove = true;
-                    $(".recommend-box").slideUp(200);
-                    $("#toggle-button").prop("checked", false);
-                }
-            });
+            config.listenButton("#toggle-button", "remove",
+                                function() {$(".recommend-box").slideDown(200);},
+                               function() {$(".recommend-box").slideUp(200);});
+
         } else if (num === 7) {
             $(".me_r")[1].remove();
         } else if (num === 8) {
@@ -522,4 +496,45 @@ function common(num, times) {
         }
     }, 100);
     NProgress.inc();
+}
+
+// 配置控制类
+class Config {
+    get(key, value) {
+        var cookie = $.cookie(key);
+        if (cookie == undefined) {
+            new Config().set(key, value);
+            console.log("Renew key: " + key + " : " + value);
+            return value;
+        }
+        console.log("Read key: " + key + " : " + cookie);
+        if (cookie === "true") { return true; }
+        if (cookie === "false") { return false; }
+        return cookie;
+    }
+
+    set(setKey, setValue) {
+        $.cookie(setKey, setValue, {
+            path: '/'
+        });
+        console.log("Key set: " + setKey + " : " + setValue);
+    }
+
+    listenButton(element, listenKey, trueAction, falseAction) {
+        $(element).click(function () {
+            let status = new Config().get(listenKey, true);
+            console.log("Status: " + status);
+            if (status === "true" || status) {
+                console.log("Key set: " + listenKey + " :: " + false);
+                new Config().set(listenKey, false);
+                trueAction();
+                $(element).prop("checked", true);
+            } else {
+                console.log("Key set: " + listenKey + " :: " + true);
+                new Config().set(listenKey, true);
+                falseAction();
+                $(element).prop("checked", false);
+            }
+        });
+    }
 }
