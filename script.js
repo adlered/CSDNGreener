@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      2.4.2
+// @version      3.0.0
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -11,6 +11,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-08 3.0.0 设置中心推出！增加浏览效果选项
 // @note         20-06-07 2.4.2 设置解耦，下个版本搞配置中心
 // @note         20-06-06 2.4.1 修复文章内容消失的问题
 // @note         20-06-04 2.4.0 修复推荐按钮错位的问题
@@ -83,7 +84,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "2.4.2";
+var version = "3.0.0";
 var currentURL = window.location.href;
 var list;
 
@@ -92,6 +93,8 @@ var list;
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 // 按钮（旧）
 $('head').append("<style>#toggle-button{display:none}.button-label{position:relative;display:inline-block;width:82px;background-color:#ccc;border:1px solid #ccc;border-radius:30px;cursor:pointer}.circle{position:absolute;top:0;left:0;width:30px;height:30px;border-radius:50%;background-color:#fff}.button-label .text{line-height:30px;font-size:18px;-webkit-user-select:none;user-select:none}.on{color:#fff;display:none;text-indent:10px}.off{color:#fff;display:inline-block;text-indent:53px}.button-label .circle{left:0;transition:all .3s}#toggle-button:checked+label.button-label .circle{left:50px}#toggle-button:checked+label.button-label .on{display:inline-block}#toggle-button:checked+label.button-label .off{display:none}#toggle-button:checked+label.button-label{background-color:#78d690}</style>");
+// 弹出窗口
+$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:40%;height:30%;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
 
 (function () {
     'use strict';
@@ -452,24 +455,71 @@ function common(num, times) {
             // 删除登录框
             $(".login-box").remove();
         } else if (num == 6) {
+            let configHTML = '';
+            configHTML += '<h6><a href="https://greasyfork.org/zh-CN/scripts/378351" target="_blank">CSDNGreener V' + version + '</a></h6><br>';
+
+            // 设定：推荐内容按钮
+            configHTML += '<input type="checkbox" id="toggle-recommend-button"> <span class="modeLabel">显示推荐内容</span>';
+            configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-onleft-button"> <span class="modeLabel">文章靠左平铺</span>';
+
+            // 绿化器设定
+            $("body").prepend('<div id="light" class="white_content">' + configHTML + '<a href="https://github.com/adlered/CSDNGreener" target="_blank" style="position: absolute; bottom: 10px; left: 10px;">⭐ 开发动力, 求个Star</a><a href="javascript:void(0)" style="position: absolute; bottom: 10px; right: 10px;" onclick=\'document.getElementById("light").style.display="none",document.getElementById("fade").style.display="none"\'>关闭设置窗口 ✖️</a></div><div id="fade" class="black_overlay"></div> ');
+            $("#nav-left-menu").prepend('<li><a href="javascript:void(0)" style="font-weight: bold;" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';">🔧 绿化设定</a></li>');
+
             /** 配置控制 **/
             let config = new Config();
 
-            let removeCookie = config.get("remove", true);
-            $(".blog-content-box").append("<br><div class='blog-content-box' id='recommendSwitch' style='text-align: right;'></div>");
-            $("#recommendSwitch:last").append('<input type="checkbox" id="toggle-button"> <label for="toggle-button" class="button-label"> <span class="circle"></span> <span class="text on">&nbsp;</span> <span class="text off">&nbsp;</span> </label>' +
-                               '<p style="margin-top: 5px; font-size: 13px;">显示推荐内容</p>');
-            if (removeCookie) {
+            // 推荐内容
+            let recommendCookie = config.get("recommend", true);
+            if (recommendCookie) {
                 $(".recommend-box").hide();
             }
-            if (removeCookie) {
-                $("#toggle-button").prop("checked", false);
+            if (recommendCookie) {
+                $("#toggle-recommend-button").prop("checked", true);
             } else {
-                $("#toggle-button").prop("checked", true);
+                $("#toggle-recommend-button").prop("checked", false);
             }
-            config.listenButton("#toggle-button", "remove",
-                                function() {$(".recommend-box").slideDown(200);},
+            config.listenButton("#toggle-recommend-button", "recommend",
+                               function() {$(".recommend-box").slideDown(200);},
                                function() {$(".recommend-box").slideUp(200);});
+
+            // 文章全屏平铺
+            let onleft = config.get("onleft", true);
+            if (onleft) {
+                GM_addStyle(`
+                main{
+                    width: auto!important;
+                    float: none!important;
+                    max-width: 90vw;
+                }
+                main article img{
+                    margin: 0 auto;
+                    max-width: 100%;
+                    object-fit: cover;
+                }
+                `);
+            }
+            if (onleft) {
+                $("#toggle-onleft-button").prop("checked", true);
+            } else {
+                $("#toggle-onleft-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-onleft-button", "onleft",
+                                function() {
+                                    GM_addStyle(`
+                                    main{
+                                        width: auto!important;
+                                        float: none!important;
+                                        max-width: 90vw;
+                                    }
+                                    main article img{
+                                        margin: 0 auto;
+                                        max-width: 100%;
+                                        object-fit: cover;
+                                    }
+                                    `);},
+                                function() {location.reload();});
 
         } else if (num === 7) {
             $(".me_r")[1].remove();
@@ -527,13 +577,13 @@ class Config {
             if (status === "true" || status) {
                 console.log("Key set: " + listenKey + " :: " + false);
                 new Config().set(listenKey, false);
-                trueAction();
-                $(element).prop("checked", true);
+                falseAction();
+                $(element).prop("checked", false);
             } else {
                 console.log("Key set: " + listenKey + " :: " + true);
                 new Config().set(listenKey, true);
-                falseAction();
-                $(element).prop("checked", false);
+                trueAction();
+                $(element).prop("checked", true);
             }
         });
     }
