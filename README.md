@@ -7,11 +7,11 @@
 | *大朋 | 感谢你的匿名捐助！ |
 
 ### :pencil: 关于
-屏蔽掉所有烦人的CSDN广告, 并自动展开内容。  
-该插件为油猴(TamperMonkey)脚本  
+屏蔽掉所有烦人的 CSDN 广告, 并自动展开内容，同时扩展更多高级功能。  
+CSDNGreener 经过一年多的坚持更新迭代，已经能实现更多高级功能了。非常感谢大家的支持，我定会不忘初心，持续更新，也希望你可以将脚本推荐给你真正的好朋友 🤣  
 
-### :pushpin: 从Greasy Fork安装
-你可以访问Greasy Fork:  
+### :pushpin: 从 Greasy Fork 安装
+你可以访问 Greasy Fork:  
 **[点我](https://greasyfork.org/zh-CN/scripts/378351)**  
 进行安装.
 
