@@ -1,16 +1,18 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.0.1
+// @version      3.0.2
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
+// @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-09 3.0.2 修复推荐内容按钮刷新不生效的问题，增加工具箱提示框
 // @note         20-06-08 3.0.1 设置中心推出！增加浏览效果选项 && Green Book Icon Update
 // @note         20-06-08 3.0.0 设置中心推出！增加浏览效果选项
 // @note         20-06-07 2.4.2 设置解耦，下个版本搞配置中心
@@ -85,7 +87,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.0.1";
+var version = "3.0.2";
 var currentURL = window.location.href;
 var list;
 
@@ -96,6 +98,8 @@ $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{backgrou
 $('head').append("<style>#toggle-button{display:none}.button-label{position:relative;display:inline-block;width:82px;background-color:#ccc;border:1px solid #ccc;border-radius:30px;cursor:pointer}.circle{position:absolute;top:0;left:0;width:30px;height:30px;border-radius:50%;background-color:#fff}.button-label .text{line-height:30px;font-size:18px;-webkit-user-select:none;user-select:none}.on{color:#fff;display:none;text-indent:10px}.off{color:#fff;display:inline-block;text-indent:53px}.button-label .circle{left:0;transition:all .3s}#toggle-button:checked+label.button-label .circle{left:50px}#toggle-button:checked+label.button-label .on{display:inline-block}#toggle-button:checked+label.button-label .off{display:none}#toggle-button:checked+label.button-label{background-color:#78d690}</style>");
 // 弹出窗口
 $('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:40%;height:30%;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
+// 提示条
+$('head').append("<style>.tripscon{padding:10px}</style>");
 
 (function () {
     'use strict';
@@ -466,14 +470,14 @@ function common(num, times) {
 
             // 绿化器设定
             $("body").prepend('<div id="light" class="white_content">' + configHTML + '<a href="https://github.com/adlered/CSDNGreener" target="_blank" style="position: absolute; bottom: 10px; left: 10px;">⭐ 开发动力, 求个Star</a><a href="javascript:void(0)" style="position: absolute; bottom: 10px; right: 10px;" onclick=\'document.getElementById("light").style.display="none",document.getElementById("fade").style.display="none"\'>关闭设置窗口 ✖️</a></div><div id="fade" class="black_overlay"></div> ');
-            $("#nav-left-menu").prepend('<li><a href="javascript:void(0)" style="font-weight: bold;" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';">📗 绿化设定</a></li>');
+            $("#nav-left-menu").prepend('<li><a id="greenerSettings" href="javascript:void(0)" style="font-weight: bold;" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';">📗 绿化设定</a></li>');
 
             /** 配置控制 **/
             let config = new Config();
 
             // 推荐内容
             let recommendCookie = config.get("recommend", true);
-            if (recommendCookie) {
+            if (!recommendCookie) {
                 $(".recommend-box").hide();
             }
             if (recommendCookie) {
@@ -521,6 +525,13 @@ function common(num, times) {
                                     }
                                     `);},
                                 function() {location.reload();});
+
+            // 提示
+            let tipsCookie = config.get("tips", true);
+            if (tipsCookie) {
+                showTips();
+            }
+            config.set("tips", false);
 
         } else if (num === 7) {
             $(".me_r")[1].remove();
@@ -588,4 +599,16 @@ class Config {
             }
         });
     }
+}
+
+function showTips() {
+	var config = {
+		content: "欢迎使用 CSDNGreener，点击这里进入绿化设置！<br><a href='javascript:$(\".trips\").remove();'>朕知道了，已阅</a>",
+		type: "html",
+		alignTo: ["bottom", "left"],
+		trigger: "show",
+		isclose: false,
+		color: ["#B2E281", "#B2E281"]
+	};
+	$("#greenerSettings").showTips(config);
 }
