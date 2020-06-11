@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.0.6
+// @version      3.0.7
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-11 3.0.7 增加官方QQ交流群，增加关闭强制白色主题功能
 // @note         20-06-11 3.0.6 用户名片功能优化
 // @note         20-06-11 3.0.5 优化加载速度
 // @note         20-06-10 3.0.4 修复设置界面遮挡的问题，显示博主头像
@@ -91,7 +92,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.0.6";
+var version = "3.0.7";
 var currentURL = window.location.href;
 var list;
 
@@ -99,7 +100,7 @@ var list;
 // 进度条
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 // 弹出窗口
-$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:40%;height:250px;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
+$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:40%;height:280px;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
 // 提示条
 $('head').append("<style>.tripscon{padding:10px}</style>");
 
@@ -400,11 +401,6 @@ function common(num, times) {
             $(".login-mark").remove();
             // 删除登录框
             $(".login-box").remove();
-            // 背景删除
-            $('body').attr('style', 'background-image: none !important; background-color: #f5f6f7 !important; background: #f5f6f7 !important');
-            $('[href^="https://csdnimg.cn/release/phoenix/template/themes_skin/"]').attr('href', 'https://csdnimg.cn/release/phoenix/template/themes_skin/skin-technology/skin-technology-6336549557.min.css');
-            $('#csdn-toolbar').removeClass('csdn-toolbar-skin-black');
-            $('.csdn-logo').attr('src', '//csdnimg.cn/cdn/content-toolbar/csdn-logo.png?v=20200416.1');
         } else if (num === 2) {
             // 挡住评论的“出头推荐”
             if ($(".recommend-box").length > 1) {
@@ -455,7 +451,7 @@ function common(num, times) {
             $(".login-box").remove();
         } else if (num == 6) {
             let configHTML = '';
-            configHTML += '<h6><a href="https://greasyfork.org/zh-CN/scripts/378351" target="_blank">CSDNGreener V' + version + '</a></h6><br>';
+            configHTML += '<h6><a href="https://greasyfork.org/zh-CN/scripts/378351" target="_blank">CSDNGreener V' + version + '</a></h6>官方QQ交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
 
             // 设定：推荐内容按钮
             configHTML += '<input type="checkbox" id="toggle-recommend-button"> <span class="modeLabel">显示推荐内容</span>';
@@ -463,6 +459,8 @@ function common(num, times) {
             configHTML += '<input type="checkbox" id="toggle-onleft-button"> <span class="modeLabel">文章靠左平铺</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
+            configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">强制白色主题（关闭后，可以通过 DarkReader 插件适配 CSDN 黑暗模式）</span>';
 
             // 绿化器设定
             $("body").prepend('<div id="light" class="white_content">' + configHTML + '<a href="https://github.com/adlered/CSDNGreener" target="_blank" style="position: absolute; bottom: 10px; left: 10px;">⭐ 开发动力, 求个Star</a><a href="javascript:void(0)" style="position: absolute; bottom: 10px; right: 10px;" onclick=\'document.getElementById("light").style.display="none",document.getElementById("fade").style.display="none"\'>关闭设置窗口 ✖️</a></div><div id="fade" class="black_overlay"></div> ');
@@ -544,6 +542,24 @@ function common(num, times) {
                 $("#toggle-authorcard-button").prop("checked", false);
             }
             config.listenButton("#toggle-authorcard-button", "authorCard",
+                               function() {location.reload();},
+                               function() {location.reload();});
+
+            // 强制白色主题
+            let whiteThemeCookie = config.get("whiteTheme", true);
+            if (whiteThemeCookie) {
+                // 背景删除
+                $('body').attr('style', 'background-image: none !important; background-color: #f5f6f7 !important; background: #f5f6f7 !important');
+                $('[href^="https://csdnimg.cn/release/phoenix/template/themes_skin/"]').attr('href', 'https://csdnimg.cn/release/phoenix/template/themes_skin/skin-technology/skin-technology-6336549557.min.css');
+                $('#csdn-toolbar').removeClass('csdn-toolbar-skin-black');
+                $('.csdn-logo').attr('src', '//csdnimg.cn/cdn/content-toolbar/csdn-logo.png?v=20200416.1');
+            }
+            if (whiteThemeCookie) {
+                $("#toggle-whitetheme-button").prop("checked", true);
+            } else {
+                $("#toggle-whitetheme-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-whitetheme-button", "whiteTheme",
                                function() {location.reload();},
                                function() {location.reload();});
 
