@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.0.5
+// @version      3.0.6
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-11 3.0.6 用户名片功能优化
 // @note         20-06-11 3.0.5 优化加载速度
 // @note         20-06-10 3.0.4 修复设置界面遮挡的问题，显示博主头像
 // @note         20-06-09 3.0.3 默认设定修改
@@ -90,7 +91,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.0.5";
+var version = "3.0.6";
 var currentURL = window.location.href;
 var list;
 
@@ -461,7 +462,7 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-onleft-button"> <span class="modeLabel">文章靠左平铺</span>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片（可能出现 Bug，请酌情开启）</span>';
+            configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
 
             // 绿化器设定
             $("body").prepend('<div id="light" class="white_content">' + configHTML + '<a href="https://github.com/adlered/CSDNGreener" target="_blank" style="position: absolute; bottom: 10px; left: 10px;">⭐ 开发动力, 求个Star</a><a href="javascript:void(0)" style="position: absolute; bottom: 10px; right: 10px;" onclick=\'document.getElementById("light").style.display="none",document.getElementById("fade").style.display="none"\'>关闭设置窗口 ✖️</a></div><div id="fade" class="black_overlay"></div> ');
@@ -534,7 +535,7 @@ function common(num, times) {
                 // 博主信息
                 $('#recommend-right').append($('#asideProfile').prop("outerHTML"));
                 setTimeout(function() {
-                    $('#asideProfile').attr("style", "margin-top: 8px;");
+                    $('#asideProfile').attr("style", "margin-top: 8px; width: 300px;");
                 }, 500);
             }
             if (authorCardCookie) {
