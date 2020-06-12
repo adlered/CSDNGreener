@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         【老牌脚本|有口皆碑】CSDN完全去广告&增加海量人性化功能：还登什么录，还开什么VIP？体验下纯净人性化的划时代CSDN吧！
+// @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.0.8
+// @version      3.0.9
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-12 3.0.9 标题回滚
 // @note         20-06-12 3.0.8 主页广告删除，绿化设置仅显示在文章页面，删除页脚，顶部优化，若干细节优化
 // @note         20-06-11 3.0.7 增加官方QQ交流群，增加关闭强制白色主题功能
 // @note         20-06-11 3.0.6 用户名片功能优化
@@ -93,7 +94,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.0.8";
+var version = "3.0.9";
 var currentURL = window.location.href;
 var list;
 
