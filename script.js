@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
+// @name         【老牌脚本|有口皆碑】CSDN完全去广告&增加海量人性化功能：还登什么录，还开什么VIP？体验下纯净人性化的划时代CSDN吧！
 // @namespace    https://github.com/adlered
-// @version      3.0.7
+// @version      3.0.8
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-12 3.0.8 主页广告删除，绿化设置仅显示在文章页面，删除页脚，顶部优化，若干细节优化
 // @note         20-06-11 3.0.7 增加官方QQ交流群，增加关闭强制白色主题功能
 // @note         20-06-11 3.0.6 用户名片功能优化
 // @note         20-06-11 3.0.5 优化加载速度
@@ -92,7 +93,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.0.7";
+var version = "3.0.8";
 var currentURL = window.location.href;
 var list;
 
@@ -137,8 +138,8 @@ $('head').append("<style>.tripscon{padding:10px}</style>");
         }
         // 顶部谷歌广告
         put(".adsbygoogle");
-        // Cookie
-        common(6, 1);
+        // 悬浮在顶栏按钮上出现的二维码
+        put(".appControl");
 
         if (main.test(currentURL) || mainNav.test(currentURL)) {
             l("正在优化主页体验...");
@@ -220,11 +221,15 @@ $('head').append("<style>.tripscon{padding:10px}</style>");
             put(".comment-sofa-flag");
             // 创作中心
             put(".write-bolg-btn");
+            // 页jio
+            put(".bottom-pub-footer");
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
                $('.btn-read-reply').click();
             }, 1500);
+            // 绿化设置
+            common(6, 1);
             // 填充
             common(4, 5);
             // 评论
@@ -287,11 +292,7 @@ $('head').append("<style>.tripscon{padding:10px}</style>");
         setTimeout(function() {
             NProgress.done();
         }, 0);
-        l("超级优化完毕。");
-        l("如果觉得好用，来 https://greasyfork.org/zh-CN/scripts/378351 收藏脚本来支持我吧！");
-        l("开源&&提建议：https://github.com/adlered/CSDNGreener");
-        l("我的博客：https://www.stackoverflow.wiki/");
-        l("我的微信：1101635162");
+        l("优化完毕!");
     }, 0);
 })();
 
@@ -342,6 +343,14 @@ function loop(num) {
                 var aMark = $(ele).find(".name").html();
                 if (banned.test(aMark)) {
                     $(ele).remove();
+                }
+            });
+            // 主页广告
+            $("li").each(function(){
+                let self = $(this);
+                let dataType = self.attr('data-type');
+                if (dataType === 'ad') {
+                    self.remove();
                 }
             });
         } else if (num === 2) {
@@ -437,6 +446,20 @@ function common(num, times) {
             } else if ($(".recommend-right_aside").html() && $("#recommend-right").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
                 $("#rightAside").remove();
             }
+            // 登录按钮文字太多，修改
+            $("a").each(function() {
+                if ($(this).attr('href') === 'https://passport.csdn.net/account/login') {
+                    $(this).html('登入');
+                }
+            });
+            // 顶栏广告
+            $("li").each(function(){
+                let self = $(this);
+                let dataType = self.attr('data-sub-menu-type');
+                if (dataType === 'vip') {
+                    self.remove();
+                }
+            });
         } else if (num == 3) {
             //论坛自动展开
             $(".js_show_topic").click();
@@ -460,11 +483,12 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">强制白色主题（关闭后，可以通过 DarkReader 插件适配 CSDN 黑暗模式）</span>';
+            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">强制白色主题（关闭后，可以安装 Dark Reader 浏览器扩展适配 CSDN 黑暗模式）</span>';
 
             // 绿化器设定
             $("body").prepend('<div id="light" class="white_content">' + configHTML + '<a href="https://github.com/adlered/CSDNGreener" target="_blank" style="position: absolute; bottom: 10px; left: 10px;">⭐ 开发动力, 求个Star</a><a href="javascript:void(0)" style="position: absolute; bottom: 10px; right: 10px;" onclick=\'document.getElementById("light").style.display="none",document.getElementById("fade").style.display="none"\'>关闭设置窗口 ✖️</a></div><div id="fade" class="black_overlay"></div> ');
-            $("#nav-left-menu").prepend('<li><a id="greenerSettings" href="javascript:void(0)" style="font-weight: bold;" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';">📗 绿化设定</a></li>');
+            // 绿化设定
+            $("#nav-left-menu").prepend('<li><a id="greenerSettings" href="javascript:void(0)" style="font-weight: bold;" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';">🌵 绿化设定</a></li>');
 
             /** 配置控制 **/
             let config = new Config();
