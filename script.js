@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.1.4
+// @version      3.1.5
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-18 3.1.5 自定义功能更新
 // @note         20-06-16 3.1.4 支持大部分功能模块化显示
 // @note         20-06-14 3.1.3 绿化设定优化
 // @note         20-06-14 3.1.2 ISSUE模板调整Support URL
@@ -99,7 +100,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.1.4";
+var version = "3.1.5";
 var currentURL = window.location.href;
 var list;
 
@@ -107,7 +108,7 @@ var list;
 // 进度条
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 // 弹出窗口
-$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:40%;height:450px;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
+$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:40%;height:490px;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
 // 提示条
 $('head').append("<style>.tripscon{padding:10px}</style>");
 // 保存按钮
@@ -201,7 +202,7 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             put(".type_hot_word");
             put(".fourth_column");
             // 高分辨率时右侧文章推荐
-            put(".right-item");
+            // put(".right-item");
             // 广告
             put("#asideFooter");
             put("#ad-div");
@@ -233,6 +234,8 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             put(".bottom-pub-footer");
             // 登录查看未读消息
             put(".toolbar-notice-bubble");
+            // 右侧广告
+            put(".recommend-top-adbox");
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
@@ -336,7 +339,6 @@ function clean(times) {
 }
 
 function loop(num) {
-    var did = false;
     setInterval(function () {
         if (num === 1) {
             // 主页中间的广告
@@ -368,28 +370,6 @@ function loop(num) {
             $("div.comment-list-box").css("max-height", "none");
             // 屏蔽您的缩放不是100%的提示
             $('.leftPop').remove();
-            // 文章宽度自适应
-            if (window.innerWidth < 1100) {
-                $("article").width(window.innerWidth - 150);
-                GM_addStyle(`
-                main{
-                    width: auto!important;
-                    float: none!important;
-                    max-width: 90vw;
-                }
-                main article img{
-                    margin: 0 auto;
-                    max-width: 100%;
-                    object-fit: cover;
-                }
-                `);
-                did = true;
-            } else {
-                if (did === true) {
-                    $("article").removeAttr("style");
-                    did = false;
-                }
-            }
         }
     }, 500);
 }
@@ -483,6 +463,7 @@ function common(num, times) {
             // 删除登录框
             $(".login-box").remove();
         } else if (num == 6) {
+            let did = false;
             let configHTML = '';
             configHTML += '<h6><a href="https://greasyfork.org/zh-CN/scripts/378351" target="_blank">CSDNGreener V' + version + '</a></h6>官方QQ交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
 
@@ -491,9 +472,11 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-onleft-button"> <span class="modeLabel">文章靠左平铺</span>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
+            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">强制白色主题<span style="font-size: 8px;">（关闭后，可以安装 Dark Reader 浏览器扩展适配 CSDN 黑暗模式）</span></span>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">强制白色主题（关闭后，可以安装 Dark Reader 浏览器扩展适配 CSDN 黑暗模式）</span>';
+            configHTML += '<input type="checkbox" id="toggle-autosize-button"> <span class="modeLabel">宽度自动适应<span style="font-size: 8px;">（未开启靠左平铺功能时，开启此选项可以在页面宽度缩小时自动切换至靠左平铺模式）</span></span>';
+            configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <span class="modeLabel">搜博主文章模块</span>';
             configHTML += '<br>';
@@ -504,6 +487,10 @@ function common(num, times) {
             configHTML += '<input type="checkbox" id="toggle-newcomments-button"> <span class="modeLabel">显示最新评论</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-kindperson-button"> <span class="modeLabel">显示分类专栏</span>';
+            configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-recommendarticle-button"> <span class="modeLabel">显示推荐文章</span>';
+            configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-archive-button"> <span class="modeLabel">显示归档</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-content-button"> <span class="modeLabel">显示目录</span>';
             configHTML += '<br>';
@@ -704,12 +691,17 @@ function common(num, times) {
             let kindPersonCookie = config.get("kindPerson", false);
             if (!kindPersonCookie) {
                 setTimeout(function() {
-                    $('.kind_person').remove();
+                    $('#asideCategory').remove();
                 }, 0);
             } else {
+                $('#recommend-right').append($("#asideCategory").prop("outerHTML"));
                 setTimeout(function() {
-                    $('.kind_person').attr("style", "margin-top: 8px; width: 300px; height:255px;");
-                }, 0);
+                    $('#asideCategory').attr("style", "margin-top: 8px; width: 300px; display:block !important;");
+                    $("a.flexible-btn").click(function() {
+                        $(this).parents('div.aside-box').removeClass('flexible-box');
+                        $(this).parents("p.text-center").remove();
+                    })
+                }, 500);
             }
             if (kindPersonCookie) {
                 $("#toggle-kindperson-button").prop("checked", true);
@@ -733,6 +725,84 @@ function common(num, times) {
                 $("#toggle-content-button").prop("checked", false);
             }
             config.listenButton("#toggle-content-button", "content",
+                               function() {location.reload();},
+                               function() {location.reload();});
+
+            // 推荐文章
+            let recommendArticleCookie = config.get("recommendArticle", false);
+            if (!recommendArticleCookie) {
+                setTimeout(function() {
+                    $('.recommend-list-box').remove();
+                }, 0);
+            } else {
+                setTimeout(function() {
+                    $('.recommend-list-box').attr("style", "margin-top: 8px; width: 300px; height:255px;");
+                }, 0);
+            }
+            if (recommendArticleCookie) {
+                $("#toggle-recommendarticle-button").prop("checked", true);
+            } else {
+                $("#toggle-recommendarticle-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-recommendarticle-button", "recommendArticle",
+                               function() {location.reload();},
+                               function() {location.reload();});
+
+            // 归档
+            let archiveCookie = config.get("archive", false);
+            if (!archiveCookie) {
+                setTimeout(function() {
+                    $('#asideArchive').remove();
+                }, 0);
+            } else {
+                $('#recommend-right').append($("#asideArchive").prop("outerHTML"));
+                setTimeout(function() {
+                    $('#asideArchive').attr("style", "margin-top: 8px; width: 300px; display:block !important;");
+                }, 500);
+            }
+            if (archiveCookie) {
+                $("#toggle-archive-button").prop("checked", true);
+            } else {
+                $("#toggle-archive-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-archive-button", "archive",
+                               function() {location.reload();},
+                               function() {location.reload();});
+
+            // 自动靠左平铺
+            let autoSizeCookie = config.get("autoSize", false);
+            if (autoSizeCookie) {
+                setInterval(function () {
+                    // 文章宽度自适应
+                    if (window.innerWidth < 1100) {
+                        $("article").width(window.innerWidth - 150);
+                        GM_addStyle(`
+                        main{
+                            width: auto!important;
+                            float: none!important;
+                            max-width: 90vw;
+                        }
+                        main article img{
+                            margin: 0 auto;
+                            max-width: 100%;
+                            object-fit: cover;
+                        }
+                        `);
+                        did = true;
+                    } else {
+                        if (did === true) {
+                            $("article").removeAttr("style");
+                            did = false;
+                        }
+                    }
+                }, 500);
+            }
+            if (autoSizeCookie) {
+                $("#toggle-autosize-button").prop("checked", true);
+            } else {
+                $("#toggle-autosize-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-autosize-button", "autoSize",
                                function() {location.reload();},
                                function() {location.reload();});
 
