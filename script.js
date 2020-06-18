@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.1.5
+// @version      3.1.6
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-19 3.1.6 显示推荐内容按钮回归，新布局紧急修复
 // @note         20-06-18 3.1.5 自定义功能更新
 // @note         20-06-16 3.1.4 支持大部分功能模块化显示
 // @note         20-06-14 3.1.3 绿化设定优化
@@ -100,7 +101,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.1.5";
+var version = "3.1.6";
 var currentURL = window.location.href;
 var list;
 
@@ -111,6 +112,8 @@ $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{backgrou
 $('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:40%;height:490px;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
 // 提示条
 $('head').append("<style>.tripscon{padding:10px}</style>");
+// 按钮（旧）
+$('head').append("<style>#toggle-button{display:none}.button-label{position:relative;display:inline-block;width:82px;background-color:#ccc;border:1px solid #ccc;border-radius:30px;cursor:pointer}.circle{position:absolute;top:0;left:0;width:30px;height:30px;border-radius:50%;background-color:#fff}.button-label .text{line-height:30px;font-size:18px;-webkit-user-select:none;user-select:none}.on{color:#fff;display:none;text-indent:10px}.off{color:#fff;display:inline-block;text-indent:53px}.button-label .circle{left:0;transition:all .3s}#toggle-button:checked+label.button-label .circle{left:50px}#toggle-button:checked+label.button-label .on{display:inline-block}#toggle-button:checked+label.button-label .off{display:none}#toggle-button:checked+label.button-label{background-color:#78d690}</style>");
 // 保存按钮
 $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;padding:10px 20px;text-align:center;text-decoration:none;display:inline-block;font-size:14px;margin:15px 0px;cursor:pointer}</style>");
 
@@ -504,19 +507,26 @@ function common(num, times) {
 
             /** 配置控制 **/
             let config = new Config();
-
             // 推荐内容
+            $(".blog-content-box").append("<br><div class='blog-content-box' id='recommendSwitch' style='text-align: right;'></div>");
+            $("#recommendSwitch:last").append('<input type="checkbox" id="toggle-button"> <label for="toggle-button" class="button-label"> <span class="circle"></span> <span class="text on">&nbsp;</span> <span class="text off">&nbsp;</span> </label>' +
+                               '<p style="margin-top: 5px; font-size: 13px;">显示推荐内容</p>');
             let recommendCookie = config.get("recommend", false);
             if (!recommendCookie) {
                 $(".recommend-box").hide();
             }
             if (recommendCookie) {
                 $("#toggle-recommend-button").prop("checked", true);
+                $("#toggle-button").prop("checked", true);
             } else {
                 $("#toggle-recommend-button").prop("checked", false);
+                $("#toggle-button").prop("checked", false);
             }
             config.listenButton("#toggle-recommend-button", "recommend",
                                function() {$(".recommend-box").slideDown(200);},
+                               function() {$(".recommend-box").slideUp(200);});
+            config.listenButtonAndAction("#toggle-button", "recommend",
+                                function() {$(".recommend-box").slideDown(200);},
                                function() {$(".recommend-box").slideUp(200);});
 
             // 文章全屏平铺
@@ -692,9 +702,15 @@ function common(num, times) {
             if (!kindPersonCookie) {
                 setTimeout(function() {
                     $('#asideCategory').remove();
+                    $('.kind_person').remove();
                 }, 0);
             } else {
                 $('#recommend-right').append($("#asideCategory").prop("outerHTML"));
+                if ($("#asideCategory").length > 0) {
+                    $('.kind_person').remove();
+                } else {
+                    $('.kind_person').attr("style", "margin-top: 8px; width: 300px; height:255px;");
+                }
                 setTimeout(function() {
                     $('#asideCategory').attr("style", "margin-top: 8px; width: 300px; display:block !important;");
                     $("a.flexible-btn").click(function() {
@@ -863,13 +879,25 @@ class Config {
             if (status === "true" || status) {
                 console.log("Key set: " + listenKey + " :: " + false);
                 new Config().set(listenKey, false);
-                // falseAction();
-                // $(element).prop("checked", false);
             } else {
                 console.log("Key set: " + listenKey + " :: " + true);
                 new Config().set(listenKey, true);
-                // trueAction();
-                // $(element).prop("checked", true);
+            }
+        });
+    }
+
+    listenButtonAndAction(element, listenKey, trueAction, falseAction) {
+        $(element).click(function () {
+            let status = new Config().get(listenKey, true);
+            console.log("Status: " + status);
+            if (status === "true" || status) {
+                console.log("Key set: " + listenKey + " :: " + false);
+                new Config().set(listenKey, false);
+                falseAction();
+            } else {
+                console.log("Key set: " + listenKey + " :: " + true);
+                new Config().set(listenKey, true);
+                trueAction();
             }
         });
     }
