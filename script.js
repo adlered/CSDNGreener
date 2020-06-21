@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.1.7
+// @version      3.1.8
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-21 3.1.8 增加自动隐藏顶栏功能，修复选项窗口被点赞长条挡住的Bug，选项窗口布局修改
 // @note         20-06-20 3.1.7 设置窗口大小固定，增加打赏入口
 // @note         20-06-19 3.1.6 显示推荐内容按钮回归，新布局紧急修复
 // @note         20-06-18 3.1.5 自定义功能更新
@@ -102,7 +103,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.1.7";
+var version = "3.1.8";
 var currentURL = window.location.href;
 var list;
 
@@ -110,7 +111,7 @@ var list;
 // 进度条
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 // 弹出窗口
-$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{top:25%;left:25%;width:600px;height:560px;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
+$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{z-index:9999!important;top:25%;left:25%;width:600px;height:60%;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
 // 提示条
 $('head').append("<style>.tripscon{padding:10px}</style>");
 // 按钮（旧）
@@ -480,6 +481,8 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-autosize-button"> <span class="modeLabel">宽度自动适应<span style="font-size: 8px;">（未开启靠左平铺功能时，开启此选项可以在页面宽度缩小时自动切换至靠左平铺模式）</span></span>';
             configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-autohidetoolbar-button"> <span class="modeLabel">向下滚动自动隐藏顶栏</span>';
+            configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <span class="modeLabel">搜博主文章模块</span>';
@@ -823,6 +826,34 @@ function common(num, times) {
                 $("#toggle-autosize-button").prop("checked", false);
             }
             config.listenButton("#toggle-autosize-button", "autoSize",
+                               function() {location.reload();},
+                               function() {location.reload();});
+
+            // 自动隐藏顶栏
+            let autoHideToolbarCookie = config.get("autoHideToolbar", true);
+            if (autoHideToolbarCookie) {
+            let toolbarShow = true;
+                setInterval(function () {
+                    var distanceTop = document.documentElement.scrollTop || document.body.scrollTop;
+                    if (distanceTop > 50) {
+                        if (toolbarShow) {
+                            $('#csdn-toolbar').fadeOut(500);
+                            toolbarShow = false;
+                        }
+                    } else {
+                        if (!toolbarShow) {
+                            $('#csdn-toolbar').fadeIn(500);
+                            toolbarShow = true;
+                        }
+                    }
+                }, 100);
+            }
+            if (autoHideToolbarCookie) {
+                $("#toggle-autohidetoolbar-button").prop("checked", true);
+            } else {
+                $("#toggle-autohidetoolbar-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-autohidetoolbar-button", "autoHideToolbar",
                                function() {location.reload();},
                                function() {location.reload();});
 
