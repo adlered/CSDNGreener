@@ -6,11 +6,11 @@
 // @homepageURL  https://github.com/adlered/CSDNGreener
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
-// @updateURL    https://raw.githubusercontent.com/adlered/CSDNGreener/master/script_openuser.js
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
 // @version      3.1.9
-// @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板// @connect      www.csdn.net
+// @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
+// @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdn.jsdelivr.net/npm/jquery.cookie/jquery.cookie.js
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
