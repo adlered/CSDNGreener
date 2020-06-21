@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.1.8
+// @version      3.1.9
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-21 3.1.9 增加自动隐藏底栏功能
 // @note         20-06-21 3.1.8 增加自动隐藏顶栏功能，修复选项窗口被点赞长条挡住的Bug，选项窗口布局修改
 // @note         20-06-20 3.1.7 设置窗口大小固定，增加打赏入口
 // @note         20-06-19 3.1.6 显示推荐内容按钮回归，新布局紧急修复
@@ -103,7 +104,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.1.8";
+var version = "3.1.9";
 var currentURL = window.location.href;
 var list;
 
@@ -483,6 +484,8 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-autohidetoolbar-button"> <span class="modeLabel">向下滚动自动隐藏顶栏</span>';
             configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-autohidebottombar-button"> <span class="modeLabel">自动隐藏底栏</span>';
+            configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <span class="modeLabel">搜博主文章模块</span>';
@@ -857,6 +860,25 @@ function common(num, times) {
                                function() {location.reload();},
                                function() {location.reload();});
 
+            // 自动隐藏底栏
+            let autoHideBottomBarCookie = config.get("autoHideBottomBar", false);
+            if (autoHideBottomBarCookie) {
+                setInterval(function () {$("#toolBarBox .left-toolbox").css({
+                	position: "relative",
+                	left: "0px",
+                	bottom: "0",
+                	width: $("#toolBarBox").width() + "px"
+                })}, 1500);
+            }
+            if (autoHideBottomBarCookie) {
+                $("#toggle-autohidebottombar-button").prop("checked", true);
+            } else {
+                $("#toggle-autohidebottombar-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-autohidebottombar-button", "autoHideBottomBar",
+                               function() {location.reload();},
+                               function() {location.reload();});
+
         } else if (num === 7) {
             $(".me_r")[1].remove();
         } else if (num === 8) {
@@ -940,7 +962,7 @@ class Config {
 
 function showTips() {
 	var config = {
-		content: "欢迎使用 CSDNGreener V" + version + "，绿化设定按钮迁移到这里了哦~<br><a href='javascript:$(\".trips\").remove();'>好的，该版本不再提示</a>",
+		content: "欢迎使用 CSDNGreener V" + version + "，绿化设定按钮在这里哦~调整优化选项请点我！<br><a href='javascript:$(\".trips\").remove();'>好的，该版本不再提示</a>",
 		type: "html",
 		alignTo: ["bottom", "left"],
 		trigger: "show",
