@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.1.9
+// @version      3.2.0
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-21 3.2.0 脚本迁移通知
 // @note         20-06-21 3.1.9 增加自动隐藏底栏功能
 // @note         20-06-21 3.1.8 增加自动隐藏顶栏功能，修复选项窗口被点赞长条挡住的Bug，选项窗口布局修改
 // @note         20-06-20 3.1.7 设置窗口大小固定，增加打赏入口
@@ -104,7 +105,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.1.9";
+var version = "3.2.0";
 var currentURL = window.location.href;
 var list;
 
@@ -581,7 +582,7 @@ function common(num, times) {
             if (tipsCookie) {
                 showTips();
             }
-            config.set("tips" + version, false);
+            config.tempSet("tips" + version, false);
 
             // 显示作者名片
             let authorCardCookie = config.get("authorCard", false);
@@ -929,6 +930,13 @@ class Config {
         console.log("Key set: " + setKey + " : " + setValue);
     }
 
+    tempSet(setKey, setValue) {
+        $.cookie(setKey, setValue, {
+            path: '/'
+        });
+        console.log("Temp Key set: " + setKey + " : " + setValue);
+    }
+
     listenButton(element, listenKey, trueAction, falseAction) {
         $(element).click(function () {
             let status = new Config().get(listenKey, true);
@@ -962,7 +970,7 @@ class Config {
 
 function showTips() {
 	var config = {
-		content: "欢迎使用 CSDNGreener V" + version + "，绿化设定按钮在这里哦~调整优化选项请点我！<br><a href='javascript:$(\".trips\").remove();'>好的，该版本不再提示</a>",
+		content: "<b>CSDNGreener 脚本源搬家通知</b><br>CSDNGreener 即将从 GreasyFork 脚本平台迁移至 OpenUserJS 平台<br>如果您仍希望获得持续的脚本更新支持，请将脚本迁移至 OpenUserJS。<br>轻松手把手迁移教程请点击：<br><a href='https://doc.stackoverflow.wiki/web/#/25?page_id=164'>CSDNGreener 轻松迁移教程</a>",
 		type: "html",
 		alignTo: ["bottom", "left"],
 		trigger: "show",
