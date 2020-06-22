@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.2.0
+// @version      3.2.1
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -105,7 +105,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.2.0";
+var version = "3.2.1";
 var currentURL = window.location.href;
 var list;
 
@@ -578,11 +578,12 @@ function common(num, times) {
                                 function() {location.reload();});
 
             // 提示
-            let tipsCookie = config.get("tips" + version, true);
-            if (tipsCookie) {
-                showTips();
-            }
-            config.tempSet("tips" + version, false);
+            showTips();
+            //let tipsCookie = config.get("tips" + version, true);
+            //if (tipsCookie) {
+            //    showTips();
+            //}
+            //config.tempSet("tips" + version, false);
 
             // 显示作者名片
             let authorCardCookie = config.get("authorCard", false);
@@ -970,7 +971,7 @@ class Config {
 
 function showTips() {
 	var config = {
-		content: "<b>CSDNGreener 脚本源搬家通知</b><br>CSDNGreener 即将从 GreasyFork 脚本平台迁移至 OpenUserJS 平台<br>如果您仍希望获得持续的脚本更新支持，请将脚本迁移至 OpenUserJS。<br>轻松手把手迁移教程请点击：<br><a href='https://doc.stackoverflow.wiki/web/#/25?page_id=164'>CSDNGreener 轻松迁移教程</a>",
+		content: "<b>您的 CSDN 绿化脚本来自过期的下载源！</b><br>如果您收到这条消息，代表您的 CSDNGreener 绿化脚本是从 GreasyFork 脚本平台获取的。<br>CSDNGreener 现已迁移至 OpenUserJS 平台，您的脚本当前已不受支持。<br>如果您仍希望继续使用绿化脚本并获得持续的脚本更新支持<br>请参考下面的教程删除当前脚本，并安装新的 CSDNGreener。<br>不要担心，我们提供的安装教程十分清晰明了且简单！<br>手把手轻松更新脚本教程请点击：<br><a href='https://doc.stackoverflow.wiki/web/#/25?page_id=164' style='color: red;'><b>CSDNGreener 轻松迁移教程</b></a>",
 		type: "html",
 		alignTo: ["bottom", "left"],
 		trigger: "show",
