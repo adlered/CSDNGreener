@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.2.2
+// @version      3.2.3
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,7 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @grant        GM_addStyle
+// @note         20-06-22 3.2.3 右侧栏加入滚动条，脚本主页URL修改，下载页和主页广告去除
 // @note         20-06-22 3.2.2 Dark Reader兼容模式，自动隐藏顶栏优化，热门文章和最新评论卡片布局调整
 // @note         20-06-21 3.2.1 脚本迁移版本迭代
 // @note         20-06-21 3.1.9 增加自动隐藏底栏功能
@@ -110,7 +111,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.2.2";
+var version = "3.2.3";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -168,10 +169,14 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             // 常规
             // 头部广告
             put(".banner-ad-box");
+            // 嵌入广告
+            put("#kp_box_211");
             // 右侧广告
             put(".slide-outer");
             // 右侧详情
             put(".persion_article");
+            // 右侧推荐
+            $(".feed_company").parent().remove();
             clean(10);
             common(5, 10);
             loop(1);
@@ -297,6 +302,8 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             // 常规
             put(".fixed_dl");
             put("indexSuperise");
+            // 右侧推荐
+            put(".content_recom");
             clean(10);
             common(5, 10);
         } else if (login.test(currentURL)) {
@@ -478,7 +485,7 @@ function common(num, times) {
         } else if (num == 6) {
             let did = false;
             let configHTML = '';
-            configHTML += '<h6><a href="https://greasyfork.org/zh-CN/scripts/378351" target="_blank">CSDNGreener V' + version + '</a></h6>官方QQ交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
+            configHTML += '<h6><a href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener V' + version + '</a></h6>官方QQ交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
 
             // 设定：推荐内容按钮
             configHTML += '<input type="checkbox" id="toggle-recommend-button"> <span class="modeLabel">显示推荐内容</span>';
@@ -884,6 +891,23 @@ function common(num, times) {
                                function() {location.reload();},
                                function() {location.reload();});
 
+            // 右侧滚动条
+            setTimeout(function () {
+                let rightSideHeight = 0;
+                let pageHeight = $(window).height();
+                rightSideHeight += getHeight("#asideProfile");
+                rightSideHeight += getHeight("#asideSearchArticle");
+                rightSideHeight += getHeight("#asideNewArticle");
+                rightSideHeight += getHeight("#asideHotArticle");
+                rightSideHeight += getHeight("#asideNewComments");
+                rightSideHeight += getHeight("#asideCategory");
+                rightSideHeight += getHeight("#asideArchive");
+                l("Right side total height: " + rightSideHeight);
+                l("Page height: " + pageHeight);
+                if (rightSideHeight > pageHeight) {
+                    $('#recommend-right').css("overflow", "scroll");
+                }
+            }, 1500);
         } else if (num === 7) {
             $(".me_r")[1].remove();
         } else if (num === 8) {
@@ -975,4 +999,12 @@ function showTips() {
 		color: ["#B2E281", "#B2E281"]
 	};
 	$("#greenerSettings").showTips(config);
+}
+
+function getHeight(element) {
+    let outerHeight = $(element).outerHeight();
+    if (outerHeight === null) {
+        return 0;
+    }
+    return outerHeight;
 }
