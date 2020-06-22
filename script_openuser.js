@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.1.9
+// @version      3.2.2
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,8 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @grant        GM_addStyle
+// @note         20-06-22 3.2.2 Dark Reader兼容模式，自动隐藏顶栏优化，热门文章和最新评论卡片布局调整
+// @note         20-06-21 3.2.1 脚本迁移版本迭代
 // @note         20-06-21 3.1.9 增加自动隐藏底栏功能
 // @note         20-06-21 3.1.8 增加自动隐藏顶栏功能，修复选项窗口被点赞长条挡住的Bug，选项窗口布局修改
 // @note         20-06-20 3.1.7 设置窗口大小固定，增加打赏入口
@@ -108,15 +110,16 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.1.9";
+var version = "3.2.2";
 var currentURL = window.location.href;
 var list;
+var windowTop = 0;
 
 // 自定义 CSS
 // 进度条
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 // 弹出窗口
-$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{z-index:9999!important;top:25%;left:25%;width:600px;height:60%;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
+$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{z-index:9999!important;top:25%;left:25%;width:650px;height:60%;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
 // 提示条
 $('head').append("<style>.tripscon{padding:10px}</style>");
 // 按钮（旧）
@@ -482,7 +485,7 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-onleft-button"> <span class="modeLabel">文章靠左平铺</span>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">强制白色主题<span style="font-size: 8px;">（关闭后，可以安装 Dark Reader 浏览器扩展适配 CSDN 黑暗模式）</span></span>';
+            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">白色主题&Dark Reader兼容模式<span style="font-size: 8px;">（开启后可通过Dark Reader插件灵活控制白色与黑暗模式，<a style="color: green;" href="https://chrome.zzzmh.cn/info?token=eimadpbcbfnmbkopoojfekhnkhdbieeh" target="_blank">插件下载地址点我</a>）</span></span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-autosize-button"> <span class="modeLabel">宽度自动适应<span style="font-size: 8px;">（未开启靠左平铺功能时，开启此选项可以在页面宽度缩小时自动切换至靠左平铺模式）</span></span>';
             configHTML += '<br>';
@@ -609,7 +612,7 @@ function common(num, times) {
             let whiteThemeCookie = config.get("whiteTheme", true);
             if (whiteThemeCookie) {
                 // 背景删除
-                $('body').attr('style', 'background-image: none !important; background-color: #f5f6f7 !important; background: #f5f6f7 !important');
+                $('.main_father').attr('style', 'background-image: none !important; background-color: #f5f6f7; background: #f5f6f7;');
                 $('[href^="https://csdnimg.cn/release/phoenix/template/themes_skin/"]').attr('href', 'https://csdnimg.cn/release/phoenix/template/themes_skin/skin-technology/skin-technology-6336549557.min.css');
                 $('#csdn-toolbar').removeClass('csdn-toolbar-skin-black');
                 $('.csdn-logo').attr('src', '//csdnimg.cn/cdn/content-toolbar/csdn-logo.png?v=20200416.1');
@@ -683,6 +686,7 @@ function common(num, times) {
                 $('#recommend-right').append($("#asideHotArticle").prop("outerHTML"));
                 setTimeout(function() {
                     $('#asideHotArticle').attr("style", "margin-top: 8px; width: 300px;");
+                    $('#asideHotArticle img').remove();
                 }, 0);
             }
             if (hotArticleCookie) {
@@ -700,6 +704,8 @@ function common(num, times) {
                 $('#recommend-right').append($("#asideNewComments").prop("outerHTML"));
                 setTimeout(function() {
                     $('#asideNewComments').attr("style", "margin-top: 8px; width: 300px;");
+                    $(".comment.ellipsis").attr("style", "max-height: none;");
+                    $(".title.text-truncate").attr("style", "padding: 0");
                 }, 0);
             }
             if (newCommentsCookie) {
@@ -839,21 +845,16 @@ function common(num, times) {
             // 自动隐藏顶栏
             let autoHideToolbarCookie = config.get("autoHideToolbar", true);
             if (autoHideToolbarCookie) {
-            let toolbarShow = true;
-                setInterval(function () {
-                    var distanceTop = document.documentElement.scrollTop || document.body.scrollTop;
-                    if (distanceTop > 50) {
-                        if (toolbarShow) {
-                            $('#csdn-toolbar').fadeOut(500);
-                            toolbarShow = false;
-                        }
-                    } else {
-                        if (!toolbarShow) {
-                            $('#csdn-toolbar').fadeIn(500);
-                            toolbarShow = true;
-                        }
-                    }
-                }, 100);
+                $(window).scroll(function() {
+                	let scrollS = $(this).scrollTop();
+                	if (scrollS >= windowTop) {
+                		$('#csdn-toolbar').slideUp(100);
+                		windowTop = scrollS;
+                	} else {
+                		$('#csdn-toolbar').slideDown(100);
+                		windowTop = scrollS;
+                	}
+                });
             }
             if (autoHideToolbarCookie) {
                 $("#toggle-autohidetoolbar-button").prop("checked", true);
@@ -865,14 +866,14 @@ function common(num, times) {
                                function() {location.reload();});
 
             // 自动隐藏底栏
-            let autoHideBottomBarCookie = config.get("autoHideBottomBar", false);
+            let autoHideBottomBarCookie = config.get("autoHideBottomBar", true);
             if (autoHideBottomBarCookie) {
                 setInterval(function () {$("#toolBarBox .left-toolbox").css({
                 	position: "relative",
                 	left: "0px",
                 	bottom: "0",
                 	width: $("#toolBarBox").width() + "px"
-                })}, 1500);
+                })}, 3000);
             }
             if (autoHideBottomBarCookie) {
                 $("#toggle-autohidebottombar-button").prop("checked", true);
