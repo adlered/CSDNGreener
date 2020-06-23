@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.2.5
+// @version      3.2.6
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,7 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @grant        GM_addStyle
+// @note         20-06-23 3.2.6 文章居中模式可选
 // @note         20-06-22 3.2.5 右侧没有可显示内容时，文章居中
 // @note         20-06-22 3.2.4 文章居中
 // @note         20-06-22 3.2.3 右侧栏加入滚动条，脚本主页URL修改，下载页和主页广告去除
@@ -113,7 +114,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.2.5";
+var version = "3.2.6";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -454,14 +455,8 @@ function common(num, times) {
             } catch (e) {}
             // 自动检测是否有目录，如果没有则删除右边栏，文章居中
             if ($(".recommend-right_aside").html() && $(".recommend-right_aside").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
-                // 删除原有响应式样式
-                $(".main_father").removeClass("justify-content-center");
-                $("csdn-side-toolbar").css("left", "auto")
                 $("#rightAside").remove();
             } else if ($(".recommend-right_aside").html() && $("#recommend-right").html().replace(/[\r\n]/g, "").replace(/(\s)/g, "") === "") {
-                // 删除原有响应式样式
-                $(".main_father").removeClass("justify-content-center");
-                $("csdn-side-toolbar").css("left", "auto")
                 $("#rightAside").remove();
             }
             // 登录按钮文字太多，修改
@@ -482,7 +477,22 @@ function common(num, times) {
             //论坛自动展开
             $(".js_show_topic").click();
         } else if (num == 4) {
-
+            /** 配置控制 **/
+            let config = new Config();
+            let articleCenterCookie = config.get("articleCenter", false);
+            if (!articleCenterCookie) {
+                // 删除原有响应式样式
+                $(".main_father").removeClass("justify-content-center");
+                $("csdn-side-toolbar").css("left", "auto")
+            }
+            if (articleCenterCookie) {
+                $("#toggle-articlecenter-button").prop("checked", true);
+            } else {
+                $("#toggle-articlecenter-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-articlecenter-button", "articleCenter",
+                               function() {location.reload();},
+                               function() {location.reload();});
         } else if (num == 5) {
             // 改回背景颜色
             $(".login-mark").remove();
@@ -505,6 +515,8 @@ function common(num, times) {
             configHTML += '<input type="checkbox" id="toggle-autohidetoolbar-button"> <span class="modeLabel">向下滚动自动隐藏顶栏</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-autohidebottombar-button"> <span class="modeLabel">自动隐藏底栏</span>';
+            configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-articlecenter-button"> <span class="modeLabel">文章居中模式<span style="font-size: 8px;">（如果你的文章没有居中，勾选我）</span></span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
             configHTML += '<br>';
