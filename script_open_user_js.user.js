@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.2.8
+// @version      3.2.9
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,7 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @grant        GM_addStyle
+// @note         20-06-24 3.2.9 控制台文字可以点击了，修改自动版式描述语义
 // @note         20-06-24 3.2.8 屏幕尺寸选择，控制台版式修改，若干问题修复
 // @note         20-06-23 3.2.7 右侧栏滚动条显示方式优化
 // @note         20-06-23 3.2.6 文章居中模式可选
@@ -116,7 +117,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.2.8";
+var version = "3.2.9";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -552,37 +553,37 @@ function common(num, times) {
             configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-lg" /> 大屏幕</label>';
             configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
             configHTML += '<p style="margin-bottom: 5px"><b>通用设定</b></p>';
-            configHTML += '<input type="checkbox" id="toggle-recommend-button"> <span class="modeLabel">显示推荐内容</span>';
+            configHTML += '<input type="checkbox" id="toggle-recommend-button"> <label for="toggle-recommend-button" class="modeLabel">显示推荐内容</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">白色主题&Dark Reader兼容模式<span style="font-size: 8px;">（开启后可通过Dark Reader插件灵活控制白色与黑暗模式，<a style="color: green;" href="https://chrome.zzzmh.cn/info?token=eimadpbcbfnmbkopoojfekhnkhdbieeh" target="_blank">插件下载地址点我</a>）</span></span>';
+            configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <label for="toggle-whitetheme-button" class="modeLabel">白色主题&Dark Reader兼容模式<span style="font-size: 8px;">（开启后可通过Dark Reader插件灵活控制白色与黑暗模式，<a style="color: green;" href="https://chrome.zzzmh.cn/info?token=eimadpbcbfnmbkopoojfekhnkhdbieeh" target="_blank">插件下载地址点我</a>）</span></label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-autosize-button"> <span class="modeLabel">宽度自动适应<span style="font-size: 8px;">（未开启靠左平铺功能时，开启此选项可以在页面宽度缩小时自动切换至靠左平铺模式）</span></span>';
+            configHTML += '<input type="checkbox" id="toggle-autosize-button"> <label for="toggle-autosize-button" class="modeLabel">宽度自动适应<span style="font-size: 8px;">（开启此选项可以在页面宽度缩小时自动切换至小屏模式）</span></label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-autohidetoolbar-button"> <span class="modeLabel">向下滚动自动隐藏顶栏</span>';
+            configHTML += '<input type="checkbox" id="toggle-autohidetoolbar-button"> <label for="toggle-autohidetoolbar-button" class="modeLabel">向下滚动自动隐藏顶栏</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-autohidebottombar-button"> <span class="modeLabel">自动隐藏底栏</span>';
+            configHTML += '<input type="checkbox" id="toggle-autohidebottombar-button"> <label for="toggle-autohidebottombar-button" class="modeLabel">自动隐藏底栏</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-writeblog-button"> <span class="modeLabel">显示创作中心按钮</span>';
+            configHTML += '<input type="checkbox" id="toggle-writeblog-button"> <label for="toggle-writeblog-button" class="modeLabel">显示创作中心按钮</label>';
             configHTML += '<br>';
             configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
             configHTML += '<p style="margin-bottom: 5px"><b>右侧栏定制</b></p>';
-            configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
+            configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <label for="toggle-authorcard-button" class="modeLabel">显示作者名片</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <span class="modeLabel">显示搜博主文章</span>';
+            configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <label for="toggle-searchblog-button" class="modeLabel">显示搜博主文章</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-newarticle-button"> <span class="modeLabel">显示最新文章</span>';
+            configHTML += '<input type="checkbox" id="toggle-newarticle-button"> <label for="toggle-newarticle-button" class="modeLabel">显示最新文章</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-hotarticle-button"> <span class="modeLabel">显示热门文章</span>';
+            configHTML += '<input type="checkbox" id="toggle-hotarticle-button"> <label for="toggle-hotarticle-button" class="modeLabel">显示热门文章</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-newcomments-button"> <span class="modeLabel">显示最新评论</span>';
+            configHTML += '<input type="checkbox" id="toggle-newcomments-button"> <label for="toggle-newcomments-button" class="modeLabel">显示最新评论</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-kindperson-button"> <span class="modeLabel">显示分类专栏</span>';
+            configHTML += '<input type="checkbox" id="toggle-kindperson-button"> <label for="toggle-kindperson-button" class="modeLabel">显示分类专栏</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-recommendarticle-button"> <span class="modeLabel">显示推荐文章</span>';
+            configHTML += '<input type="checkbox" id="toggle-recommendarticle-button"> <label for="toggle-recommendarticle-button" class="modeLabel">显示推荐文章</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-archive-button"> <span class="modeLabel">显示归档</span>';
+            configHTML += '<input type="checkbox" id="toggle-archive-button"> <label for="toggle-archive-button" class="modeLabel">显示归档</label>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-content-button"> <span class="modeLabel">显示目录</span>';
+            configHTML += '<input type="checkbox" id="toggle-content-button"> <label for="toggle-content-button" class="modeLabel">显示目录</label>';
             configHTML += '<br>';
             configHTML += '<button id="save" onclick="location.reload()">保存设定</button>';
             configHTML += '<br>';
