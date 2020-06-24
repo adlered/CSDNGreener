@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.2.7
+// @version      3.2.8
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,7 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @grant        GM_addStyle
+// @note         20-06-24 3.2.8 屏幕尺寸选择，控制台版式修改，若干问题修复
 // @note         20-06-23 3.2.7 右侧栏滚动条显示方式优化
 // @note         20-06-23 3.2.6 文章居中模式可选
 // @note         20-06-22 3.2.5 右侧没有可显示内容时，文章居中
@@ -115,7 +116,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.2.7";
+var version = "3.2.8";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -124,7 +125,7 @@ var windowTop = 0;
 // 进度条
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 // 弹出窗口
-$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.20;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{z-index:9999!important;top:25%;left:25%;width:650px;height:60%;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
+$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.10;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{z-index:9999!important;top:25%;left:25%;width:650px;height:60%;padding:20px;border:0px;background-color:#fff;z-index:1002;overflow:auto}</style>");
 // 提示条
 $('head').append("<style>.tripscon{padding:10px}</style>");
 // 按钮（旧）
@@ -149,6 +150,7 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
         var download = /download\.csdn\.net/;
         var login = /passport\.csdn\.net/;
         var zone = /me\.csdn\.net/;
+        var other = /(www\.csdn\.net\/)/;
 
         // 数组初始化
         list = [];
@@ -196,6 +198,7 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             // 左侧广告
             put(".mb8");
             put("#kp_box_503");
+            put("#kp_box_214");
             clean(10);
             common(5, 10);
             loop(1);
@@ -250,8 +253,6 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             put(".indexSuperise");
             // 抢沙发角标
             put(".comment-sofa-flag");
-            // 创作中心
-            put(".write-bolg-btn");
             // 页jio
             put(".bottom-pub-footer");
             // 登录查看未读消息
@@ -265,8 +266,8 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             }, 1500);
             // 绿化设置
             common(6, 1);
-            // 填充
-            common(4, 5);
+            // 屏幕适配
+            common(4, 1);
             // 评论
             common(1, 30);
             // 其它
@@ -323,6 +324,11 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
             clean(10);
             common(7, 10);
             common(5, 10);
+        } else if (other.test(currentURL)) {
+            l("哦豁，好偏门的页面，我来试着优化一下哦...");
+            // 常规
+            // 展开全文
+            $('.readmore_btn').click();
         } else {
             e("不受支持的页面!");
         }
@@ -480,20 +486,55 @@ function common(num, times) {
         } else if (num == 4) {
             /** 配置控制 **/
             let config = new Config();
-            let articleCenterCookie = config.get("articleCenter", false);
-            if (!articleCenterCookie) {
-                // 删除原有响应式样式
+            let smCookie = config.get("scr-sm", false);
+            let mdCookie = config.get("scr-md", true);
+            let lgCookie = config.get("scr-lg", false);
+
+            $("#scr-sm").prop("checked", smCookie);
+            $("#scr-md").prop("checked", mdCookie);
+            $("#scr-lg").prop("checked", lgCookie);
+
+            if (smCookie) {
+                // Small Screen Mode
                 $(".main_father").removeClass("justify-content-center");
                 $("csdn-side-toolbar").css("left", "auto")
+                GM_addStyle(`
+                main{
+                    width: auto!important;
+                    float: none!important;
+                    max-width: 90vw;
+                }
+                main article img{
+                    margin: 0 auto;
+                    max-width: 100%;
+                    object-fit: cover;
+                }
+                `);
+            } else if (mdCookie) {
+                // Middle Screen Mode
+                $(".main_father").removeClass("justify-content-center");
+                $("csdn-side-toolbar").css("left", "auto")
+            } else if (lgCookie) {
+                // Large Screen Mode
+                // DO NOTHING
             }
-            if (articleCenterCookie) {
-                $("#toggle-articlecenter-button").prop("checked", true);
-            } else {
-                $("#toggle-articlecenter-button").prop("checked", false);
-            }
-            config.listenButton("#toggle-articlecenter-button", "articleCenter",
-                               function() {location.reload();},
-                               function() {location.reload();});
+
+            // 屏幕尺寸单选监听
+            $("#scr-sm").click(function () {
+                new Config().set("scr-sm", true);
+                new Config().set("scr-md", false);
+                new Config().set("scr-lg", false);
+            });
+            $("#scr-md").click(function () {
+                new Config().set("scr-md", true);
+                new Config().set("scr-sm", false);
+                new Config().set("scr-lg", false);
+            });
+            $("#scr-lg").click(function () {
+                new Config().set("scr-lg", true);
+                new Config().set("scr-sm", false);
+                new Config().set("scr-md", false);
+            });
         } else if (num == 5) {
             // 改回背景颜色
             $(".login-mark").remove();
@@ -502,12 +543,16 @@ function common(num, times) {
         } else if (num == 6) {
             let did = false;
             let configHTML = '';
-            configHTML += '<h6><a href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener V' + version + '</a></h6>官方QQ交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
+            configHTML += '<div><a style="font-size: 20px;" href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener</a> <sup>V' + version + '</sup></div>官方QQ交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
 
             // 设定：推荐内容按钮
+            configHTML += '<p style="margin-bottom: 5px"><b>根据屏幕尺寸，适配版式</b></p>';
+            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-sm" /> 小屏幕 </label>';
+            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-md" /> 中屏幕 </label>';
+            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-lg" /> 大屏幕</label>';
+            configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
+            configHTML += '<p style="margin-bottom: 5px"><b>通用设定</b></p>';
             configHTML += '<input type="checkbox" id="toggle-recommend-button"> <span class="modeLabel">显示推荐内容</span>';
-            configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-onleft-button"> <span class="modeLabel">文章靠左平铺</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <span class="modeLabel">白色主题&Dark Reader兼容模式<span style="font-size: 8px;">（开启后可通过Dark Reader插件灵活控制白色与黑暗模式，<a style="color: green;" href="https://chrome.zzzmh.cn/info?token=eimadpbcbfnmbkopoojfekhnkhdbieeh" target="_blank">插件下载地址点我</a>）</span></span>';
             configHTML += '<br>';
@@ -517,11 +562,13 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-autohidebottombar-button"> <span class="modeLabel">自动隐藏底栏</span>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-articlecenter-button"> <span class="modeLabel">文章居中模式<span style="font-size: 8px;">（如果你的文章没有居中，勾选我）</span></span>';
+            configHTML += '<input type="checkbox" id="toggle-writeblog-button"> <span class="modeLabel">显示创作中心按钮</span>';
             configHTML += '<br>';
+            configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
+            configHTML += '<p style="margin-bottom: 5px"><b>右侧栏定制</b></p>';
             configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <span class="modeLabel">显示作者名片</span>';
             configHTML += '<br>';
-            configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <span class="modeLabel">搜博主文章模块</span>';
+            configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <span class="modeLabel">显示搜博主文章</span>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-newarticle-button"> <span class="modeLabel">显示最新文章</span>';
             configHTML += '<br>';
@@ -539,13 +586,13 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<button id="save" onclick="location.reload()">保存设定</button>';
             configHTML += '<br>';
-            configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank">⭐ 求个Star，给作者免费充电</a><br>';
-            configHTML += '<a href="https://doc.stackoverflow.wiki/web/#/21?page_id=138" target="_blank" style="margin-top: 5px; display: block;">💲 我是老板，投币打赏</a>';
-            configHTML += '<a href="javascript:void(0)" style="position: absolute; bottom: 10px; right: 10px;" onclick=\'document.getElementById("light").style.display="none",document.getElementById("fade").style.display="none"\'>关闭设置窗口 ✖️</a></div><div id="fade" class="black_overlay"></div>';
+            configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank"><svg t="1592982464356" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2516" width="32" height="32"><path d="M511.872 0l168.64 321.728 343.168 69.312L784.768 659.2l43.392 364.544-316.288-156.032-316.352 156.032L238.784 659.2 0 391.104l343.168-69.312L511.872 0" p-id="2517"></path></svg> 求个Star，给作者免费充电</a><br>';
+            configHTML += '<a href="https://doc.stackoverflow.wiki/web/#/21?page_id=138" target="_blank" style="margin-top: 5px; display: block;"><svg t="1592982508258" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4207" width="32" height="32"><path d="M664.48 234.432a32 32 0 0 0-45.248-0.8l-76.256 73.6-73.344-73.216a32 32 0 1 0-45.248 45.312l72.384 72.256h-49.28a32 32 0 0 0 0 64h63.776v32h-63.776a32 32 0 0 0 0 64h63.776v65.664a32 32 0 1 0 64 0v-65.664h64.288a32 32 0 1 0 0-64h-64.288v-32h64.288a32 32 0 1 0 0-64h-50.368l74.464-71.872a32.032 32.032 0 0 0 0.832-45.28z m275.2 503.552a9017.568 9017.568 0 0 0-141.664-56.736 368.512 368.512 0 0 0 97.568-248.608c0-202.912-165.12-368-368.064-368s-368 165.088-368 368c0 16.224 1.024 32.352 3.072 47.968 2.304 17.504 18.496 29.664 35.904 27.584a32 32 0 0 0 27.584-35.904 304.512 304.512 0 0 1-2.56-39.648c0-167.616 136.384-304 304-304 167.648 0 304.064 136.384 304.064 304a300.544 300.544 0 0 1-96.128 221.472c-0.768 0.736-1.088 1.76-1.824 2.528-42.848-15.936-79.328-28.48-93.76-30.656-24.896-3.904-48.672 7.616-63.104 28.896-12.032 17.792-15.072 38.816-8.096 56.256 4.288 10.656 20.512 32.896 39.776 57.28-46.432-0.064-117.312-6.336-192.832-35.488-31.264-12.064-69.44-52.64-103.136-88.416-47.968-50.976-93.28-99.104-142.56-99.104-18.336 0-35.744 6.848-50.336 19.776-18.24 16.224-35.136 48.32-12 109.248 42.624 112.16 208.544 285.12 341.728 285.12h478.144a32 32 0 0 0 32-32v-160a31.84 31.84 0 0 0-19.776-29.568z m-44.16 157.6h-445.12l-1.024 32v-32c-97.6 0-247.072-152.128-281.92-243.872-10.112-26.656-6.72-37.408-5.344-38.624 4.128-3.648 6.528-3.648 7.84-3.648 21.632 0 64.608 45.632 95.968 78.944 40.224 42.752 81.856 86.944 126.656 104.256 85.216 32.896 164.896 39.808 216.736 39.808 41.376 0 67.584-4.352 68.672-4.544a32 32 0 0 0 19.136-52.16c-27.008-32.096-58.592-71.808-67.296-85.344 0.288-0.576 0.512-1.024 0.352-1.152 22.848 3.488 162.432 57.952 265.28 99.84v106.496z" p-id="4208"></path></svg> 我是老板，投币打赏</a>';
+            configHTML += '<a href="javascript:void(0)" style="position: absolute; top: 20px; right: 15px;" onclick=\'document.getElementById("light").style.display="none",document.getElementById("fade").style.display="none"\'>关闭设置窗口 <svg t="1592982567577" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4984" width="32" height="32"><path d="M519.02036023 459.47959989L221.8941505 162.35411435a37.07885742 37.07885742 0 1 0-52.45354772 52.40502656l297.12476134 297.15010821L169.44060278 809.05863314a37.07885742 37.07885742 0 1 0 52.42964924 52.42892505l297.15010821-297.12476136 297.15010822 297.12476136a37.07885742 37.07885742 0 1 0 52.42892504-52.40430237l-297.12476135-297.1740067 297.12476135-297.12548553a37.07885742 37.07885742 0 1 0-52.42892504-52.42964924L519.04498291 459.47959989z" p-id="4985"></path></svg></a></div><div id="fade" class="black_overlay"></div>';
             // 绿化器设定
             $("body").prepend('<div id="light" class="white_content">' + configHTML);
             // 绿化设定
-            let htmlOf0 = '<li><a id="greenerSettings" href="javascript:void(0)" style="" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';">绿化设定</a></li>';
+            let htmlOf0 = '<li><a id="greenerSettings" href="javascript:void(0)" style="" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';"><svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10112" width="48" height="48"><path d="M256 102.4h512l256 256-512 563.2L0 358.4z" fill="#26CD63" p-id="10113"></path><path d="M256 102.4l256 256H0zM768 102.4l256 256H512zM512 921.6l204.8-563.2H307.2z" fill="#14A345" p-id="10114"></path></svg> 绿化设定</a></li>';
             $(".sub-menu-box").eq(0).before(htmlOf0);
 
             /** 配置控制 **/
@@ -571,49 +618,6 @@ function common(num, times) {
             config.listenButtonAndAction("#toggle-button", "recommend",
                                 function() {$(".recommend-box").slideDown(200);},
                                function() {$(".recommend-box").slideUp(200);});
-
-            // 文章全屏平铺
-            let onleft = config.get("onleft", false);
-            if (onleft) {
-                // 删除原有响应式样式
-                $(".main_father").removeClass("justify-content-center");
-                $("csdn-side-toolbar").css("left", "auto")
-                GM_addStyle(`
-                main{
-                    width: auto!important;
-                    float: none!important;
-                    max-width: 90vw;
-                }
-                main article img{
-                    margin: 0 auto;
-                    max-width: 100%;
-                    object-fit: cover;
-                }
-                `);
-            }
-            if (onleft) {
-                $("#toggle-onleft-button").prop("checked", true);
-            } else {
-                $("#toggle-onleft-button").prop("checked", false);
-            }
-            config.listenButton("#toggle-onleft-button", "onleft",
-                                function() {
-                                    // 删除原有响应式样式
-                                    $(".main_father").removeClass("justify-content-center");
-                                    $("csdn-side-toolbar").css("left", "auto")
-                                    GM_addStyle(`
-                                    main{
-                                        width: auto!important;
-                                        float: none!important;
-                                        max-width: 90vw;
-                                    }
-                                    main article img{
-                                        margin: 0 auto;
-                                        max-width: 100%;
-                                        object-fit: cover;
-                                    }
-                                    `);},
-                                function() {location.reload();});
 
             // 提示
             let tipsCookie = config.get("tips" + version, true);
@@ -881,14 +885,16 @@ function common(num, times) {
             let autoHideToolbarCookie = config.get("autoHideToolbar", true);
             if (autoHideToolbarCookie) {
                 $(window).scroll(function() {
-                	let scrollS = $(this).scrollTop();
-                	if (scrollS >= windowTop) {
-                		$('#csdn-toolbar').slideUp(100);
-                		windowTop = scrollS;
-                	} else {
-                		$('#csdn-toolbar').slideDown(100);
-                		windowTop = scrollS;
-                	}
+                    if (document.documentElement.scrollTop > 100) {
+                	    let scrollS = $(this).scrollTop();
+                	    if (scrollS >= windowTop) {
+                	    	$('#csdn-toolbar').slideUp(100);
+                	    	windowTop = scrollS;
+                	    } else {
+                	    	$('#csdn-toolbar').slideDown(100);
+                	    	windowTop = scrollS;
+                	    }
+                    }
                 });
             }
             if (autoHideToolbarCookie) {
@@ -919,6 +925,20 @@ function common(num, times) {
                                function() {location.reload();},
                                function() {location.reload();});
 
+            // 创作中心按钮
+            let writeBlogCookie = config.get("writeBlog", true);
+            if (!writeBlogCookie) {
+                $(".write-bolg-btn").remove();
+            }
+            if (writeBlogCookie) {
+                $("#toggle-writeblog-button").prop("checked", true);
+            } else {
+                $("#toggle-writeblog-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-writeblog-button", "writeBlog",
+                               function() {location.reload();},
+                               function() {location.reload();});
+
             // 右侧滚动条
             setTimeout(function () {
                 let rightSideHeight = 0;
@@ -931,8 +951,8 @@ function common(num, times) {
                 rightSideHeight += getHeight($("#asideNewComments"));
                 rightSideHeight += getHeight($("#asideCategory"));
                 rightSideHeight += getHeight($("#asideArchive"));
-                l("Right side total height: " + rightSideHeight);
-                l("Page height: " + pageHeight);
+                console.debug("Right side total height: " + rightSideHeight);
+                console.debug("Page height: " + pageHeight);
                 if (rightSideHeight > pageHeight) {
                     $('#recommend-right').css("overflow", "scroll");
                 }
@@ -970,10 +990,10 @@ class Config {
         var cookie = $.cookie(key);
         if (cookie == undefined) {
             new Config().set(key, value);
-            console.log("Renew key: " + key + " : " + value);
+            console.debug("Renew key: " + key + " : " + value);
             return value;
         }
-        console.log("Read key: " + key + " : " + cookie);
+        console.debug("Read key: " + key + " : " + cookie);
         if (cookie === "true") { return true; }
         if (cookie === "false") { return false; }
         return cookie;
@@ -984,18 +1004,18 @@ class Config {
             path: '/',
             expires: 365
         });
-        console.log("Key set: " + setKey + " : " + setValue);
+        console.debug("Key set: " + setKey + " : " + setValue);
     }
 
     listenButton(element, listenKey, trueAction, falseAction) {
         $(element).click(function () {
             let status = new Config().get(listenKey, true);
-            console.log("Status: " + status);
+            console.debug("Status: " + status);
             if (status === "true" || status) {
-                console.log("Key set: " + listenKey + " :: " + false);
+                console.debug("Key set: " + listenKey + " :: " + false);
                 new Config().set(listenKey, false);
             } else {
-                console.log("Key set: " + listenKey + " :: " + true);
+                console.debug("Key set: " + listenKey + " :: " + true);
                 new Config().set(listenKey, true);
             }
         });
@@ -1004,13 +1024,13 @@ class Config {
     listenButtonAndAction(element, listenKey, trueAction, falseAction) {
         $(element).click(function () {
             let status = new Config().get(listenKey, true);
-            console.log("Status: " + status);
+            console.debug("Status: " + status);
             if (status === "true" || status) {
-                console.log("Key set: " + listenKey + " :: " + false);
+                console.debug("Key set: " + listenKey + " :: " + false);
                 new Config().set(listenKey, false);
                 falseAction();
             } else {
-                console.log("Key set: " + listenKey + " :: " + true);
+                console.debug("Key set: " + listenKey + " :: " + true);
                 new Config().set(listenKey, true);
                 trueAction();
             }
