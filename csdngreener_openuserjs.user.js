@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.2.9
+// @version      3.3.0
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,7 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @grant        GM_addStyle
+// @note         20-06-27 3.3.0 网站标题新消息提醒去除
 // @note         20-06-24 3.2.9 控制台文字可以点击了，修改自动版式描述语义
 // @note         20-06-24 3.2.8 屏幕尺寸选择，控制台版式修改，若干问题修复
 // @note         20-06-23 3.2.7 右侧栏滚动条显示方式优化
@@ -117,7 +118,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.2.9";
+var version = "3.3.0";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -980,6 +981,10 @@ function common(num, times) {
                 $(".article-bar-top").append(bind + " ");
             }
             $(".blog_container_aside").remove();
+
+            // 标题消息提醒去除
+            let title = document.title.replace(/^\(.*?\)/g, "");
+            document.title = title;
         }
     }, 100);
     NProgress.inc();
