@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.3.1
+// @version      3.3.2
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-06-28 3.3.2 提示修改
 // @note         20-06-27 3.3.1 弹窗提示逻辑修改为仅提示一次。
 // @note         20-06-27 3.3.0 网站标题新消息提醒去除
 // @note         20-06-26 3.2.9 恢复GreasyFork平台脚本支持
@@ -108,7 +109,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.3.1";
+var version = "3.3.2";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -1036,7 +1037,7 @@ class Config {
 
 function showTips() {
 	var config = {
-		content: "欢迎使用 CSDNGreener，绿化设定按钮在这里！<br><br><b>关于本弹窗出现频率过于频繁的公告</b><br>由于最近用户提出的建议和意见较多，脚本进行了较频繁的更新，导致本弹窗弹出次数过多，让大家心生不满。<br>本弹窗在每次版本更新都会出现，出于安全考虑提示用户。我们倾听且及时修改脚本是本着负责任的态度，但也带来了一些不同的提议。<br>但不同的声音也是对我（作者）的一种进步，感谢大家的反馈与建议，特此通知。<br>CSDNGreener已进入稳定期，不会再有频繁更新。<br>CSDNGreener V3.3.1 版本之后提示弹窗逻辑已修改为只会弹出一次，永久不再显示。<br><a href='javascript:$(\".trips\").remove();'>好的，以后不再提示我</a>",
+		content: "欢迎使用 CSDNGreener，绿化设定按钮在这里！<br><a href='javascript:$(\".trips\").remove();'>好的，以后不再提示我</a>",
 		type: "html",
 		alignTo: ["bottom", "left"],
 		trigger: "show",
