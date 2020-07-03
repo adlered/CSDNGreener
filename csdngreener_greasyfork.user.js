@@ -1,16 +1,18 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.3.2
+// @version      3.3.3
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://cdn.jsdelivr.net/npm/jquery.cookie/jquery.cookie.js
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
+// @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-07-03 3.3.3 新增复制评论功能！删除顶部广告
 // @note         20-06-28 3.3.2 提示修改
 // @note         20-06-27 3.3.1 弹窗提示逻辑修改为仅提示一次。
 // @note         20-06-27 3.3.0 网站标题新消息提醒去除
@@ -108,7 +110,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.3.2";
+var version = "3.3.3";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -291,6 +293,8 @@ $('head').append("<style>#save{background-color:#19a4ed;border:none;color:#fff;p
         put(".adsbygoogle");
         // 悬浮在顶栏按钮上出现的二维码
         put(".appControl");
+        // 顶部广告
+        put(".advert-bg");
 
         if (main.test(currentURL) || mainNav.test(currentURL)) {
             l("正在优化主页体验...");
@@ -1105,6 +1109,26 @@ function common(num, times) {
             // 标题消息提醒去除
             let title = document.title.replace(/^\(.*?\)/g, "");
             document.title = title;
+            // 评论复制按钮
+            $('.comment-box').prepend('<button class="comment-hidden-text" style="display:none">COPY BUTTON</button>');
+            $('.new-opt-box.new-opt-box-bg').prepend('<a class="btn btn-report btn-copy" onclick="javascript:$(\'.comment-hidden-text\').attr(\'data-clipboard-text\',$(this).parent().parent().find(\'.new-comment\').text())">复制评论</a><span class="btn-bar"></span>');
+            $('.btn-copy').click(function() {
+                var clipboard = new ClipboardJS('.comment-hidden-text');
+                clipboard.on('success', function(e) {
+                    console.info('Action:', e.action);
+                    console.info('Text:', e.text);
+                    console.info('Trigger:', e.trigger);
+                    e.clearSelection();
+                    alert('CSDNGreener 脚本提醒您：评论复制成功！');
+                });
+                clipboard.on('error', function(e) {
+                    console.error('Action:', e.action);
+                    console.error('Trigger:', e.trigger);
+                    alert('CSDNGreener 脚本提醒您：评论复制失败，请手动复制！');
+                });
+                $(".comment-hidden-text").click();
+                clipboard.destroy();
+            });
         }
     }, 100);
     NProgress.inc();
