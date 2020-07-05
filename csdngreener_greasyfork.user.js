@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.3.4
+// @version      3.3.5
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-07-05 3.3.5 评论复制功能交互优化
 // @note         20-07-04 3.3.4 修复右侧栏消失的问题
 // @note         20-07-03 3.3.3 新增复制评论功能！删除顶部广告
 // @note         20-06-28 3.3.2 提示修改
@@ -111,7 +112,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.3.4";
+var version = "3.3.5";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -1122,12 +1123,18 @@ function common(num, times) {
                     console.info('Text:', e.text);
                     console.info('Trigger:', e.trigger);
                     e.clearSelection();
-                    alert('CSDNGreener 脚本提醒您：评论复制成功！');
+                    $('.btn-copy').html('成功');
+                    setTimeout(function() {
+                        $('.btn-copy').html('复制评论');
+                    }, 1000);
                 });
                 clipboard.on('error', function(e) {
                     console.error('Action:', e.action);
                     console.error('Trigger:', e.trigger);
-                    alert('CSDNGreener 脚本提醒您：评论复制失败，请手动复制！');
+                    $('.btn-copy').html('失败，请手动复制');
+                    setTimeout(function() {
+                        $('.btn-copy').html('复制评论');
+                    }, 1000);
                 });
                 $(".comment-hidden-text").click();
                 clipboard.destroy();
