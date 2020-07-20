@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.3.6
+// @version      3.3.7
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -17,6 +17,7 @@
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @grant        GM_addStyle
+// @note         20-07-20 3.3.7 修复菜单栏在创作中心显示异常的问题
 // @note         20-07-18 3.3.6 工具箱按钮优化
 // @note         20-07-05 3.3.5 评论复制功能交互优化
 // @note         20-07-04 3.3.4 修复右侧栏消失的问题
@@ -125,7 +126,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.3.6";
+var version = "3.3.7";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -172,6 +173,7 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
         var login = /passport\.csdn\.net/;
         var zone = /me\.csdn\.net/;
         var other = /(www\.csdn\.net\/)/;
+        var mp = /mp\.csdn\.net/;
 
         // 数组初始化
         list = [];
@@ -225,7 +227,7 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             clean(10);
             common(5, 10);
             loop(1);
-        } else if (article.test(currentURL)) {
+        } else if (article.test(currentURL) && !mp.test(currentURL)) {
             l("正在优化阅读体验...");
             // 常规
             // 右侧广告，放到第一个清除
@@ -349,13 +351,110 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             clean(10);
             common(7, 10);
             common(5, 10);
-        } else if (other.test(currentURL)) {
+        } else {
             l("哦豁，好偏门的页面，我来试着优化一下哦...");
             // 常规
             // 展开全文
             $('.readmore_btn').click();
-        } else {
-            e("不受支持的页面!");
+            // *** index ***
+            // 头部广告
+            put(".banner-ad-box");
+            // 嵌入广告
+            put("#kp_box_211");
+            // 右侧广告
+            put(".slide-outer");
+            // 右侧详情
+            put(".persion_article");
+            // 右侧推荐
+            $(".feed_company").parent().remove();
+            // *** article ***
+            // 常规
+            // 右侧广告，放到第一个清除
+            put("#addAdBox");
+            put(".recommend-top-adbox");
+            // 快来写博客吧
+            put(".blog_tip_box");
+            // 推荐关注用户
+            put(".blog-expert-recommend-box");
+            // 右下角VIP
+            put(".meau-gotop-box");
+            // 广告
+            put(".mediav_ad");
+            put(".pulllog-box");
+            put(".recommend-ad-box");
+            put(".box-shadow");
+            put(".type_hot_word");
+            put(".fourth_column");
+            // 广告
+            put("#asideFooter");
+            put("#ad-div");
+            put("#479");
+            put("#480");
+            // 打赏
+            put(".postTime");
+            // 课程推荐
+            put(".t0");
+            // 分享海报
+            put(".shareSuggest");
+            // 底部主题
+            put(".template-box");
+            // 评论区广告
+            put("div#dmp_ad_58");
+            // 打赏
+            put(".reward-user-box");
+            // 右侧打赏按钮
+            put(".to-reward");
+            // 推荐内容广告
+            put(".recommend-recommend-box");
+            // 右侧广告
+            put(".indexSuperise");
+            // 抢沙发角标
+            put(".comment-sofa-flag");
+            // 页jio
+            put(".bottom-pub-footer");
+            // 登录查看未读消息
+            put(".toolbar-notice-bubble");
+            // 右侧广告
+            put(".recommend-top-adbox");
+            // 学院弹出广告
+            $(".fouce_close_btn").click();
+            // 其它
+            // 头部广告
+            put(".banner-ad-box");
+            // 右侧广告
+            put(".slide-outer");
+            // 右侧详情
+            put(".persion_article");
+            // 左侧广告
+            put(".mb8");
+            put("#kp_box_503");
+            put("#kp_box_214");
+            // *** bbs ***
+            // 评论嵌入小广告
+            put(".post_recommend");
+            // 底部推荐
+            put("#post_feed_wrap");
+            // 底部相关文章里面的广告
+            put(".bbs_feed_ad_box");
+            put(".recommend-ad-box");
+            // 底部相关文字里面的热词提示
+            put(".type_hot_word");
+            // 底部蓝色flex属性的广告栏+登录注册框
+            put(".pulllog-box");
+            // 猜你喜欢
+            put(".personalized-recommend-box");
+            // 发帖减半提示
+            put(".totast-box");
+            // 顶部广告
+            put(".recommend-right");
+            // 顶部广告
+            put(".ad_top");
+            // *** download ***
+            put(".fixed_dl");
+            put("indexSuperise");
+            // 右侧推荐
+            put(".content_recom");
+            clean(10);
         }
         setTimeout(function() {
             NProgress.done();
