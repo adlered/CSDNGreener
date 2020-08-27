@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.3.8
+// @version      3.3.9
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -17,6 +17,7 @@
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @grant        GM_addStyle
+// @note         20-08-27 3.3.9 紧急修复由于CSDN前端样式修改导致脚本失效的问题
 // @note         20-08-26 3.3.8 合法脚本提示
 // @note         20-07-20 3.3.7 修复菜单栏在创作中心显示异常的问题
 // @note         20-07-18 3.3.6 工具箱按钮优化
@@ -127,7 +128,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.3.8";
+var version = "3.3.9";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -209,6 +210,8 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             put(".persion_article");
             // 右侧推荐
             $(".feed_company").parent().remove();
+            // 广告轮播
+            put(".el-carousel__container");
             clean(10);
             common(5, 10);
             loop(1);
@@ -715,7 +718,7 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star，支持我继续维护脚本 :)</a>';
             configHTML += '<br>';
-		
+
             // configHTML += '<a href="https://doc.stackoverflow.wiki/web/#/21?page_id=138" target="_blank" style="margin-top: 5px; display: block;">' + donate_svg + ' 我是老板，投币打赏</a>';
             configHTML += '</div><div id="fade" class="black_overlay"></div>';
             // 绿化器设定
@@ -1089,7 +1092,7 @@ function common(num, times) {
         } else if (num === 7) {
             $(".me_r")[1].remove();
         } else if (num === 8) {
-            $(".article-bar-top").append("<br>");
+            /* $(".article-bar-top").append("<br>");
             $(".article-bar-top").append($(".aside-box-footerClassify").children("dd").html());
             $("dl").each(function (index, element) {
                 var key = $(this).children("dt");
@@ -1106,7 +1109,7 @@ function common(num, times) {
             function addInfo(key, value) {
                 var bind = key.html() + "&nbsp;" + value.html() + "&nbsp;&nbsp;";
                 $(".article-bar-top").append(bind + " ");
-            }
+            } */
             $(".blog_container_aside").remove();
 
             // 标题消息提醒去除
