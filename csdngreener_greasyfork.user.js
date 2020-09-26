@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.4.0
+// @version      3.4.1
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-09-26 3.4.1 修改排版设定，修复登录框弹出的问题
 // @note         20-09-24 3.4.0 紧急修复由于CSDN前端样式修改导致设定开关丢失的问题
 // @note         20-08-27 3.3.9 紧急修复由于CSDN前端样式修改导致脚本失效的问题
 // @note         20-08-26 3.3.8 合法脚本提示
@@ -117,7 +118,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.4.0";
+var version = "3.4.1";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -332,7 +333,8 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             // 广告轮播
             put(".el-carousel__container");
             clean(10);
-            common(5, 10);
+            // common(5, 10);
+            loop(3);
             loop(1);
         } else if ((blog.test(currentURL) && blockURL === 4) || blog2.test(currentURL)) {
             l("正在优化个人博客主页体验...");
@@ -348,7 +350,8 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             put("#kp_box_503");
             put("#kp_box_214");
             clean(10);
-            common(5, 10);
+            // common(5, 10);
+            loop(3);
             loop(1);
         } else if (article.test(currentURL) && !mp.test(currentURL)) {
             l("正在优化阅读体验...");
@@ -451,7 +454,8 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             clean(10);
             // 展开
             common(3, 50);
-            common(5, 10);
+            // common(5, 10);
+            loop(3);
         } else if (download.test(currentURL)) {
             l("正在优化下载页体验...");
             // 常规
@@ -460,20 +464,23 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             // 右侧推荐
             put(".content_recom");
             clean(10);
-            common(5, 10);
+            // common(5, 10);
+            loop(3);
         } else if (login.test(currentURL)) {
             l("正在优化登录页体验...");
             // 常规
             // 登录界面大图广告
             put(".main-tu");
             clean(10);
-            common(5, 10);
+            // common(5, 10);
+            loop(3);
         } else if (zone.test(currentURL)) {
             l("正在优化个人空间体验...");
             // 常规
             clean(10);
             common(7, 10);
-            common(5, 10);
+            // common(5, 10);
+            loop(3);
         } else {
             l("哦豁，好偏门的页面，我来试着优化一下哦...");
             // 常规
@@ -647,6 +654,12 @@ function loop(num) {
             $("div.comment-list-box").css("max-height", "none");
             // 屏蔽您的缩放不是100%的提示
             $('.leftPop').remove();
+        } else if (num == 3) {
+            // 循环删除登录提示框
+            // 改回背景颜色
+            $(".login-mark").remove();
+            // 删除登录框
+            $(".login-box").remove();
         }
     }, 500);
 }
@@ -763,7 +776,7 @@ function common(num, times) {
                 $("csdn-side-toolbar").css("left", "auto")
             } else if (lgCookie) {
                 // Large Screen Mode
-                // DO NOTHING
+                $(".container").css("margin", "0 auto")
             }
 
             // 屏幕尺寸单选监听
@@ -793,10 +806,10 @@ function common(num, times) {
             configHTML += '<div><a style="font-size: 20px;" href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener</a> <sup>V' + version + '</sup></div>官方 QQ 交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
 
             // 设定：推荐内容按钮
-            configHTML += '<p style="margin-bottom: 5px"><b>根据屏幕尺寸，适配版式</b><br><span style="font-size: 5px;">建议逐个尝试后选择适合你的版式，屏幕过小或者版式选择不正确右侧栏可能没有空间显示。</span></p>';
-            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-sm" /> 小屏幕 </label>';
-            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-md" /> 中屏幕 </label>';
-            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-lg" /> 大屏幕</label>';
+            configHTML += '<p style="margin-bottom: 5px"><b>根据屏幕尺寸，适配版式</b><br><span style="font-size: 5px;">建议逐个尝试后选择适合你的版式，屏幕过小或者版式选择不正确右侧栏可能没有空间显示（请尝试调节浏览器缩放）。</span></p>';
+            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-sm" /> 平铺模式 </label>';
+            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-md" /> 适应模式 </label>';
+            configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-lg" /> 居中模式</label>';
             configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
             configHTML += '<p style="margin-bottom: 5px"><b>通用设定</b></p>';
             configHTML += '<input type="checkbox" id="toggle-recommend-button"> <label for="toggle-recommend-button" class="modeLabel">显示推荐内容</label>';
