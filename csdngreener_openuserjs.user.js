@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.4.1
+// @version      3.4.2
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -17,6 +17,7 @@
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @grant        GM_addStyle
+// @note         20-10-20 3.4.2 删除右侧广告
 // @note         20-09-26 3.4.1 修改排版设定，修复登录框弹出的问题
 // @note         20-09-24 3.4.0 紧急修复由于CSDN前端样式修改导致设定开关丢失的问题
 // @note         20-08-27 3.3.9 紧急修复由于CSDN前端样式修改导致脚本失效的问题
@@ -130,7 +131,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.4.1";
+var version = "3.4.2";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -292,6 +293,11 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             put(".toolbar-notice-bubble");
             // 右侧广告
             put(".recommend-top-adbox");
+            // 右侧四个广告
+            put(".programmer1Box")
+            put(".programmer2Box")
+            put(".programmer3Box")
+            put(".programmer4Box")
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
