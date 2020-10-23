@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.4.2
+// @version      3.4.3
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         20-10-23 3.4.3 适应新版CSDN，去除主页和登录页广告，以及登录提示，并移除底部信息
 // @note         20-10-20 3.4.2 删除右侧广告
 // @note         20-09-26 3.4.1 修改排版设定，修复登录框弹出的问题
 // @note         20-09-24 3.4.0 紧急修复由于CSDN前端样式修改导致设定开关丢失的问题
@@ -119,7 +120,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.4.2";
+var version = "3.4.3";
 var currentURL = window.location.href;
 var list;
 var windowTop = 0;
@@ -333,6 +334,10 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             $(".feed_company").parent().remove();
             // 广告轮播
             put(".el-carousel__container");
+            // 顶部横幅
+            put(".toolbar-advert");
+            // 顶栏VIP选项
+            $('.toolbar-subMenu-box').find("[href='https://mall.csdn.net/vip']").parent().remove();
             clean(10);
             // common(5, 10);
             loop(3);
@@ -412,10 +417,16 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             // 右侧广告
             put(".recommend-top-adbox");
             // 右侧四个广告
-            put(".programmer1Box")
-            put(".programmer2Box")
-            put(".programmer3Box")
-            put(".programmer4Box")
+            put(".programmer1Box");
+            put(".programmer2Box");
+            put(".programmer3Box");
+            put(".programmer4Box");
+            // 点赞气泡
+            put(".triplet-prompt");
+            // 顶部横幅
+            put(".toolbar-advert");
+            // 底部信息
+            put(".blog-footer-bottom");
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
@@ -435,6 +446,7 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             common(8, 1);
             // 循环线程开始
             loop(2);
+            loop(3);
         } else if (bbs.test(currentURL)) {
             l("正在优化论坛体验...");
             // 常规
@@ -666,6 +678,8 @@ function loop(num) {
             $(".login-mark").remove();
             // 删除登录框
             $(".login-box").remove();
+            $('#passportbox').remove();
+            $('.login-mark').remove();
         }
     }, 500);
 }
@@ -746,6 +760,8 @@ function common(num, times) {
                     self.remove();
                 }
             });
+            // 顶栏VIP选项
+            $('.toolbar-subMenu-box').find("[href='https://mall.csdn.net/vip']").parent().remove();
         } else if (num == 3) {
             //论坛自动展开
             $(".js_show_topic").click();
