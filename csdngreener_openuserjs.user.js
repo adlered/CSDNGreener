@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      3.4.7
+// @version      3.4.8
 // @description  拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -17,6 +17,7 @@
 // @require      https://cdn.jsdelivr.net/gh/adlered/bolo-solo/src/main/webapp/js/lib/jquery/jquery.showtips.js
 // @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @grant        GM_addStyle
+// @note         21-01-15 3.4.8 保存按钮优化，修复显示创作中心按钮功能失效的问题
 // @note         21-01-15 3.4.7 改进脚本细节，增加广告屏蔽能力，修复绿化按钮错位的问题
 // @note         20-12-25 3.4.6 主页部分嵌入式广告删除
 // @note         20-12-18 3.4.5 修复绿化设定按钮排版不正确的问题
@@ -136,9 +137,11 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.4.7";
+var version = "3.4.8";
 var currentURL = window.location.href;
+if (currentURL.indexOf("?") !== -1) {
 currentURL = currentURL.substring(0, currentURL.indexOf("?"));
+}
 var list;
 var windowTop = 0;
 var startTimeMilli = Date.now();
@@ -775,11 +778,12 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-content-button"> <label for="toggle-content-button" class="modeLabel">显示目录</label>';
             configHTML += '<br>';
-            configHTML += '<button id="save" style="position: absolute; top: 20px; right: 15px;" onclick="location.reload()">' + save_svg + ' 保存并应用</button>';
+            configHTML += '<button id="save1" style="position: absolute; top: 20px; right: 15px;" onclick="location.reload()">' + save_svg + ' 保存并应用</button>';
             configHTML += '<br>';
             configHTML += '<p style="font-size:5px">小提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在官方渠道购买会员体验付费功能。</p>';
             configHTML += '<br>';
             configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star，支持我继续维护脚本 :)</a>';
+            configHTML += '<button id="save2" style="float: right;" onclick="location.reload()">' + save_svg + ' 保存并应用</button>';
             configHTML += '<br>';
 
             // configHTML += '<a href="https://doc.stackoverflow.wiki/web/#/21?page_id=138" target="_blank" style="margin-top: 5px; display: block;">' + donate_svg + ' 我是老板，投币打赏</a>';
@@ -1123,7 +1127,7 @@ function common(num, times) {
             // 创作中心按钮
             let writeBlogCookie = config.get("writeBlog", true);
             if (!writeBlogCookie) {
-                $(".write-bolg-btn").remove();
+                $(".toolbar-btn-write").remove();
             }
             if (writeBlogCookie) {
                 $("#toggle-writeblog-button").prop("checked", true);
