@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.4.6
+// @version      3.4.7
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         21-01-15 3.4.7 改进脚本细节，增加广告屏蔽能力，修复绿化按钮错位的问题
 // @note         20-12-25 3.4.6 主页部分嵌入式广告删除
 // @note         20-12-18 3.4.5 修复绿化设定按钮排版不正确的问题
 // @note         20-12-15 3.4.4 修复了某些子页显示不正常的问题
@@ -123,8 +124,9 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.4.6";
+var version = "3.4.7";
 var currentURL = window.location.href;
+currentURL = currentURL.substring(0, currentURL.indexOf("?"));
 var list;
 var windowTop = 0;
 var startTimeMilli = Date.now();
@@ -345,6 +347,8 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             $('.toolbar-subMenu-box').find("[href='https://mall.csdn.net/vip']").parent().remove();
             clean(10);
             // common(5, 10);
+            // 博客及主页优化
+            common(9, 10);
             loop(3);
             loop(1);
         } else if ((blog.test(currentURL) && blockURL === 4) || blog2.test(currentURL)) {
@@ -441,6 +445,10 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             }, 1500);
             // 主动加入右侧栏
             if ($(".recommend-right").length === 0) {$("#mainBox").after('<div class="recommend-right  align-items-stretch clearfix" id="rightAside"><aside class="recommend-right_aside"><div id="recommend-right" style="height: 100%; position: fixed; top: 52px; overflow: scroll;"></div></aside></div>');}
+            // 上栏按钮删除
+            $(".toolbar-menus > li > a[href='https://edu.csdn.net/']").parent().remove();
+            $(".toolbar-menus > li > a[href='https://live.csdn.net/?utm_source=csdn_toolbar']").parent().remove();
+            $(".toolbar-menus > li > a[href='https://book.csdn.net/']").parent().remove();
             // 绿化设置
             common(6, 1);
             // 屏幕适配
@@ -451,6 +459,8 @@ var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" versi
             common(2, 20);
             // 顶部显示作者信息
             common(8, 1);
+            // 博客及主页优化
+            common(9, 10);
             // 循环线程开始
             loop(2);
             loop(3);
@@ -680,11 +690,15 @@ function loop(num) {
             // 主页广告
             $("li > div > div > h2 > a[href*='https://edu.csdn.net']").parent().parent().parent().parent().remove();
             $("li > div > div > h2 > a[href*='https://marketing.csdn.net']").parent().parent().parent().parent().remove();
+            // 官方脚本横幅
+            $(".toolbar-advert").remove();
         } else if (num === 2) {
             // 评论查看更多展开监听
             $("div.comment-list-box").css("max-height", "none");
             // 屏蔽您的缩放不是100%的提示
             $('.leftPop').remove();
+            // 官方脚本横幅
+            $(".toolbar-advert").remove();
         } else if (num == 3) {
             // 循环删除登录提示框
             // 改回背景颜色
@@ -892,7 +906,7 @@ function common(num, times) {
             $("body").prepend('<div id="light" class="white_content">' + configHTML);
             // 绿化设定
             let htmlOf0 = '<li><a id="greenerSettings" href="javascript:void(0)" style="" onclick="$(window).scrollTop(0);document.getElementById(\'light\').style.display=\'block\';document.getElementById(\'fade\').style.display=\'block\';">' + set_svg + ' 绿化设定</a></li>';
-            $(".toolbar-menus > li").eq(0).before(htmlOf0);
+            $(".toolbar-menus").prepend(htmlOf0);
 
             /** 配置控制 **/
             let config = new Config();
@@ -1308,6 +1322,9 @@ function common(num, times) {
                 $(".comment-hidden-text").click();
                 clipboard.destroy();
             });
+        } else if (num === 9) {
+            // 删除CSDN LOGO悬浮后的二维码
+            $(".toolbar-subMenu > img").parent().remove();
         }
     }, 100);
     NProgress.inc();
