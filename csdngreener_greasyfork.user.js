@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      3.5.0
+// @version      3.5.1
 // @description  ⚡️拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -12,6 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
+// @note         21-03-01 3.5.1 修改文案
 // @note         21-02-06 3.5.0 修复上传资源界面标签选择消失的问题
 // @note         21-01-17 3.4.9 删除文章页和论坛广告，暂时停用右侧栏滚动功能（CSDN限制）
 // @note         21-01-15 3.4.8 保存按钮优化，修复显示创作中心按钮功能失效的问题
@@ -127,7 +128,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "3.5.0";
+var version = "3.5.1";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
 currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -860,7 +861,8 @@ function common(num, times) {
         } else if (num == 6) {
             let did = false;
             let configHTML = '';
-            configHTML += '<div><a style="font-size: 20px;" href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener</a> <sup>V' + version + '</sup></div>官方 QQ 交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
+            configHTML += '<div><a style="font-size: 20px;" href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener</a> <sup>V' + version + '</sup></div>
+		QQ 交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
 
             // 设定：推荐内容按钮
             configHTML += '<p style="margin-bottom: 5px"><b>根据屏幕尺寸，适配版式</b><br><span style="font-size: 5px;">建议逐个尝试后选择适合你的版式，屏幕过小或者版式选择不正确右侧栏可能没有空间显示（请尝试调节浏览器缩放）。</span></p>';
@@ -903,7 +905,7 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<button id="save1" style="position: absolute; top: 20px; right: 15px;" onclick="location.reload()">' + save_svg + ' 保存并应用</button>';
             configHTML += '<br>';
-            configHTML += '<p style="font-size:5px">小提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在官方渠道购买会员体验付费功能。</p>';
+            configHTML += '<p style="font-size:5px">小提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在CSDN官方渠道购买CSDN会员体验付费功能。</p>';
             configHTML += '<br>';
             configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star，支持我继续维护脚本 :)</a>';
             configHTML += '<button id="save2" style="float: right;" onclick="location.reload()">' + save_svg + ' 保存并应用</button>';
