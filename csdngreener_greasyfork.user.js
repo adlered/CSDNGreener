@@ -861,8 +861,7 @@ function common(num, times) {
         } else if (num == 6) {
             let did = false;
             let configHTML = '';
-            configHTML += '<div><a style="font-size: 20px;" href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener</a> <sup>V' + version + '</sup></div>
-		QQ 交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
+            configHTML += '<div><a style="font-size: 20px;" href="https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96" target="_blank">CSDNGreener</a> <sup>V' + version + '</sup></div>官方 QQ 交流群：1042370453&nbsp;&nbsp;&nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="CSDNGreener 用户交流群" title="CSDNGreener 用户交流群"></a><br><br>';
 
             // 设定：推荐内容按钮
             configHTML += '<p style="margin-bottom: 5px"><b>根据屏幕尺寸，适配版式</b><br><span style="font-size: 5px;">建议逐个尝试后选择适合你的版式，屏幕过小或者版式选择不正确右侧栏可能没有空间显示（请尝试调节浏览器缩放）。</span></p>';
