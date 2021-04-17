@@ -888,6 +888,8 @@ function common(num, times) {
             configHTML += '<p style="margin-bottom: 5px"><b>通用设定</b></p>';
             configHTML += '<input type="checkbox" id="toggle-recommend-button"> <label for="toggle-recommend-button" class="modeLabel">显示推荐内容</label>';
             configHTML += '<br>';
+            configHTML += '<input type="checkbox" id="toggle-shop-button"> <label for="toggle-shop-button" class="modeLabel">显示小店</label>';
+            configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-whitetheme-button"> <label for="toggle-whitetheme-button" class="modeLabel">白色主题&Dark Reader兼容模式<br><span style="font-size: 8px;color: #808080;"># 选项作用：开启后可通过Dark Reader插件灵活控制白色与黑暗模式，<a style="color: green;" href="https://chrome.zzzmh.cn/info?token=eimadpbcbfnmbkopoojfekhnkhdbieeh" target="_blank">插件下载地址点我</a></span></label>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-autosize-button"> <label for="toggle-autosize-button" class="modeLabel">宽度自动适应<br><span style="font-size: 8px;color: #808080;"># 选项作用：开启此选项可以在页面宽度缩小时自动切换至小屏模式</span></label>';
@@ -957,6 +959,21 @@ function common(num, times) {
             config.listenButtonAndAction("#toggle-button", "recommend",
                                 function() {$(".recommend-box").slideDown(200);},
                                function() {$(".recommend-box").slideUp(200);});
+            
+            // 显示小店
+            let shopCookie = config.get('shop',false);
+            if(!shopCookie){
+                $("#csdn-shop-window").hide();
+                $("#csdn-shop-window-top").hide();
+            }
+            if (shopCookie) {
+                $("#toggle-shop-button").prop("checked", true);
+            } else {
+                $("#toggle-shop-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-shop-button", "shop",
+                                function() {location.reload();},
+                                function() {location.reload();});
 
             // 提示
             let tipsCookie = config.get("showTip", true);
