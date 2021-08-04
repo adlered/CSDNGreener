@@ -1,4 +1,4 @@
-## CSDNGreener
+## CSDNGreener <a title="Hits" target="_blank" href="https://github.com/88250/hits"><img src="https://hits.b3log.org/adleredRepoCSDNGreener/hits.svg"></a>
 
 ### :heart: [捐助](https://doc.stackoverflow.wiki/web/#/21?page_id=138)特别鸣谢
 
