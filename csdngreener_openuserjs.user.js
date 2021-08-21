@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      4.0.0
+// @version      4.0.1
 // @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,7 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @grant        GM_addStyle
+// @note         21-08-21 4.0.1 去除右侧悬浮栏，优化脚本
 // @note         21-08-20 4.0.0 全新4.0发布！UI美化，代码优化，兼容Firefox，更多排版模式
 // @note         21-08-20 3.5.7 修复无法完整复制、保存csdn的网页会跳转首页的问题
 // @note         21-08-19 3.5.6 自动隐藏底栏功能改为始终隐藏底栏
@@ -146,7 +147,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.0.0";
+var version = "4.0.1";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -215,7 +216,7 @@ class Progress {
         progress = 0;
         NProgress.start();
         $("#greenerProgress").text("绿化中...");
-        $(".toolbar-container-middle").hide();
+        $(".toolbar-search").hide();
     }
 
     setProgress(p) {
@@ -236,13 +237,11 @@ class Progress {
     done() {
         progress = 100;
         NProgress.done();
-        $("#greenerProgress").text("CSDNGreener 已完成优化");
+        $("#greenerProgress").html(protect_svg + ' CSDNGreener 正在守护您的浏览体验');
         setTimeout(function() {
-            $("#greenerSettings").fadeOut(500);
+            $("#greenerProgress").fadeOut(500);
             setTimeout(function() {
-                $("#greenerProgress").text("");
-                $("#greenerSettings").fadeIn(500);
-                $(".toolbar-container-middle").fadeIn(500);
+                $(".toolbar-search").fadeIn(500);
                 if (!isFirefox()) {
                     // 提示
                     let tipsCookie = config.get("showTip", true);
@@ -274,7 +273,7 @@ $('head').append("<style>.giveMeOneStar:hover{color:#FF69B4;}</style>");
 if (isFirefox()) {
     $('head').append("<style>.configContainer label{font-size:15px}.configContainer p{font-size:15px}.giveMeOneStar{font-size:15px}.configContainer .title{font-size:20px}.configContainer .bold{font-weight:bold;margin-bottom:5px}</style>");
 } else {
-    $('head').append("<style>.configContainer label{font-size:5px}.configContainer p{font-size:10px}.giveMeOneStar{font-size:10px}.configContainer .title{font-size:20px}.configContainer .bold{font-weight:bold;margin-bottom:5px}</style>");
+    $('head').append("<style>.configContainer label{font-size:5px}.configContainer p{font-size:10px}.giveMeOneStar{font-size:15px}.configContainer .title{font-size:20px}.configContainer .bold{font-weight:bold;margin-bottom:5px}</style>");
 }
 // SVG
 //var save_svg = '<svg t="1595082650173" class="icon" viewBox="0 0 1075 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2078" width="140" height="140"><path d="M753.763902 685.830244a48.952195 48.952195 0 0 1 49.152-48.702439c81.420488 0 141.162146-65.386146 141.162147-146.057366 0-43.507512-13.037268-82.419512-43.457561-109.243317a142.360976 142.360976 0 0 0-20.280195-14.935415 158.045659 158.045659 0 0 0-11.239025-6.243902l-2.747317-1.298732a155.847805 155.847805 0 0 0-9.191024-3.996097c-1.348683-0.549463-2.697366-0.999024-4.096-1.498537a152.35122 152.35122 0 0 0-8.491707-2.847219c-1.948098-0.599415-3.896195-0.999024-5.844293-1.498537-2.497561-0.599415-4.945171-1.24878-7.492683-1.748293-2.597463-0.499512-5.34478-0.899122-8.042146-1.24878-1.948098-0.249756-3.846244-0.599415-5.844293-0.79922a153.150439 153.150439 0 0 0-14.435903-0.749268c-1.498537 0-2.997073 0.199805-4.545561 0.249756a265.390829 265.390829 0 0 0-5.594536-24.526049c-0.499512-1.998049-1.298732-3.846244-1.898146-5.844292a267.438829 267.438829 0 0 0-5.944196-17.982439c-0.649366-1.798244-1.498537-3.496585-2.197853-5.29483a283.123512 283.123512 0 0 0-7.742439-17.732683L772.745366 269.736585a282.973659 282.973659 0 0 0-9.790439-17.832585C714.302439 171.582439 625.88878 124.878049 524.487805 124.878049c-101.400976 0-189.914537 46.654439-238.517073 126.976-3.496585 5.794341-6.693463 11.788488-9.790439 17.832585l-2.197854 4.096a283.523122 283.523122 0 0 0-7.742439 17.732683l-2.197854 5.244878c-2.247805 5.894244-4.145951 11.988293-5.994146 18.03239-0.549463 1.998049-1.298732 3.846244-1.848195 5.844293a266.739512 266.739512 0 0 0-5.594537 24.476098c-1.498537 0-2.997073-0.199805-4.545561-0.199805-4.89522 0-9.690537 0.299707-14.485853 0.749268-1.998049 0.199805-3.846244 0.499512-5.794342 0.79922-2.697366 0.349659-5.444683 0.699317-8.092097 1.24878-2.497561 0.499512-4.995122 1.148878-7.492683 1.748293-1.898146 0.499512-3.846244 0.899122-5.794342 1.498536a153.649951 153.649951 0 0 0-8.491707 2.797269l-4.096 1.498536a164.289561 164.289561 0 0 0-9.240976 3.996098l-2.697366 1.348683a145.557854 145.557854 0 0 0-31.469268 21.179317C117.884878 408.600976 104.897561 447.562927 104.897561 491.070439c0 80.67122 59.741659 146.057366 141.162146 146.057366a48.952195 48.952195 0 0 1 49.152 48.702439 48.952195 48.952195 0 0 1-49.152 48.702439c-135.717463 0-245.710049-108.993561-245.710048-243.462244 0-109.692878 73.228488-202.402341 173.830243-232.872585A375.832976 375.832976 0 0 1 524.487805 20.330146a375.882927 375.882927 0 0 1 350.307902 237.867708c100.601756 30.470244 173.830244 123.179707 173.830244 232.872585 0 134.468683-109.992585 243.462244-245.710049 243.462244a48.952195 48.952195 0 0 1-49.102048-48.702439z" p-id="2079"></path><path d="M487.973463 386.122927a49.102049 49.102049 0 0 1 72.928781 0.099902l147.356097 162.041756c6.993171 7.742439 11.48878 19.431024 12.537757 30.120586l0.249756 12.937366c0 19.480976-20.48 39.661268-39.211708 39.661268h-104.897561v262.993171a52.44878 52.44878 0 1 1-104.897561 0v-262.993171h-104.897561c-13.886439 0-39.211707-21.72878-39.211707-39.661268v-12.987317c0-12.487805 4.795317-21.27922 12.637659-29.920781l147.356097-162.291512z" p-id="2080"></path></svg>';
@@ -287,6 +286,7 @@ var donate_svg = '<svg t="1592982508258" class="icon" viewBox="0 0 1024 1024" ve
 var set_svg = '<svg t="1592982970375" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10112" width="48" height="48"><path d="M256 102.4h512l256 256-512 563.2L0 358.4z" fill="#26CD63" p-id="10113"></path><path d="M256 102.4l256 256H0zM768 102.4l256 256H512zM512 921.6l204.8-563.2H307.2z" fill="#14A345" p-id="10114"></path></svg>';
 var save_svg = '<svg t="1629448588351" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7849" width="200" height="200"><path d="M512 0C229.2 0 0 229.2 0 512s229.2 512 512 512 512-229.2 512-512S794.8 0 512 0z m0 945.2C273.1 945.2 78.8 750.9 78.8 512S273.1 78.8 512 78.8 945.2 273.1 945.2 512 750.9 945.2 512 945.2z" p-id="7850" fill="#ffffff"></path><path d="M680.9 359.4L461 582.3 341.6 473.6c-16-14.6-41-13.4-55.6 2.6-14.7 16.1-13.5 41 2.6 55.6L436 666.1c7.5 6.8 17 10.2 26.5 10.2 10.2 0 20.3-3.9 28-11.7L737 414.7c15.3-15.5 15.1-40.4-0.4-55.7-15.5-15.2-40.5-15.1-55.7 0.4z" p-id="7851" fill="#ffffff"></path></svg>';
 var settings_svg = '<svg t="1629433360462" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2870" width="200" height="200"><path d="M1006.438 17.548c-0.032 0-430.43-112.966-780.45 237.022-288.99 289.008-33.522 576.966-33.522 576.966s287.958 255.484 576.952-33.55C1119.436 448.012 1006.468 17.612 1006.438 17.548z" fill="#9ED36A" p-id="2871"></path><path d="M1006.438 17.548l-42.674-8.216c0.032 0.062 112.998 438.678-236.99 788.652-96.344 96.406-192.598 132.208-278.104 137.144 95.41 5.5 208-24.368 320.748-137.144C1119.436 448.012 1006.468 17.612 1006.438 17.548z" fill="#FFFFFF" opacity=".2" p-id="2872"></path><path d="M600.406 423.612c-8.308-8.34-21.836-8.34-30.148 0L6.4 987.426c-8.326 8.372-8.326 21.868 0 30.18 8.326 8.308 21.822 8.308 30.162 0L600.406 453.76c8.34-8.342 8.34-21.838 0-30.148z" fill="#8AC054" p-id="2873"></path></svg>';
+var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3212" width="200" height="200"><path d="M800.3 205.1L534.8 116c-16-5.4-33.3-5.3-49.2 0.2l-264.5 92.3c-29.3 10-49 37.5-49.1 68.4l1.7 265.4c0.7 81 31.1 158.9 85.6 218.9 25 27.7 56.9 51.5 97.8 72.7l144 74.6c9 4.7 19.7 4.6 28.7-0.2L672.5 832c40.4-21.6 72.2-45.7 96.9-73.8 53.6-60.6 83-138.9 82.6-219.8l-1.7-265.6c-0.5-30.9-20.5-58.1-50-67.7z" fill="#07C160" p-id="3213"></path><path d="M474.1 652c-7.1 0-13.8-2.8-18.9-7.8l-151-151.1c-10.4-10.4-10.4-27.4 0-37.8s27.4-10.4 37.8 0l132.1 132.2 207.7-207.7c10.4-10.4 27.4-10.4 37.8 0 10.4 10.4 10.4 27.4 0 37.8L493 644.2c-5 5-11.8 7.8-18.9 7.8z" fill="#FFFFFF" p-id="3214"></path></svg>';
 
 // jquery.showtips.js
 (function(jQuery) {
@@ -529,7 +529,8 @@ var settings_svg = '<svg t="1629433360462" class="icon" viewBox="0 0 1024 1024" 
             // 绿化设定
             if (isFirefox()) {
                 setTimeout(function() {
-                    let htmlOf0 = '<div class="toolbar-btn csdn-toolbar-fl"><a id="greenerSettings" href="javascript:void(0)" onclick="showConfig();">' + settings_svg + ' <span id="greenerProgress"></span></a></div>';
+                    $(".toolbar-container-middle").prepend("<div id='greenerProgress' style='text-align:right'></div>");
+                    let htmlOf0 = '<div class="toolbar-btn csdn-toolbar-fl"><a id="greenerSettings" title="点击打开 CSDNGreener 绿化设定" href="javascript:void(0)" onclick="showConfig();">' + settings_svg + '</a></div>';
                     $(".toolbar-btns").prepend(htmlOf0);
                     if (isFirefox()) {
                         // 提示
@@ -541,7 +542,8 @@ var settings_svg = '<svg t="1629433360462" class="icon" viewBox="0 0 1024 1024" 
                     }
                 }, 3000);
             } else {
-                let htmlOf0 = '<div class="toolbar-btn csdn-toolbar-fl"><a id="greenerSettings" href="javascript:void(0)" onclick="showConfig();">' + settings_svg + ' <span id="greenerProgress"></span></a></div>';
+                $(".toolbar-container-middle").prepend("<div id='greenerProgress' style='text-align:right'></div>");
+                let htmlOf0 = '<div class="toolbar-btn csdn-toolbar-fl"><a id="greenerSettings" title="点击打开 CSDNGreener 绿化设定" href="javascript:void(0)" onclick="showConfig();">' + settings_svg + '</a></div>';
                 $(".toolbar-btns").prepend(htmlOf0);
             }
             // 常规
@@ -617,6 +619,8 @@ var settings_svg = '<svg t="1629433360462" class="icon" viewBox="0 0 1024 1024" 
             put(".recommend-tit-mod");
             // 红包提醒
             put(".csdn-redpack-lottery-btn-box");
+            // 右侧悬浮栏
+            put(".csdn-side-toolbar");
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
@@ -1004,7 +1008,6 @@ function common(num, times) {
             if (smCookie) {
                 // Small Screen Mode
                 $(".main_father").removeClass("justify-content-center");
-                $("csdn-side-toolbar").css("left", "auto")
                 GM_addStyle(`
                 main{
                     width: auto!important;
@@ -1021,7 +1024,6 @@ function common(num, times) {
             } else if (mdCookie) {
                 // Middle Screen Mode
                 $(".main_father").removeClass("justify-content-center");
-                $("csdn-side-toolbar").css("left", "auto")
             } else if (lgCookie) {
                 // Large Screen Mode
                 $(".container").css("margin", "0 auto")
@@ -1030,7 +1032,6 @@ function common(num, times) {
                 $(".recommend-right").remove();
                 $(".container").css("width", "100%");
                 $(".container > main").css("width", "100%");
-                $(".csdn-side-toolbar").remove();
             }
 
             // 屏幕尺寸单选监听
@@ -1121,8 +1122,8 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-content-button"> <label for="toggle-content-button" class="modeLabel">显示目录</label>';
             configHTML += '<br><br>';
-            configHTML += '<p>小提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在CSDN官方渠道购买CSDN会员体验付费功能。</p>';
-            configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star 和关注，支持我继续维护脚本 :)</a>';
+            configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star 和关注，支持我继续维护脚本 :)</a><br><br>';
+            configHTML += '<p>特别提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在CSDN官方渠道购买CSDN会员体验付费功能。</p>';
             configHTML += '<br>';
 
             // configHTML += '<a href="https://doc.stackoverflow.wiki/web/#/21?page_id=138" target="_blank" style="margin-top: 5px; display: block;">' + donate_svg + ' 我是老板，投币打赏</a>';
@@ -1188,7 +1189,7 @@ function common(num, times) {
                                function() {location.reload();});
 
             // 强制白色主题
-            let whiteThemeCookie = config.get("whiteTheme", true);
+            let whiteThemeCookie = config.get("whiteTheme", false);
             if (whiteThemeCookie) {
                 // 背景删除
                 $('.main_father').attr('style', 'background-image: none !important; background-color: #f5f6f7; background: #f5f6f7;');
@@ -1392,7 +1393,6 @@ function common(num, times) {
                     if (window.innerWidth < 1100) {
                         // 删除原有响应式样式
                         $(".main_father").removeClass("justify-content-center");
-                        $("csdn-side-toolbar").css("left", "auto")
                         $("article").width(window.innerWidth - 150);
                         GM_addStyle(`
                         main{
