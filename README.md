@@ -1,6 +1,5 @@
 <p align=center>
-  <img src="https://user-images.githubusercontent.com/6754458/130753211-569406e4-f495-49fe-a583-29894e6d92f4.png"/>
-  <br>
+  <img src="https://user-images.githubusercontent.com/6754458/130888102-4b7b35b4-6532-4967-90df-118123ee8653.png"/>
   <a title="Hits" target="_blank" href="https://github.com/88250/hits"><img src="https://hits.b3log.org/adlered/CSDNGreener.svg"></a>
   <img src="https://img.shields.io/github/stars/adlered/CSDNGreener?style=flat-square"/>
   <img src="https://img.shields.io/github/contributors/adlered/CSDNGreener?style=flat-square"/>
