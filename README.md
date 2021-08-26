@@ -18,18 +18,19 @@
 ### :iphone: 兼容性
 
 CSDNGreener 是一个优化 CSDN 广告、使用体验的脚本，有口皆碑。  
-在使用脚本之前，你需要为浏览器安装油猴（Tampermonkey）插件。  
+在使用脚本之前，你需要为浏览器安装脚本管理器插件。  
 经过测试，我们确定兼容以下浏览器和插件用于安装此脚本。
 
-#### :globe_with_meridians: 浏览器支持
+#### :globe_with_meridians: 浏览器支持（任选其一即可）
 
-* Chrome 或 基于 Chromium 内核的浏览器 (Edge、360浏览器、CentBrowser等) <sup>*推荐</sup>
+* Chrome 或 基于 Chromium 内核的浏览器 (Edge、360浏览器、CentBrowser等) <sup>*推荐</sup>  
 * Firefox <sup>*功能兼容，但并非最佳性能</sup>
 
-#### :see_no_evil: 浏览器要求安装插件
+#### :see_no_evil: 浏览器需要安装的脚本管理器插件（任选其一即可）
 
-* Tampermonkey <sup>*<a href="https://www.tampermonkey.net/">插件安装链接</a></sup>
-
+* Tampermonkey (新油猴) <sup>*<a href="https://www.tampermonkey.net/">插件安装链接</a></sup>  
+* Violentmonkey (暴力猴) <sup>*<a href="https://violentmonkey.github.io/get-it/">插件安装链接</a></sup>  
+<sub>注：Greasemonkey (旧油猴) 由于过于古老，无法支援该脚本。</sub>
 
 #### :test_tube: 支持的操作系统
 
