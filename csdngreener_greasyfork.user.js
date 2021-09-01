@@ -12,7 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
-// @antifeature  tracking 我们会收集您对脚本的使用情况帮助我们改进CSDNGreener，但不含任何隐私内容，代码开源可审计，请您放心安装脚本。
+// @antifeature  tracking ============================================>>> 说明：我们仅会在CSDN页面收集您使用CSDNGreener的情况，帮助我们了解CSDNGreener的用户数量。这个操作仅会收集您的IP地址信息，不包含您鼠标、键盘点击在内的所有操作，没有任何安全风险，不会产生性能损耗。为了保护您的知情权以及使用体验，特告知于您。代码开源可审计，CSDNGreener老牌脚本，有口皆碑。请您放心安装。 <<<============================================
 // @note         21-09-01 4.0.3 增加用户使用情况统计模块
 // @note         21-08-25 4.0.2 修复右侧置顶栏按钮消失的问题
 // @note         21-08-21 4.0.1 去除右侧悬浮栏，优化脚本
