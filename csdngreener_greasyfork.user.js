@@ -12,8 +12,7 @@
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
-// @note         CSDNGreener 会收集用户的使用情况，但不会收集您的任何隐私内容，我们保证，请放心。
-// @antifeature  tracking
+// @antifeature  tracking 我们会收集您对脚本的使用情况帮助我们改进CSDNGreener，但不含任何隐私内容，代码开源可审计，请您放心安装脚本。
 // @note         21-09-01 4.0.3 增加用户使用情况统计模块
 // @note         21-08-25 4.0.2 修复右侧置顶栏按钮消失的问题
 // @note         21-08-21 4.0.1 去除右侧悬浮栏，优化脚本
