@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      4.0.2
+// @version      4.0.3
 // @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -16,6 +16,8 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @grant        GM_addStyle
+// @antifeature  tracking 我们会收集您对脚本的使用情况帮助我们改进CSDNGreener，但不含任何隐私内容，代码开源可审计，请您放心安装脚本。
+// @note         21-09-01 4.0.3 增加用户使用情况统计模块
 // @note         21-08-25 4.0.2 修复右侧置顶栏按钮消失的问题
 // @note         21-08-21 4.0.1 去除右侧悬浮栏，优化脚本
 // @note         21-08-20 4.0.0 全新4.0发布！UI美化，代码优化，兼容Firefox，更多排版模式
@@ -148,7 +150,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.0.2";
+var version = "4.0.3";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -829,6 +831,11 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
         }, 0);
         stopTimeMilli = Date.now();
         l("优化完毕! 耗时 " + (stopTimeMilli - startTimeMilli) + "ms");
+        // 延迟嵌入用户使用脚本情况JS，不影响性能
+        $("head").append('<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>');
+        setTimeout(function() {
+            $("head").append('<script>LA.init({id: "JQTDiOVZ2pRjGa1K",ck: "JQTDiOVZ2pRjGa1K"})</script>');
+        }, 2000);
     }, 0);
 })();
 
