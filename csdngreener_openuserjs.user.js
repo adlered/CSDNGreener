@@ -16,6 +16,8 @@
 // @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
 // @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
 // @grant        GM_addStyle
+// @grant        GM_setValue
+// @grant        GM_getValue
 // @antifeature  tracking 我们会收集您对脚本的使用情况帮助我们改进CSDNGreener，但不含任何隐私内容，代码开源可审计，请您放心安装脚本。
 // @note         21-09-20 4.0.5 增加自定义背景功能
 // @note         21-09-13 4.0.4 增加一个没有收钱的广告（在设置里，不影响体验）
