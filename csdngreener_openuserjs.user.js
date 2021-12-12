@@ -641,7 +641,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             // 红包提醒
             put(".csdn-redpack-lottery-btn-box");
             // 学生认证
-            put(".csdn-highschool-window")
+            put(".csdn-highschool-window");
             // 右侧悬浮栏除置顶以外的按钮
             put(".option-box[data-type='guide'],.option-box[data-type='cs'],.option-box[data-type='report'],.csdn-common-logo-advert");
             clean(10);
