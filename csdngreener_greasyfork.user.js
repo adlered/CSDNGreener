@@ -6,9 +6,9 @@
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
-// @require      https://cdn.jsdelivr.net/npm/jquery.cookie/jquery.cookie.js
-// @require      https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js
-// @require      https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js
+// @require      https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
+// @require      https://cdn.bootcdn.net/ajax/libs/nprogress/0.2.0/nprogress.js
+// @require      https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.8/clipboard.min.js
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
