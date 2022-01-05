@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      4.0.8
+// @version      4.0.9
 // @description  ⚡️全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥自定义背景图，分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -15,6 +15,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @antifeature  tracking ============================================>>> 说明：我们仅会在CSDN页面收集您使用CSDNGreener的情况，帮助我们了解CSDNGreener的用户数量。这个操作仅会收集您的IP地址信息，不包含您鼠标、键盘点击在内的所有操作，没有任何安全风险，不会产生性能损耗。为了保护您的知情权以及使用体验，特告知于您。代码开源可审计，CSDNGreener老牌脚本，有口皆碑。请您放心安装。 <<<============================================
+// @note         22-01-05 4.0.9 更新广告
 // @note         21-12-12 4.0.8 屏蔽学生认证
 // @note         21-10-21 4.0.7 屏蔽红包雨
 // @note         21-09-24 4.0.6 修复登录弹窗无法彻底去除的问题
@@ -146,7 +147,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.0.8";
+var version = "4.0.9";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -1137,7 +1138,7 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-content-button"> <label for="toggle-content-button" class="modeLabel">显示目录</label>';
             configHTML += '<br><br>';
-            configHTML += '<div><h6>没有收钱的广告</h6><p>（因为是作者本人建设的社区～</p><p>社区建设初期免费升级永久超级会员分组，欢迎小伙伴们一起来玩！</p><a href="https://pwl.icu" target="_blank"><img src="https://z3.ax1x.com/2021/09/13/49LTaQ.png" style="width:100%;height:100%;"/></a></div>';
+            configHTML += '<div><h6>没有收钱的广告</h6><p>（因为是作者本人建设的社区～</p><p>社区中聚集了同行业的大佬小白，欢迎小伙伴们一起摸鱼！</p><a href="https://fishpi.cn" target="_blank"><img src="https://s2.loli.net/2022/01/05/1HpBZUraMcR8ist.png" style="width:100%;height:100%;"/></a></div>';
             configHTML += '<br>';
             configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star 和关注，支持我继续维护脚本 :)</a><br><br>';
             configHTML += '<p>特别提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在CSDN官方渠道购买CSDN会员体验付费功能。</p>';
