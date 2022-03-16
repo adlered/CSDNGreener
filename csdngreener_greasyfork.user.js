@@ -850,6 +850,8 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             $("head").append('<script>LA.init({id: "JQTDiOVZ2pRjGa1K",ck: "JQTDiOVZ2pRjGa1K"})</script>');
         }, 2000);
     }, 0);
+
+    removeMask()
 })();
 
 function l(log) {
@@ -1636,4 +1638,13 @@ function getHeight(element) {
 
 function isFirefox() {
     return navigator.userAgent.indexOf("Firefox") > 0;
+}
+
+// 关闭防复制限制
+function removeMask(){
+    for (let v of document.getElementsByTagName("style")) {
+        if(v.innerText&&v.innerText.indexOf("pre")>-1){
+            document.getElementsByTagName("head")[0].removeChild(v)
+        }
+    }
 }
