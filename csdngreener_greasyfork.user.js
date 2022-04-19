@@ -1084,7 +1084,7 @@ function common(num, times) {
                 if ($(this).attr('href') === 'https://passport.csdn.net/account/login') {
                     // 未登录删除无用按钮
                     $("a:contains('会员中心')").parent().remove();
-                    $("a:contains('收藏')").parent()[0].remove();
+                    //$("a:contains('收藏')").parent()[0].remove();
                     $("a:contains('动态')").parent().remove();
                     $("a:contains('创作')").parent().remove();
                 }
