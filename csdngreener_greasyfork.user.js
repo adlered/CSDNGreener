@@ -1,20 +1,21 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      4.1.0
+// @version      4.1.1
 // @description  ⚡️全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥自定义背景图，分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
-// @require      https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js
-// @require      https://cdn.bootcdn.net/ajax/libs/nprogress/0.2.0/nprogress.js
-// @require      https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.8/clipboard.min.js
+// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-cookie/1.4.1/jquery.cookie.min.js
+// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/nprogress/0.2.0/nprogress.min.js
+// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/clipboard.js/2.0.10/clipboard.min.js
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @antifeature  tracking ============================================>>> 说明：我们仅会在CSDN页面收集您使用CSDNGreener的情况，帮助我们了解CSDNGreener的用户数量。这个操作仅会收集您的IP地址信息，不包含您鼠标、键盘点击在内的所有操作，没有任何安全风险，不会产生性能损耗。为了保护您的知情权以及使用体验，特告知于您。代码开源可审计，CSDNGreener老牌脚本，有口皆碑。请您放心安装。 <<<============================================
+// @note         22-05-30 4.1.1 功能修复，广告屏蔽
 // @note         22-01-18 4.1.0 代码折叠适配
 // @note         22-01-05 4.0.9 更新广告
 // @note         21-12-12 4.0.8 屏蔽学生认证
@@ -148,7 +149,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.1.0";
+var version = "4.1.1";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -471,6 +472,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
         var zone = /me\.csdn\.net/;
         var other = /(www\.csdn\.net\/)/;
         var mp = /mp\.csdn\.net/;
+        var article_month = /article\/month/;
 
         // 数组初始化
         list = [];
@@ -536,7 +538,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             // common(5, 10);
             loop(3);
             loop(1);
-        } else if (article.test(currentURL) && !mp.test(currentURL)) {
+        } else if (article.test(currentURL) && !mp.test(currentURL) && !article_month.test(currentURL)) {
             l("正在优化阅读体验...");
             // 绿化设定
             if (isFirefox()) {
@@ -634,7 +636,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             // 学生认证
             put(".csdn-highschool-window");
             // 右侧悬浮栏除置顶以外的按钮
-            put(".option-box[data-type='guide'],.option-box[data-type='cs'],.option-box[data-type='report'],.csdn-common-logo-advert");
+            put(".option-box[data-type='guide'],.option-box[data-type='cs'],.csdn-common-logo-advert");
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
@@ -664,6 +666,8 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             //$("#toolbar-search-input").css("width", "calc(100% - 400px)");
             // 取消代码折叠
             $(".look-more-preCode").click();
+            // 询问推荐是否有意义的问卷调查
+            $("#recommendNps").remove();
             // 绿化设置
             common(6, 1);
             // 屏幕适配
@@ -850,8 +854,6 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             $("head").append('<script>LA.init({id: "JQTDiOVZ2pRjGa1K",ck: "JQTDiOVZ2pRjGa1K"})</script>');
         }, 2000);
     }, 0);
-
-    removeMask()
 })();
 
 function l(log) {
@@ -962,15 +964,13 @@ function common(num, times) {
             if ($(".recommend-box").length > 1) {
                 $(".recommend-box")[0].remove();
             }
-            // 去外链
-            $("#content_views").off();
             // 去除推广广告
             $("li[data-type='ad']").remove();
             // 免登录复制
             $(".hljs-button").removeClass("signin");
             $(".hljs-button").addClass("{2}");
             $(".hljs-button").attr("data-title", "免登录复制");
-            $(".hljs-button").attr("onclick", "hljs.copyCode(event)");
+            $(".hljs-button").attr("onclick", "hljs.copyCode(event);setTimeout(function(){$('.hljs-button').attr('data-title', '免登录复制');},3500);");
             // 去除剪贴板劫持
             $("code").attr("onclick", "mdcp.copyCode(event)");
             try {
@@ -1004,6 +1004,10 @@ function common(num, times) {
                 let self = $(this);
                 let dataType = self.attr('data-sub-menu-type');
                 if (dataType === 'vip') {
+                    self.remove();
+                }
+                let dataTitle = self.attr('title');
+                if (dataTitle === '高价值源码课程分享' || dataTitle === '系统学习·问答·比赛' || dataTitle === '简单高效优惠的云服务') {
                     self.remove();
                 }
             });
@@ -1084,9 +1088,11 @@ function common(num, times) {
                 if ($(this).attr('href') === 'https://passport.csdn.net/account/login') {
                     // 未登录删除无用按钮
                     $("a:contains('会员中心')").parent().remove();
-                    $("a:contains('收藏')").parent()[0].remove();
+                    $("a:contains('收藏')").remove();
                     $("a:contains('动态')").parent().remove();
                     $("a:contains('创作')").parent().remove();
+                    $(".toolbar-btn-collect").remove();
+                    $(".btn-write-new").remove();
                 }
             });
         } else if (num == 5) {
@@ -1143,8 +1149,8 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-content-button"> <label for="toggle-content-button" class="modeLabel">显示目录</label>';
             configHTML += '<br><br>';
-            configHTML += '<div><h6>没有收钱的广告</h6><p>（因为是作者本人建设的社区～</p><p>社区中聚集了同行业的大佬小白，欢迎小伙伴们一起摸鱼！</p><a href="https://fishpi.cn" target="_blank"><img src="https://s2.loli.net/2022/01/05/1HpBZUraMcR8ist.png" style="width:100%;height:100%;"/></a></div>';
-            configHTML += '<br>';
+            configHTML += '<div><h6>没有收钱的广告</h6><p>我家香港CN2 10M主机一个月29（也有国内高防主机），高防CDN国内外节点都有（香港节点免备案），非常适合小站长以及长期被攻击的网站哦 :)</p><a href="https://www.tsyvps.com/aff/HEHTPGYL" target="_blank"><img src="https://ftp.stackoverflow.wiki/bolo/ad.png" style="max-width: 500px;"></a></div><br>';
+            configHTML += '<div><h6>没有收钱的广告 2</h6><p>（作者本人建设的社区～</p><p>社区中聚集了同行业的大佬小白，欢迎小伙伴们一起摸鱼！</p><a href="https://fishpi.cn" target="_blank"><img src="https://s2.loli.net/2022/01/05/1HpBZUraMcR8ist.png" style="width:100%;height:100%;"/></a></div>';
             configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star 和关注，支持我继续维护脚本 :)</a><br><br>';
             configHTML += '<p>特别提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在CSDN官方渠道购买CSDN会员体验付费功能。</p>';
             configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
@@ -1640,11 +1646,3 @@ function isFirefox() {
     return navigator.userAgent.indexOf("Firefox") > 0;
 }
 
-// 关闭防复制限制
-function removeMask(){
-    for (let v of document.getElementsByTagName("style")) {
-        if(v.innerText&&v.innerText.indexOf("pre")>-1){
-            document.getElementsByTagName("head")[0].removeChild(v)
-        }
-    }
-}
