@@ -14,7 +14,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @antifeature  tracking ============================================>>> 说明：我们仅会在CSDN页面收集您使用CSDNGreener的情况，帮助我们了解CSDNGreener的用户数量。这个操作仅会收集您的IP地址信息，不包含您鼠标、键盘点击在内的所有操作，没有任何安全风险，不会产生性能损耗。为了保护您的知情权以及使用体验，特告知于您。代码开源可审计，CSDNGreener老牌脚本，有口皆碑。请您放心安装。 <<<============================================
+// @note         22-06-07 4.1.2 尝试去除用户跟踪功能
 // @note         22-05-30 4.1.1 功能修复，广告屏蔽
 // @note         22-01-18 4.1.0 代码折叠适配
 // @note         22-01-05 4.0.9 更新广告
@@ -848,11 +848,6 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
         }, 0);
         stopTimeMilli = Date.now();
         l("优化完毕! 耗时 " + (stopTimeMilli - startTimeMilli) + "ms");
-        // 延迟嵌入用户使用脚本情况JS，不影响性能
-        $("head").append('<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>');
-        setTimeout(function() {
-            $("head").append('<script>LA.init({id: "JQTDiOVZ2pRjGa1K",ck: "JQTDiOVZ2pRjGa1K"})</script>');
-        }, 2000);
     }, 0);
 })();
 
@@ -1624,7 +1619,7 @@ function common(num, times) {
 
 function showTips() {
 	var config = {
-		content: "欢迎使用 CSDNGreener，绿化设定按钮在这里！<br><a onclick='javascript:$(\".trips\").remove();'>好的，以后不再提示我</a>",
+		content: "欢迎使用去除了用户信息收集功能的 CSDNGreener，绿化设定按钮在这里！<br><a onclick='javascript:$(\".trips\").remove();'>好的，以后不再提示我</a>",
 		type: "html",
 		alignTo: ["bottom", "right"],
 		trigger: "show",
