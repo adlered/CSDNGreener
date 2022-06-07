@@ -19,7 +19,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @antifeature  tracking 我们会收集您对脚本的使用情况帮助我们改进CSDNGreener，但不含任何隐私内容，代码开源可审计，请您放心安装脚本。
+// @note         22-06-07 4.1.2 尝试去除用户跟踪功能
 // @note         22-05-30 4.1.1 功能修复，广告屏蔽
 // @note         22-01-18 4.1.0 代码折叠适配
 // @note         22-01-05 4.0.9 更新广告
@@ -860,11 +860,6 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
         }, 0);
         stopTimeMilli = Date.now();
         l("优化完毕! 耗时 " + (stopTimeMilli - startTimeMilli) + "ms");
-        // 延迟嵌入用户使用脚本情况JS，不影响性能
-        $("head").append('<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>');
-        setTimeout(function() {
-            $("head").append('<script>LA.init({id: "JQTDiOVZ2pRjGa1K",ck: "JQTDiOVZ2pRjGa1K"})</script>');
-        }, 2000);
     }, 0);
 })();
 
@@ -1636,7 +1631,7 @@ function common(num, times) {
 
 function showTips() {
 	var config = {
-		content: "欢迎使用 CSDNGreener，绿化设定按钮在这里！<br><a onclick='javascript:$(\".trips\").remove();'>好的，以后不再提示我</a>",
+		content: "欢迎使用去除了用户信息收集功能的 CSDNGreener，绿化设定按钮在这里！<br><a onclick='javascript:$(\".trips\").remove();'>好的，以后不再提示我</a>",
 		type: "html",
 		alignTo: ["bottom", "right"],
 		trigger: "show",
