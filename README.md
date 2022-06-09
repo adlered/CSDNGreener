@@ -1,18 +1,19 @@
 <p align=center>
   <img src="https://user-images.githubusercontent.com/6754458/130888102-4b7b35b4-6532-4967-90df-118123ee8653.png"/>
   <br>
-  <a title="Hits" target="_blank" href="https://github.com/88250/hits"><img src="https://hits.b3log.org/adlered/CSDNGreener.svg"></a>
-  <img src="https://img.shields.io/github/stars/adlered/CSDNGreener?style=flat-square"/>
-  <img src="https://img.shields.io/github/contributors/adlered/CSDNGreener?style=flat-square"/>
-  <img src="https://img.shields.io/github/commit-activity/y/adlered/CSDNGreener?style=flat-square"/>
-  <img src="https://img.shields.io/github/last-commit/adlered/CSDNGreener?style=flat-square"/>
+  <a title="Hits" target="_blank" href="https://github.com/88250/hits"><img src="https://hits.b3log.org/UjhhgtgTeams/CSDNGreener.svg"></a>
+  <img src="https://img.shields.io/github/stars/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
+  <img src="https://img.shields.io/github/contributors/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
+  <img src="https://img.shields.io/github/commit-activity/y/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
+  <img src="https://img.shields.io/github/last-commit/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
   <br>
-  <img src="https://img.shields.io/github/issues/adlered/CSDNGreener?style=flat-square"/>
-  <img src="https://img.shields.io/github/issues-pr/adlered/CSDNGreener?style=flat-square"/>
-  <img src="https://img.shields.io/github/watchers/adlered/CSDNGreener?style=flat-square"/>
-  <img src="https://img.shields.io/github/issues-closed/adlered/CSDNGreener?style=flat-square"/>
+  <img src="https://img.shields.io/github/issues/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
+  <img src="https://img.shields.io/github/issues-pr/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
+  <img src="https://img.shields.io/github/watchers/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
+  <img src="https://img.shields.io/github/issues-closed/UjhhgtgTeams/CSDNGreener?style=flat-square"/>
   <br>
-  CSDNGreener，一款专为 Tampermonkey 插件打造的 CSDN 绿化脚本。
+  CSDNGreener，一款专为 Tampermonkey 插件打造的 CSDN 绿化脚本。<br>
+  该 Fork 不含原脚本的使用情况统计。
 </p>
 
 ### :iphone: 兼容性
@@ -71,16 +72,3 @@ var version = "1.1.9";
 ```
 // @note         19-06-04 1.1.9 （更新描述）
 ```
-
-### :heart: [捐助](https://doc.stackoverflow.wiki/web/#/21?page_id=138)特别鸣谢
-
-| 捐助者 | 渠道 | 时间 | 作者寄语 |
-| ------ | ------ |  ------ | ------ |
-| *\*朋 | 支付宝 | 2020年06月08日 14:52 | 感谢你的匿名捐助！ |
-| *羽 | 微信 | 2020年06月12日 10:48 | 感谢你的匿名捐助！ |
-| *阳 | 微信 | 2020年06月12日 10:59 | 感谢你的匿名捐助！ |
-| *\*霖 | 支付宝 | 2020年06月17日 09:53 | 感谢你的匿名捐助！ |
-| *\*辉 | 支付宝 | 2020年06月19日 14:44 | 感谢你的匿名捐助！ |
-| *洋 | 支付宝 | 2020年06月19日 23:10 | 感谢你的匿名捐助！ |
-| R*N | 微信 | 2020年06月23日 15:32 | 感谢你的匿名捐助！ |
-| [涛之雨](https://greasyfork.org/zh-CN/users/447976-%E6%B6%9B%E4%B9%8B%E9%9B%A8) | QQ 钱包 | 2020年06月26日 23:03 | 感谢老铁的友情赞助！ |
