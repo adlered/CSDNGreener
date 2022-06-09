@@ -25,13 +25,13 @@ CSDNGreener 是一个优化 CSDN 广告、使用体验的脚本，有口皆碑�
 #### :globe_with_meridians: 浏览器支持（任选其一即可）
 
 * Chrome 或 基于 Chromium 内核的浏览器 (Edge、360浏览器、CentBrowser等) <sup>*推荐</sup>  
-* Firefox <sup>*功能兼容，但并非最佳性能</sup>
+* Firefox <sup>*还是推荐</sup>
 
 #### :see_no_evil: 浏览器需要安装的脚本管理器插件（任选其一即可）
 
 * Tampermonkey (新油猴) <sup>*<a href="https://www.tampermonkey.net/">插件安装链接</a></sup>  
 * Violentmonkey (暴力猴) <sup>*<a href="https://violentmonkey.github.io/get-it/">插件安装链接</a></sup>  
-<sub>注：Greasemonkey (旧油猴) 由于过于古老，无法支援该脚本。</sub>
+<sub>注：Greasemonkey (旧油猴) 由于过于古老，不支持该脚本。</sub>
 
 #### :test_tube: 支持的操作系统
 
@@ -40,12 +40,11 @@ CSDNGreener 是一个优化 CSDN 广告、使用体验的脚本，有口皆碑�
 ### :page_facing_up: 安装脚本
 
 * 从 GreasyFork 安装
-通过 GreasyFork 安装脚本: **[点我](https://greasyfork.org/zh-CN/scripts/378351)**  
+通过 GreasyFork 安装脚本: **[点我](https://greasyfork.org/zh-CN/scripts/446239)**  
+
 * 从 OpenUserJS 安装
-通过 OpenUserJS 安装脚本: **[点我](https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96)**  
+通过 OpenUserJS 安装脚本: **[点我](https://openuserjs.org/scripts/Ujhhgtg/CSDN%E4%BC%98%E5%8C%96%E8%84%9A%E6%9C%AC_-_%E4%B8%8D%E5%90%AB%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5%E7%BB%9F%E8%AE%A1%E7%9A%84%E7%89%88%E6%9C%AC)**  
 然后点击页面右上角的`Install`进行安装.
-* 从 ScriptCat 安装
-通过 ScriptCat 安装脚本: **[点我](https://scriptcat.org/script-show-page/534)**
 
 ### :rocket: 贡献
 欢迎对本项目提交“Issues”帮助我完善脚本；  
