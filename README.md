@@ -45,6 +45,9 @@ CSDNGreener 是一个优化 CSDN 广告、使用体验的脚本，有口皆碑�
 通过 OpenUserJS 安装脚本: **[点我](https://openuserjs.org/scripts/AdlerED/%E6%9C%80%E5%BC%BA%E7%9A%84%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%ACCSDNGreener%EF%BC%9ACSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96)**  
 然后点击页面右上角的`Install`进行安装.
 
+* 从 ScriptCat 安装
+通过 ScriptCat 安装脚本: **[点我](https://scriptcat.org/script-show-page/534)**
+
 ### :rocket: 贡献
 欢迎对本项目提交“Issues”帮助我完善脚本；  
 如果你对JS有所了解，可以直接提交**Pull Requests**，要求如下：
