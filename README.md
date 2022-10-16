@@ -24,10 +24,10 @@ CSDNGreener 是一个优化 CSDN 广告、使用体验的脚本，有口皆碑�
 
 #### :globe_with_meridians: 浏览器支持（任选其一即可）
 
-* Chrome 或 基于 Chromium 内核的浏览器 (Edge、360浏览器、CentBrowser等) <sup>*推荐</sup>  
-* Firefox <sup>*还是推荐</sup>
+* Chrome 或基于 Chromium 的浏览器 (Edge、360浏览器、CentBrowser等) <sup>*推荐</sup>  
+* Firefox <sup>*更加推荐，隐私保护首选</sup>
 
-#### :see_no_evil: 浏览器需要安装的脚本管理器插件（任选其一即可）
+#### :see_no_evil: 脚本管理器（任选其一即可）
 
 * Tampermonkey (新油猴) <sup>*<a href="https://www.tampermonkey.net/">插件安装链接</a></sup>  
 * Violentmonkey (暴力猴) <sup>*<a href="https://violentmonkey.github.io/get-it/">插件安装链接</a></sup>  
@@ -35,7 +35,7 @@ CSDNGreener 是一个优化 CSDN 广告、使用体验的脚本，有口皆碑�
 
 #### :test_tube: 支持的操作系统
 
-* Windows、MacOS、Linux 等支持 Chrome 或 Firefox 浏览器的所有操作系统 <sup>*移动平台如 iOS、Android 除外</sup>
+* Windows、MacOS、Linux 等支持 Chrome 或 Firefox 浏览器的所有操作系统，移动平台除外 <sup>*Via 浏览器内置了安装脚本的功能，但尚未经测试</sup>
 
 ### :page_facing_up: 安装脚本
 
@@ -47,27 +47,24 @@ CSDNGreener 是一个优化 CSDN 广告、使用体验的脚本，有口皆碑�
 然后点击页面右上角的`Install`进行安装.
 
 ### :rocket: 贡献
-欢迎对本项目提交“Issues”帮助我完善脚本；  
-如果你对JS有所了解，可以直接提交**Pull Requests**，要求如下：
+欢迎对本项目提交**Issues**帮助我完善脚本；  
+如果你对 JavaScript 有所了解，可以直接提交**Pull Requests**，要求如下：
 
-修改三处版本信息：
+记得修改版本信息：
 
-* 修改版本号  
+* 修改方法
+##### 将版本号后的字母按照字母表顺序向后延一位，若遇到最后一位就在该字母后加 a
+##### 如： 1.0a => 1.0b ;; 1.0z -> 1.0za   
 
-##### 如果第三位<10，将第三位+1，如果第三位=10，将第二位+1，第三位=0   
-##### 例：1.1.9 => 1.2.0 ;; 1.1.3 => 1.1.4
+* 修改位置
 ```
 // @version      1.1.9
-```
 
-* 修改版本号（要求同上）
-
-```
 var version = "1.1.9";
 ```
 
-* 将更新描述在最上方加上一行，修改版本号（要求同上），并修改更新描述：
+* 将更新描述在加在列表最上方，：
 
 ```
-// @note         19-06-04 1.1.9 （更新描述）
+// @note         19-06-04 1.1.9 更新描述
 ```
