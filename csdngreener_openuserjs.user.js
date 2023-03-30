@@ -8,7 +8,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      4.1.2
+// @version      4.1.3
 // @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|背景图自定义，模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -19,7 +19,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @antifeature  tracking 我们会收集您对脚本的使用情况帮助我们改进CSDNGreener，但不含任何隐私内容，代码开源可审计，请您放心安装脚本。
+// @note         23-03-30 4.1.3 移除统计代码，登录问题相关优化（只屏蔽一次）
 // @note         23-02-03 4.1.2 修复了无法登录的问题（评论不登录无法加载暂无解决方案，我们在持续努力中）
 // @note         22-05-30 4.1.1 功能修复，广告屏蔽
 // @note         22-01-18 4.1.0 代码折叠适配
@@ -162,7 +162,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.1.2";
+var version = "4.1.3";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -861,11 +861,6 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
         }, 0);
         stopTimeMilli = Date.now();
         l("优化完毕! 耗时 " + (stopTimeMilli - startTimeMilli) + "ms");
-        // 延迟嵌入用户使用脚本情况JS，不影响性能
-        $("head").append('<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>');
-        setTimeout(function() {
-            $("head").append('<script>LA.init({id: "JQTDiOVZ2pRjGa1K",ck: "JQTDiOVZ2pRjGa1K"})</script>');
-        }, 2000);
     }, 0);
 })();
 
@@ -897,6 +892,8 @@ function clean(times) {
     }, 100);
     progressor.incProgress(10);
 }
+
+var deletedLogin = false;
 
 function loop(num) {
     setInterval(function () {
@@ -939,7 +936,10 @@ function loop(num) {
             $(".toolbar-advert").remove();
         } else if (num == 3) {
             // 循环删除登录提示框
-            //$(".passport-login-container").remove();
+            if ($($(".passport-login-container")[0]).length == 1 && deletedLogin == false) {
+                $("#passportbox").find("span").click();
+                deletedLogin = true;
+            }
             // 红包雨
             $("#csdn-redpack").remove();
         }
@@ -1144,6 +1144,8 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
             configHTML += '<p class="bold"><b>右侧栏定制</b></p>';
+            configHTML += '<input type="checkbox" id="toggle-ad-button"> <label for="toggle-ad-button" class="modeLabel">显示来自脚本的小广告</label>';
+            configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-authorcard-button"> <label for="toggle-authorcard-button" class="modeLabel">显示作者名片</label>';
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-searchblog-button"> <label for="toggle-searchblog-button" class="modeLabel">显示搜博主文章</label>';
@@ -1162,7 +1164,7 @@ function common(num, times) {
             configHTML += '<br>';
             configHTML += '<input type="checkbox" id="toggle-content-button"> <label for="toggle-content-button" class="modeLabel">显示目录</label>';
             configHTML += '<br><br>';
-            configHTML += '<div><h6>没有收钱的广告</h6><p>我家香港CN2 10M主机一个月29（也有国内高防主机），高防CDN国内外节点都有（香港节点免备案），非常适合小站长以及长期被攻击的网站哦 :)</p><a href="https://www.tsyvps.com/aff/HEHTPGYL" target="_blank"><img src="https://ftp.stackoverflow.wiki/bolo/ad.png" style="max-width: 500px;"></a></div><br>';
+            configHTML += '<div><h6>没有收钱的广告</h6><p>我家香港CN2 10M主机一个月29（也有国内高防主机），高防CDN国内外节点都有（香港节点免备案），非常适合小站长以及长期被攻击的网站哦 :)</p><a href="https://www.tsyvps.com/aff/HEHTPGYL" target="_blank"><img src="https://www.tsyvps.com/img/gg.png" style="max-width: 500px;"></a></div><br>';
             configHTML += '<div><h6>没有收钱的广告 2</h6><p>（作者本人建设的社区～</p><p>社区中聚集了同行业的大佬小白，欢迎小伙伴们一起摸鱼！</p><a href="https://fishpi.cn" target="_blank"><img src="https://s2.loli.net/2022/01/05/1HpBZUraMcR8ist.png" style="width:100%;height:100%;"/></a></div>';
             configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar">' + star_svg + ' <b>点我~</b> 动动小手在 GitHub 点个 Star 和关注，支持我继续维护脚本 :)</a><br><br>';
             configHTML += '<p>特别提示：CSDNGreener 脚本不提供任何会员文章破解、会员资源下载功能，仅适用于前端优化，请在CSDN官方渠道购买CSDN会员体验付费功能。</p>';
@@ -1212,7 +1214,21 @@ function common(num, times) {
             config.listenButton("#toggle-shop-button", "shop",
                                 function() {location.reload();},
                                 function() {location.reload();});
-
+            // 侧栏小广告
+            let adCookie = config.get("ad", true);
+            if (adCookie) {
+                setTimeout(function() {
+                    $("#recommend-right").append('<div id="asideArchive" class="aside-box" style="margin-top: 8px; width: 300px; display:block !important;"><h3 class="aside-title">来自 CSDN 脚本的小广告</h3><div class="aside-content"><ul class="inf_list clearfix"><li class="clearfix"><b>您可在 <a onclick="showConfig()" style="display: inline-block;">脚本设置</a> 中永久关闭小广告<br>感谢您的支持 ❤️</b><br><p style="font-size: 4px;margin-top: 10px;"><b>29元每月！</b>CTGNet GIA 回程五网高端CN2 GIA/GT网络，支持VPC高级网络<br>拒绝绕路，拒绝不稳定，助力企业拓展全球业务<br>安全，稳定，高性能</p></li><li class="clearfix"><a href="https://www.tsyvps.com/aff/HEHTPGYL" target="_blank"><img src="https://www.tsyvps.com/img/gg.png" style="width: 265px;height:149px"></a></li></ul></div></div>');
+                }, 500);
+            }
+            if (adCookie) {
+                $("#toggle-ad-button").prop("checked", true);
+            } else {
+                $("#toggle-ad-button").prop("checked", false);
+            }
+            config.listenButton("#toggle-ad-button", "ad",
+                               function() {location.reload();},
+                               function() {location.reload();});
             // 显示作者名片
             let authorCardCookie = config.get("authorCard", true);
             if (authorCardCookie) {
