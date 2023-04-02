@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      4.1.3
+// @version      4.1.4
 // @description  ⚡️全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥自定义背景图，分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -14,6 +14,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @note         23-04-02 4.1.4 新增: 跳过 CSDN 的 link 页面
 // @note         23-03-30 4.1.3 移除统计代码，登录问题相关优化（只屏蔽一次）
 // @note         23-02-03 4.1.2 修复了无法登录的问题（评论不登录无法加载暂无解决方案，我们在持续努力中）
 // @note         22-05-30 4.1.1 功能修复，广告屏蔽
@@ -474,6 +475,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
         var other = /(www\.csdn\.net\/)/;
         var mp = /mp\.csdn\.net/;
         var article_month = /article\/month/;
+        var link = /link\.csdn\.net/;
 
         // 数组初始化
         list = [];
@@ -738,6 +740,11 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             common(7, 10);
             // common(5, 10);
             loop(3);
+        } else if (link.test(currentURL)) {
+            // 跳过 CSDN 的 link 页面
+            var url = new URL(window.location.href)
+            var target = url.searchParams.get('target')
+            window.location.href = target
         } else {
             l("哦豁，好偏门的页面，我来试着优化一下哦...");
             // 常规
