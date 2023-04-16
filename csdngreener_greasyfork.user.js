@@ -646,11 +646,11 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             // 小屏幕或移动端
             // 前往 APP 阅读全文
             put(".weixin-shadowbox");
-            put("span[data-href^='csdnapp://']")
-            put("#operate")
-            put(".btn_open_app_prompt_div")
-            $(".btn_open_app_prompt_box").click()
-            $(".app-bt-cance").click()
+            put("span[data-href^='csdnapp://']");
+            put("#operate");
+            put(".btn_open_app_prompt_div");
+            $(".btn_open_app_prompt_box").click();
+            $(".app-bt-cance").click();
 
             clean(10);
             setTimeout(function() {
