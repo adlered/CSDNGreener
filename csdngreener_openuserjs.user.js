@@ -19,6 +19,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @note         23-04-16 4.1.7 小屏幕或移动端优化
 // @note         23-04-11 4.1.6 去广告更新
 // @note         23-04-06 4.1.5 新增: 跳过 CSDN 的 link 页面
 // @note         23-04-04 4.1.4 增加ads标识
@@ -654,6 +655,15 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             put(".csdn-highschool-window");
             // 右侧悬浮栏除置顶以外的按钮
             put(".option-box[data-type='guide'],.option-box[data-type='cs'],.csdn-common-logo-advert");
+            // 小屏幕或移动端
+            // 前往 APP 阅读全文
+            put(".weixin-shadowbox");
+            put("span[data-href^='csdnapp://']");
+            put("#operate");
+            put(".btn_open_app_prompt_div");
+            $(".btn_open_app_prompt_box").click();
+            $(".app-bt-cance").click();
+
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
