@@ -19,6 +19,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @license      AGPL-3.0-or-later
 // @note         23-04-11 4.1.6 去广告更新
 // @note         23-04-06 4.1.5 新增: 跳过 CSDN 的 link 页面
 // @note         23-04-04 4.1.4 增加ads标识
