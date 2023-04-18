@@ -1,7 +1,6 @@
 // ==UserScript==
 // @author       AdlerED
 // @copyright    2020, adlered https://stackoverflow.wiki
-// @license      MIT
 // @icon         https://csdnimg.cn/public/favicon.ico
 // @homepageURL  https://github.com/adlered/CSDNGreener
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
