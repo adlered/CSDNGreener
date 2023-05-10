@@ -7,7 +7,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      4.1.6
+// @version      4.1.7
 // @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|背景图自定义，模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -19,6 +19,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @license      AGPL-3.0-or-later
+// @note         23-05-10 4.1.7 增强免登录复制功能
 // @note         23-04-11 4.1.6 去广告更新
 // @note         23-04-06 4.1.5 新增: 跳过 CSDN 的 link 页面
 // @note         23-04-04 4.1.4 增加ads标识
@@ -165,7 +166,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.1.6";
+var version = "4.1.7";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -992,7 +993,8 @@ function common(num, times) {
             $(".hljs-button").removeClass("signin");
             $(".hljs-button").addClass("{2}");
             $(".hljs-button").attr("data-title", "免登录复制");
-            $(".hljs-button").attr("onclick", "hljs.copyCode(event);setTimeout(function(){$('.hljs-button').attr('data-title', '免登录复制');},3500);");
+            $(".hljs-button").attr("onclick", "setTimeout(function(){$('.hljs-button').attr('data-title', '免登录复制');},3500);");
+            $("#content_views").unbind("copy");
             // 去除剪贴板劫持
             $("code").attr("onclick", "mdcp.copyCode(event)");
             try {
