@@ -7,7 +7,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      4.1.9
+// @version      4.2.0
 // @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|背景图自定义，模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -20,6 +20,7 @@
 // @grant        GM_getValue
 // @license      AGPL-3.0-or-later
 // @antifeature  ads CSDNGreener 脚本中存在可永久关闭的小广告，请放心安装！
+// @note         23-11-07 4.2.0 移除右下角登录框，创作者中心推荐框
 // @note         23-05-25 4.1.9 再次修复免登录复制无法使用的问题
 // @note         23-05-11 4.1.8 强杀变异型登录框弹出（不影响自己点击登录使用）
 // @note         23-05-10 4.1.7 增强免登录复制功能
@@ -169,7 +170,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.1.9";
+var version = "4.2.0";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -359,16 +360,18 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
 
 			var edgecolor='border-'+opts.alignTo[0]+'-color', tfi=tipId.find("i"), tfem=tipId.find("em"), tfiem=tipId.find("i,em");
 			tipId.css({'position':'absolute',border:'1px solid','border-color':opts.color[0],'background-color':opts.color[1]});
-			if(opts.alignTo[1]=='center'){ var offpos=50,percen="%"; }else{ var offpos=5,percen="px"; };
+            var offpos=5,percen="px";
+			if(opts.alignTo[1]=='center'){ offpos=50,percen="%"; };
 			tfiem.css({width:0,height:0,content:'','position':'absolute'})
 			tfi.css({border:'8px solid transparent','z-index':5});
 			tfem.css({border:'7px solid transparent','z-index':10});
+            var poi="right";
 			switch (pointer) {
 				case 'top-center':
 				case 'bottom-center':
 				case 'top-left':
 				case 'bottom-left':
-					var poi="left";
+					poi="left";
 					if(pointer=='top-center' || pointer=='bottom-center'){
 						tfi.css({"margin-left":"-8px"});
 						tfem.css({"margin-left":"-7px"});
@@ -378,14 +381,14 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
 				case 'right-center':
 				case 'left-top':
 				case 'right-top':
-					var poi="top";
+					poi="top";
 					if(pointer=='left-center' || pointer=='right-center'){
 						tfi.css({"margin-top":"-8px"});
 						tfem.css({"margin-top":"-7px"});
 					}
 				    break;
 				default:
-					var poi="right";
+					poi="right";
 				    break;
 			};
 
@@ -528,6 +531,10 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             put(".persion_article");
             // 右侧推荐
             $(".feed_company").parent().remove();
+            // 右侧创作者中心推荐
+            $('.sidetool-writeguide-box').remove();
+            // 右下角登录框
+            $('iframe[name="passport-auto-tip"]').remove();
             // 广告轮播
             put(".el-carousel__container");
             // 顶部横幅
