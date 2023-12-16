@@ -7,7 +7,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      4.2.0
+// @version      4.2.1
 // @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|背景图自定义，模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -20,6 +20,7 @@
 // @grant        GM_getValue
 // @license      AGPL-3.0-or-later
 // @antifeature  ads CSDNGreener 脚本中嵌入了可一键永久关闭的小广告，不会影响您的使用体验:) 请放心安装！
+// @note         23-12-16 4.2.1 文章页牛皮癣优化
 // @note         23-12-15 4.2.0 优化顶栏显示内容，修复了若干由于CSDN前端变化导致优化失效的问题
 // @note         23-05-25 4.1.9 再次修复免登录复制无法使用的问题
 // @note         23-05-11 4.1.8 强杀变异型登录框弹出（不影响自己点击登录使用）
@@ -170,7 +171,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "4.2.0";
+var version = "4.2.1";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -659,10 +660,20 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             put(".csdn-highschool-window");
             // 右侧悬浮栏除置顶以外的按钮
             put(".option-box[data-type='guide'],.option-box[data-type='cs'],.csdn-common-logo-advert");
+            // 登录后您可以享受以下权益
+            put(".passport-login-tip-container");
+            // 底栏“觉得还不错？立即收藏”你在教我做事？
+            put(".tool-active-list");
+            // 文章底部 archive推荐
+            put("#treeSkill");
+            // 搜索框fire emoji
+            put(".icon-fire");
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
                $('.btn-read-reply').click();
+               // 右侧toolbar 创作提示
+               $(".sidetool-writeguide-box").remove();
             }, 1500);
             // 主动加入右侧栏
             if ($(".recommend-right").length === 0) {
