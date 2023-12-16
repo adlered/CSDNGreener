@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         🔥持续更新🔥 CSDN广告完全过滤、人性化脚本优化：🆕 不用再登录了！让你体验令人惊喜的崭新CSDN。
 // @namespace    https://github.com/adlered
-// @version      4.2.0
+// @version      4.2.1
 // @description  ⚡️全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥自定义背景图，分辨率自适配，分屏不用滚动|💾超级预优化|🔖独家超级免会员|🏷独家原创文章免登录展开|🔌独家推荐内容自由开关|📠独家免登录复制|🔗独家防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -16,6 +16,7 @@
 // @grant        GM_getValue
 // @license      AGPL-3.0-or-later
 // @antifeature  ads CSDNGreener 脚本中嵌入了可一键永久关闭的小广告，不会影响您的使用体验:) 请放心安装！
+// @note         23-12-16 4.2.1 文章页牛皮癣优化
 // @note         23-12-15 4.2.0 优化顶栏显示内容，修复了若干由于CSDN前端变化导致优化失效的问题
 // @note         23-05-25 4.1.9 再次修复免登录复制无法使用的问题
 // @note         23-05-11 4.1.8 强杀变异型登录框弹出（不影响自己点击登录使用）
@@ -161,7 +162,7 @@
 // @downloadURL https://update.greasyfork.org/scripts/378351/%F0%9F%94%A5%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%F0%9F%94%A5%20CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96%EF%BC%9A%F0%9F%86%95%20%E4%B8%8D%E7%94%A8%E5%86%8D%E7%99%BB%E5%BD%95%E4%BA%86%EF%BC%81%E8%AE%A9%E4%BD%A0%E4%BD%93%E9%AA%8C%E4%BB%A4%E4%BA%BA%E6%83%8A%E5%96%9C%E7%9A%84%E5%B4%AD%E6%96%B0CSDN%E3%80%82.user.js
 // @updateURL https://update.greasyfork.org/scripts/378351/%F0%9F%94%A5%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%F0%9F%94%A5%20CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96%EF%BC%9A%F0%9F%86%95%20%E4%B8%8D%E7%94%A8%E5%86%8D%E7%99%BB%E5%BD%95%E4%BA%86%EF%BC%81%E8%AE%A9%E4%BD%A0%E4%BD%93%E9%AA%8C%E4%BB%A4%E4%BA%BA%E6%83%8A%E5%96%9C%E7%9A%84%E5%B4%AD%E6%96%B0CSDN%E3%80%82.meta.js
 // ==/UserScript==
-var version = "4.2.0";
+var version = "4.2.1";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -650,10 +651,20 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             put(".csdn-highschool-window");
             // 右侧悬浮栏除置顶以外的按钮
             put(".option-box[data-type='guide'],.option-box[data-type='cs'],.csdn-common-logo-advert");
+            // 登录后您可以享受以下权益
+            put(".passport-login-tip-container");
+            // 底栏“觉得还不错？立即收藏”你在教我做事？
+            put(".tool-active-list");
+            // 文章底部 archive推荐
+            put("#treeSkill");
+            // 搜索框fire emoji
+            put(".icon-fire");
             clean(10);
             setTimeout(function() {
                // 展开评论的所有回复
                $('.btn-read-reply').click();
+               // 右侧toolbar 创作提示
+               $(".sidetool-writeguide-box").remove();
             }, 1500);
             // 主动加入右侧栏
             if ($(".recommend-right").length === 0) {
