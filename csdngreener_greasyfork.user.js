@@ -17,6 +17,7 @@
 // @grant        GM_getValue
 // @license      AGPL-3.0-or-later
 // @antifeature  ads CSDNGreener 脚本中嵌入了可一键永久关闭的小广告，不会影响您的使用体验:) 请放心安装！
+// @note         24-01-23 4.2.3 Tampermonkey管理面板列表增加图标
 // @note         23-12-21 4.2.2 修复了一些已知问题
 // @note         23-12-16 4.2.1 文章页牛皮癣优化
 // @note         23-12-15 4.2.0 优化顶栏显示内容，修复了若干由于CSDN前端变化导致优化失效的问题
