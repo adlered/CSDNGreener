@@ -16,6 +16,7 @@
 // @grant        GM_getValue
 // @license      AGPL-3.0-or-later
 // @antifeature  ads CSDNGreener 脚本中嵌入了可一键永久关闭的小广告，不会影响您的使用体验:) 请放心安装！
+// @note         24-11-24 4.2.5 新增：支持CSDN中的腾讯云开发者社区(https://tencentcloud.csdn.net/)
 // @note         24-07-18 4.2.4 描述更改
 // @note         24-03-28 4.2.3 标题更改
 // @note         23-12-21 4.2.2 修复了一些已知问题
@@ -491,6 +492,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
         var article_month = /article\/month/;
         var link = /link\.csdn\.net/;
         var blink = /blink\.csdn\.net/;
+        var tencentcloud = /tencentcloud\.csdn\.net/;
 
         // 数组初始化
         list = [];
@@ -772,6 +774,21 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
             var url = new URL(window.location.href)
             var target = url.searchParams.get('target')
             window.location.href = target
+        } else if (tencentcloud.test(currentURL)) {
+            l("正在优化“腾讯云开发者社区”体验...") // 怎么CSDN里还有个腾讯云开发者社区的专属子页面
+            // 点击阅读全文
+            put(".article-show-more");
+            // 展示全文
+            $('.user-article-hide').removeClass('user-article-hide');
+            // 隐藏侧边栏
+            put(".page-home-right");
+            // 悬浮的自推广弹窗户
+            put(".user-desc")
+            // footer
+            put(".org-footer");
+            // 让文章正文的宽度更宽一些
+            $(".article-detail").css("maxWidth", "unset");
+            clean(10);
         } else {
             l("哦豁，好偏门的页面，我来试着优化一下哦...");
             // 常规
