@@ -1010,6 +1010,10 @@ function common(num, times) {
             }
             // 去除推广广告
             $("li[data-type='ad']").remove();
+            // 移除AI写代码按钮
+            $(".btn-code-notes").remove();
+            // 复制按钮对齐
+            $(".hljs-button").removeClass("add_def");
             // 免登录复制
             $(".hljs-button").removeClass("signin");
             $(".hljs-button").addClass("{2}");
