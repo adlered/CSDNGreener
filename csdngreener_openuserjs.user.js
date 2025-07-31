@@ -991,6 +991,8 @@ function common(num, times) {
         if (times <= 0) {
             clearInterval(loop);
         }
+	// 去除登录弹窗遮罩
+        $(".passport-login-container").remove();
         if (num === 1) {
             // 查看更多
             $(".btn-readmore").removeClass("no-login");
