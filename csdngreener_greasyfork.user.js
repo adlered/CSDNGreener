@@ -14,6 +14,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_setClipboard
 // @license      AGPL-3.0-or-later
 // @note         25-08-04 4.2.5 更新免登录复制
 // @note         24-07-18 4.2.4 描述更改
