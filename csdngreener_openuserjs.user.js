@@ -1,24 +1,27 @@
 // ==UserScript==
-// @name         「CSDNGreener」🍃CSDN广告完全过滤|免登录|个性化排版|最强老牌脚本|持续更新
+// @author       AdlerED
+// @copyright    2020, adlered https://stackoverflow.wiki
+// @icon         https://csdnimg.cn/public/favicon.ico
+// @homepageURL  https://github.com/adlered/CSDNGreener
+// @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
+// @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
+// @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
 // @version      4.2.5
-// @description  ⚡️全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥自定义背景图，分辨率自适配，分屏不用滚动|💾超级预优化|🏷原创文章免登录展开|🔌独家推荐内容自由开关|📠免登录复制|🔗防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
-// @author       Adler
+// @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|背景图自定义，模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-cookie/1.4.1/jquery.cookie.min.js
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/nprogress/0.2.0/nprogress.min.js
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/clipboard.js/2.0.10/clipboard.min.js
-// @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
-// @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
+// @updateURL    https://github.com/adlered/CSDNGreener/raw/master/csdngreener_openuserjs.user.js
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_setClipboard
 // @license      AGPL-3.0-or-later
 // @note         25-08-04 4.2.5 更新免登录复制
-// @note         24-07-18 4.2.4 描述更改
-// @note         24-03-28 4.2.3 标题更改
+// @note	 24-03-28 4.2.3 跟随更新
 // @note         23-12-21 4.2.2 修复了一些已知问题
 // @note         23-12-16 4.2.1 文章页牛皮癣优化
 // @note         23-12-15 4.2.0 优化顶栏显示内容，修复了若干由于CSDN前端变化导致优化失效的问题
@@ -70,8 +73,15 @@
 // @note         20-06-28 3.3.2 提示修改
 // @note         20-06-27 3.3.1 弹窗提示逻辑修改为仅提示一次。
 // @note         20-06-27 3.3.0 网站标题新消息提醒去除
-// @note         20-06-26 3.2.9 恢复GreasyFork平台脚本支持
-// @note         20-06-21 3.2.0 脚本迁移通知
+// @note         20-06-24 3.2.9 控制台文字可以点击了，修改自动版式描述语义
+// @note         20-06-24 3.2.8 屏幕尺寸选择，控制台版式修改，若干问题修复
+// @note         20-06-23 3.2.7 右侧栏滚动条显示方式优化
+// @note         20-06-23 3.2.6 文章居中模式可选
+// @note         20-06-22 3.2.5 右侧没有可显示内容时，文章居中
+// @note         20-06-22 3.2.4 文章居中
+// @note         20-06-22 3.2.3 右侧栏加入滚动条，脚本主页URL修改，下载页和主页广告去除
+// @note         20-06-22 3.2.2 Dark Reader兼容模式，自动隐藏顶栏优化，热门文章和最新评论卡片布局调整
+// @note         20-06-21 3.2.1 脚本迁移版本迭代
 // @note         20-06-21 3.1.9 增加自动隐藏底栏功能
 // @note         20-06-21 3.1.8 增加自动隐藏顶栏功能，修复选项窗口被点赞长条挡住的Bug，选项窗口布局修改
 // @note         20-06-20 3.1.7 设置窗口大小固定，增加打赏入口
@@ -163,8 +173,6 @@
 // @note         19-03-01 1.0.2 增加了净化剪贴板功能
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
-// @downloadURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.user.js
-// @updateURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.meta.js
 // ==/UserScript==
 var version = "4.2.5";
 var currentURL = window.location.href;
