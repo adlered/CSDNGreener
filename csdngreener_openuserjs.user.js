@@ -11,9 +11,9 @@
 // @description  全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比|无需登录CSDN，获得比会员更佳的体验|背景图自定义，模块化卡片，显示什么你决定|分辨率自适配，分屏不用滚动|超级预优化|独家原创文章免登录展开|独家推荐内容自由开关|独家免登录复制|独家防外链重定向|独家论坛未登录自动展开文章、评论|全面净化|沉浸阅读|净化剪贴板
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-cookie/1.4.1/jquery.cookie.min.js
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/nprogress/0.2.0/nprogress.min.js
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/clipboard.js/2.0.10/clipboard.min.js
+// @require      https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js
+// @require      https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/nprogress/0.2.0/nprogress.min.js
+// @require      https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/clipboard.js/2.0.10/clipboard.min.js
 // @updateURL    https://github.com/adlered/CSDNGreener/raw/master/csdngreener_openuserjs.user.js
 // @grant        GM_addStyle
 // @grant        GM_setValue
