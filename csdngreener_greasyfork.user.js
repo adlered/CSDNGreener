@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         「CSDNGreener」🍃CSDN广告完全过滤|免登录|个性化排版|最强老牌脚本|持续更新
 // @namespace    https://github.com/adlered
-// @version      4.2.5
+// @version      4.2.6
 // @description  ⚡️全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥自定义背景图，分辨率自适配，分屏不用滚动|💾超级预优化|🏷原创文章免登录展开|🔌独家推荐内容自由开关|📠免登录复制|🔗防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-cookie/1.4.1/jquery.cookie.min.js
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/nprogress/0.2.0/nprogress.min.js
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/clipboard.js/2.0.10/clipboard.min.js
+// @require      https://s4.zstatic.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js
+// @require      https://s4.zstatic.net/ajax/libs/nprogress/0.2.0/nprogress.min.js
+// @require      https://s4.zstatic.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js
 // @supportURL   https://github.com/adlered/CSDNGreener/issues/new?assignees=adlered&labels=help+wanted&template=ISSUE_TEMPLATE.md&title=
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @grant        GM_addStyle
@@ -16,6 +16,7 @@
 // @grant        GM_getValue
 // @grant        GM_setClipboard
 // @license      AGPL-3.0-or-later
+// @note         25-09-03 4.2.6 修复无法正常使用的问题，更新jslib
 // @note         25-08-04 4.2.5 更新免登录复制
 // @note         24-07-18 4.2.4 描述更改
 // @note         24-03-28 4.2.3 标题更改
@@ -163,10 +164,10 @@
 // @note         19-03-01 1.0.2 增加了净化剪贴板功能
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
-// @downloadURL https://update.greasyfork.org/scripts/378351/%F0%9F%94%A5%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%F0%9F%94%A5%20CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96%EF%BC%9A%F0%9F%86%95%20%E4%B8%8D%E7%94%A8%E5%86%8D%E7%99%BB%E5%BD%95%E4%BA%86%EF%BC%81%E8%AE%A9%E4%BD%A0%E4%BD%93%E9%AA%8C%E4%BB%A4%E4%BA%BA%E6%83%8A%E5%96%9C%E7%9A%84%E5%B4%AD%E6%96%B0CSDN%E3%80%82.user.js
-// @updateURL https://update.greasyfork.org/scripts/378351/%F0%9F%94%A5%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%F0%9F%94%A5%20CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%E3%80%81%E4%BA%BA%E6%80%A7%E5%8C%96%E8%84%9A%E6%9C%AC%E4%BC%98%E5%8C%96%EF%BC%9A%F0%9F%86%95%20%E4%B8%8D%E7%94%A8%E5%86%8D%E7%99%BB%E5%BD%95%E4%BA%86%EF%BC%81%E8%AE%A9%E4%BD%A0%E4%BD%93%E9%AA%8C%E4%BB%A4%E4%BA%BA%E6%83%8A%E5%96%9C%E7%9A%84%E5%B4%AD%E6%96%B0CSDN%E3%80%82.meta.js
+// @downloadURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.user.js
+// @updateURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.meta.js
 // ==/UserScript==
-var version = "4.2.5";
+var version = "4.2.6";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
