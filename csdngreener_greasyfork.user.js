@@ -663,22 +663,37 @@ const BASE_STYLES = {
         }
     `,
 
-    // 设置窗口样式 - 白绿配色优雅版
+    // 设置窗口样式 - 现代化冷色毛玻璃设计
     modal: `
         .black_overlay {
-            top: 0%;
-            left: 0%;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 1001;
-            -moz-opacity: 0.8;
-            opacity: .40;
-            filter: alpha(opacity=40);
-            display: none;
             position: fixed;
-            backdrop-filter: blur(5px);
+            inset: 0;
+            display: none;
+            background: radial-gradient(circle at 25% 20%, rgba(59, 130, 246, 0.15), transparent 50%),
+                        radial-gradient(circle at 75% 80%, rgba(14, 165, 233, 0.12), transparent 50%),
+                        rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1001;
+            animation: fadeIn 0.3s ease-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -45%) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
         .white_content {
             display: none;
             position: fixed;
@@ -686,128 +701,226 @@ const BASE_STYLES = {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 700px;
-            max-width: 90vw;
-            max-height: 88vh;
+            width: 750px;
+            max-width: 92vw;
+            max-height: 90vh;
             padding: 0;
-            border: none;
-            border-radius: 16px;
-            background-color: #ffffff;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                        0 0 0 1px rgba(59, 130, 246, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .white_content .configContainer {
+            padding: 32px 24px 90px 24px;
+            overflow-y: auto;
+            max-height: calc(90vh - 140px);
+            background: linear-gradient(180deg,
+                rgba(240, 249, 255, 0.4) 0%,
+                rgba(224, 242, 254, 0.2) 100%);
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .white_content .configContainer::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .white_content .configContainer::-webkit-scrollbar-track {
+            background: rgba(226, 232, 240, 0.3);
+            border-radius: 4px;
+            margin: 8px 0;
+        }
+
+        .white_content .configContainer::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+            border-radius: 4px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .white_content .configContainer::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .config-header {
+            background: linear-gradient(135deg,
+                #0ea5e9 0%,
+                #3b82f6 50%,
+                #6366f1 100%);
+            color: #ffffff;
+            padding: 28px 28px 24px 28px;
+            border-radius: 20px 20px 0 0;
+            margin: 0;
+            position: relative;
             overflow: hidden;
         }
-        .white_content .configContainer {
-            padding: 24px 24px 80px 24px;
-            overflow-y: auto;
-            max-height: calc(88vh - 140px);
+
+        .config-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            pointer-events: none;
         }
-        .white_content .configContainer::-webkit-scrollbar {
-            width: 6px;
-        }
-        .white_content .configContainer::-webkit-scrollbar-track {
-            background: #f0fdf4;
-            border-radius: 3px;
-        }
-        .white_content .configContainer::-webkit-scrollbar-thumb {
-            background: #86efac;
-            border-radius: 3px;
-        }
-        .white_content .configContainer::-webkit-scrollbar-thumb:hover {
-            background: #4ade80;
-        }
-        .config-header {
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%);
-            color: #065f46;
-            padding: 20px 24px 18px 24px;
-            border-radius: 16px 16px 0 0;
-            margin: 0 0 0 0;
-            box-shadow: 0 1px 3px rgba(34, 197, 94, 0.1);
-        }
+
         .config-header .title {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            margin: 0 0 4px 0;
-            color: #065f46 !important;
+            margin: 0 0 6px 0;
+            color: #ffffff !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 1;
         }
+
         .config-header p {
             margin: 0;
-            font-size: 12px;
-            color: #059669;
-            opacity: 0.85;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 1;
         }
+
         .config-header a {
-            color: #047857 !important;
-            text-decoration: underline;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            transition: border-color 0.2s;
         }
+
+        .config-header a:hover {
+            border-bottom-color: #ffffff;
+        }
+
         .config-footer {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #ffffff;
-            padding: 16px 24px;
+            background: linear-gradient(to top,
+                rgba(248, 250, 252, 0.98) 0%,
+                rgba(248, 250, 252, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 18px 28px;
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            border-top: 2px solid #e5e7eb;
+            gap: 12px;
+            border-top: 1px solid rgba(226, 232, 240, 0.6);
             z-index: 100;
         }
+
         .config-section {
-            margin-bottom: 16px;
-            padding: 16px;
-            background: #ffffff;
-            border-radius: 10px;
-            border: 1px solid #d1fae5;
-            border-left: 3px solid #22c55e;
+            margin-bottom: 18px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 14px;
+            border: 1px solid rgba(203, 213, 225, 0.5);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.3s;
         }
+
+        .config-section:hover {
+            border-color: rgba(147, 197, 253, 0.6);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
         .config-section .bold {
-            font-size: 15px;
-            font-weight: 600;
-            color: #065f46;
-            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 14px;
             display: block;
+            letter-spacing: 0.3px;
         }
+
         .config-section p {
-            margin: 0 0 8px 0;
-            line-height: 1.4;
-            color: #374151;
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+            color: #475569;
+            font-size: 13px;
         }
+
         .config-section label {
             display: flex;
             align-items: center;
-            padding: 6px 0;
+            padding: 8px 12px;
+            margin: 4px 0;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 13px;
-            color: #1f2937;
-            line-height: 1.3;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.4;
+            border-radius: 8px;
+            position: relative;
         }
+
         .config-section label:hover {
-            color: #059669;
-            transform: translateX(2px);
+            background: rgba(59, 130, 246, 0.08);
+            color: #1e40af;
+            transform: translateX(4px);
         }
+
         .config-section input[type="checkbox"],
         .config-section input[type="radio"] {
-            margin-right: 8px;
+            margin-right: 12px;
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             flex-shrink: 0;
+            accent-color: #3b82f6;
         }
+
         .config-section input[type="text"],
         .config-section input[type="file"] {
             width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 13px;
-            transition: all 0.2s;
-            background: #ffffff;
+            padding: 10px 14px;
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
+
         .config-section input[type="text"]:focus {
             outline: none;
-            border-color: #22c55e;
-            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+            border-color: #3b82f6;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1),
+                        0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .giveMeOneStar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5) !important;
         }
     `,
 
@@ -2134,7 +2247,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
     saveJss += "<script>function saveConfig() {";
     saveJss += "try {";
     // 读取版式选择
-    saveJss += "const selectedLayout = $('input[name=\"displayMode\"]:checked').val() || 'sm';";
+    saveJss += "const selectedLayout = $('input[name=\"displayMode\"]:checked').val() || 'ai';";
     saveJss += "window.configManager.set('layout', selectedLayout);";
     // 读取通用设定
     saveJss += "window.configManager.set('display.recommend', $('#toggle-recommend-button').prop('checked'));";
@@ -2512,9 +2625,10 @@ function common(num, times) {
         } else if (num == 4) {
             /** 配置控制 - 使用新的ConfigManager **/
             // 从新的ConfigManager读取当前版式
-            const currentLayout = configManager.get('layout') || 'sm';
+            const currentLayout = configManager.get('layout') || 'ai';
 
             // 设置单选框状态
+            $("#scr-ai").prop("checked", currentLayout === 'ai');
             $("#scr-sm").prop("checked", currentLayout === 'sm');
             $("#scr-md").prop("checked", currentLayout === 'md');
             $("#scr-lg").prop("checked", currentLayout === 'lg');
@@ -2552,6 +2666,8 @@ function common(num, times) {
             configHTML += '<p class="title">⚙️ CSDNGreener 设置面板</p>';
             configHTML += '<p style="margin: 5px 0 0 0; font-size: 13px; opacity: 0.9;">V' + version + ' | <a href="https://github.com/adlered/CSDNGreener" target="_blank" style="color: white;">GitHub</a> | <a href="//shang.qq.com/wpa/qunwpa?idkey=d7ad6ead3f57722e7f00a4281ae75dbac2132c5a8cf321992d57309037fcaf63" target="_blank" style="color: white;">QQ群:1042370453</a></p>';
             configHTML += '</div>';
+
+            configHTML += '<div class="config-grid">';
 
             // 版式设置区域
             configHTML += '<div class="config-section">';
@@ -2596,17 +2712,27 @@ function common(num, times) {
             configHTML += '<label><input type="checkbox" id="toggle-content-button"> 显示目录</label>';
             configHTML += '</div>';
 
-            // 社区推广（可选）
-            configHTML += '<div class="config-section" style="text-align: center; border-left-color: #10b981;">';
-            configHTML += '<p><strong>💬 摸鱼社区</strong></p>';
-            configHTML += '<p style="font-size: 12px; color: #6b7280;">欢迎加入作者建设的技术社区</p>';
-            configHTML += '<a href="https://fishpi.cn" target="_blank"><img src="https://s2.loli.net/2022/01/05/1HpBZUraMcR8ist.png" style="width:80%; max-width: 300px; border-radius: 8px; margin-top: 10px;"/></a>';
             configHTML += '</div>';
 
-            // 支持作者
-            configHTML += '<div class="config-section" style="text-align: center; border-left-color: #f59e0b;">';
-            configHTML += '<a href="https://doc.stackoverflow.wiki/web/#/21?page_id=138" target="_blank" class="giveMeOneStar" style="display: block; margin: 10px 0;">☕ 请作者喝杯咖啡</a>';
-            configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar" style="display: block; margin: 10px 0;">' + star_svg_1 + ' 在 GitHub 给个 Star</a>';
+            // 社区推广和支持作者 - 横向布局
+            configHTML += '<div class="config-section" style="text-align: center;">';
+            configHTML += '<div style="display: flex; gap: 20px; align-items: center; justify-content: center;">';
+
+            // 摸鱼社区
+            configHTML += '<div style="flex: 1; max-width: 45%;">';
+            configHTML += '<p style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">💬 摸鱼社区</p>';
+            configHTML += '<p style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">欢迎加入作者建设的技术社区</p>';
+            configHTML += '<a href="https://fishpi.cn" target="_blank"><img src="https://s2.loli.net/2022/01/05/1HpBZUraMcR8ist.png" style="width:100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);"/></a>';
+            configHTML += '</div>';
+
+            // 给个Star
+            configHTML += '<div style="flex: 1; max-width: 45%;">';
+            configHTML += '<p style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">⭐ 支持作者</p>';
+            configHTML += '<p style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">您的支持是我们最大的动力</p>';
+            configHTML += '<a href="https://github.com/adlered/CSDNGreener" target="_blank" class="giveMeOneStar" style="display: flex; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; text-decoration: none; font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s;">' + star_svg_1 + ' <span style="margin-left: 10px;">在 GitHub 给个 Star</span></a>';
+            configHTML += '</div>';
+
+            configHTML += '</div>';
             configHTML += '<p style="font-size: 11px; color: #9ca3af; margin-top: 15px;">CSDNGreener 不提供会员破解功能，仅用于前端优化</p>';
             configHTML += '</div>';
 
@@ -2614,10 +2740,10 @@ function common(num, times) {
             configHTML += '<div class="config-section" style="border-left-color: #8b5cf6;">';
             configHTML += '<span class="bold">💾 配置管理</span>';
             configHTML += '<p style="font-size: 12px; color: #6b7280; margin-bottom: 10px;">备份和恢复您的个性化设置</p>';
-            configHTML += '<div style="display: flex; gap: 10px; flex-wrap: wrap;">';
-            configHTML += '<button id="exportConfigBtn" class="saveButton" style="flex: 1; min-width: 120px;">📥 导出配置</button>';
-            configHTML += '<button id="importConfigBtn" class="saveButton" style="flex: 1; min-width: 120px;">📤 导入配置</button>';
-            configHTML += '<button id="resetConfigBtn" class="saveButton danger" style="flex: 1; min-width: 120px;">🔄 重置配置</button>';
+            configHTML += '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            configHTML += '<button id="exportConfigBtn" class="saveButton" style="width: 100%;">📥 导出配置</button>';
+            configHTML += '<button id="importConfigBtn" class="saveButton" style="width: 100%;">📤 导入配置</button>';
+            configHTML += '<button id="resetConfigBtn" class="saveButton danger" style="width: 100%;">🔄 重置配置</button>';
             configHTML += '</div>';
             configHTML += '<input type="file" id="importConfigFile" accept=".json" style="display: none;">';
             configHTML += '</div>';
