@@ -174,7 +174,7 @@ var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
 }
-// 旧的list数组变量已被AdCleaner类替代
+
 var windowTop = 0;
 var startTimeMilli = Date.now();
 var stopTimeMilli = 0;
@@ -242,7 +242,7 @@ class Config {
         });
     }
 }
-// var config = new Config(); // [已废弃] 旧的Cookie配置系统，已迁移到ConfigManager
+
 var progress = 0;
 class Progress {
     init() {
@@ -329,7 +329,7 @@ class ConfigManager {
         this.storageKey = 'csdngreener_config_v5';
         this.defaultConfig = {
             version: '5.0.0',
-            layout: 'sm', // sm | md | lg | fo | hd
+            layout: 'ai', // ai | sm | md | lg | fo | hd (ai为智能默认模式)
             display: {
                 recommend: false,
                 shop: false,
@@ -931,7 +931,6 @@ const BASE_STYLES = {
         }
     `,
 
-    // 切换按钮样式（旧）
     toggleButton: `
         #toggle-button {
             display: none;
@@ -1173,11 +1172,9 @@ const AD_SELECTORS = {
         ".bbs_feed_ad_box"              // 底部相关文章广告（BBS）
     ],
 
-    // 弹窗和浮层
+    // 弹窗和浮层（注意：不删除真正的登录框，保留给用户主动登录使用）
     modal: [
-        ".pulllog-box",                     // 登录注册框
         "#csdn-redpack",                    // 红包雨
-        ".passport-login-container",        // 登录提示框
         ".passport-login-tip-container",    // 登录后权益提示
         ".csdn-redpack-lottery-btn-box",    // 红包提醒
         ".csdn-highschool-window",          // 学生认证
@@ -1364,7 +1361,7 @@ class AdCleaner {
                 $(".toolbar-advert").remove();
 
             } else if (type === 3) {
-                // 循环删除登录提示框
+                // 循环删除登录提示框（前15秒屏蔽自动弹窗，之后允许用户主动登录）
                 if ($($(".passport-login-container")[0]).length === 1 && !window.deletedLogin) {
                     let passInterval = setInterval(function() {
                         $('.passport-login-container').hide();
@@ -1375,7 +1372,7 @@ class AdCleaner {
                         setTimeout(function() {
                             $("#passportbox").find("img").click();
                         }, 500);
-                    }, 5000);
+                    }, 15000);
                     window.deletedLogin = true;
                 }
                 // 红包雨
@@ -1637,6 +1634,34 @@ class MediumLayout extends BaseLayout {
 
             .recommend-right {
                 width: 300px !important;
+                max-height: calc(100vh - 80px) !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                position: sticky !important;
+                top: 70px !important;
+            }
+
+            .recommend-right aside,
+            .recommend-right .aside-box {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .recommend-right::-webkit-scrollbar {
+                width: 6px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2) !important;
+                border-radius: 3px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(0, 0, 0, 0.4) !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-track {
+                background: transparent !important;
             }
 
             #content_views {
@@ -1676,6 +1701,34 @@ class LargeLayout extends BaseLayout {
 
             .recommend-right {
                 width: 300px !important;
+                max-height: calc(100vh - 80px) !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                position: sticky !important;
+                top: 70px !important;
+            }
+
+            .recommend-right aside,
+            .recommend-right .aside-box {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .recommend-right::-webkit-scrollbar {
+                width: 6px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2) !important;
+                border-radius: 3px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(0, 0, 0, 0.4) !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-track {
+                background: transparent !important;
             }
         `;
     }
@@ -1760,6 +1813,34 @@ class HDLayout extends BaseLayout {
             .recommend-right {
                 width: 380px !important;
                 flex: 0 0 380px !important;
+                max-height: calc(100vh - 80px) !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                position: sticky !important;
+                top: 70px !important;
+            }
+
+            .recommend-right aside,
+            .recommend-right .aside-box {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .recommend-right::-webkit-scrollbar {
+                width: 6px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2) !important;
+                border-radius: 3px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(0, 0, 0, 0.4) !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-track {
+                background: transparent !important;
             }
 
             #article_content,
@@ -1863,6 +1944,20 @@ class AILayout extends BaseLayout {
                 overflow-x: hidden !important;
                 position: sticky !important;
                 top: 70px !important;
+            }
+
+            /* 确保侧边栏内部子元素不阻止滚动 */
+            .recommend-right aside,
+            .recommend-right_aside,
+            #rightAside aside {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .recommend-right .aside-box,
+            #rightAside .aside-box {
+                max-height: none !important;
+                height: auto !important;
             }
 
             /* 优化侧边栏滚动条样式 */
@@ -2057,29 +2152,6 @@ layoutEngine.apply(currentLayout);
 // 版式系统结束
 // ============================================
 
-// 自定义 CSS（旧代码，已迁移到StyleManager，注释保留作参考）
-/*
-// 进度条
-$('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
-// 设置窗口
-$('head').append("<style>.black_overlay{top:0%;left:0%;width:100%;height:100%;background-color:#000;z-index:1001;-moz-opacity:0.8;opacity:.10;filter:alpha(opacity=88)}.black_overlay,.white_content{display:none;position:absolute}.white_content{z-index:9999!important;top:25%;left:25%;width:650px;height:60%;padding:20px;border:0px;background-color:rgba(255,255,255,0.9);z-index:1002;overflow:auto}</style>");
-// 提示条
-$('head').append("<style>.tripscon{padding:10px}</style>");
-// 按钮（旧）
-$('head').append("<style>#toggle-button{display:none}.button-label{position:relative;display:inline-block;width:82px;background-color:#ccc;border:1px solid #ccc;border-radius:30px;cursor:pointer}.circle{position:absolute;top:0;left:0;width:30px;height:30px;border-radius:50%;background-color:#fff}.button-label .text{line-height:30px;font-size:18px;-webkit-user-select:none;user-select:none}.on{color:#fff;display:none;text-indent:10px}.off{color:#fff;display:inline-block;text-indent:53px}.button-label .circle{left:0;transition:all .3s}#toggle-button:checked+label.button-label .circle{left:50px}#toggle-button:checked+label.button-label .on{display:inline-block}#toggle-button:checked+label.button-label .off{display:none}#toggle-button:checked+label.button-label{background-color:#78d690}</style>");
-// 保存按钮
-$('head').append("<style>.saveButton{background-color:#19a4ed;border:none;color:#fff;padding:5px 15px;text-align:center;text-decoration:none;display:inline-block;font-size:14px;cursor:pointer}</style>");
-// Star 样式
-$('head').append("<style>.giveMeOneStar:hover{color:#FF69B4;}</style>");
-// 设置窗口文字效果
-if (isFirefox()) {
-    $('head').append("<style>.configContainer label{font-size:15px}.configContainer p{font-size:15px}.giveMeOneStar{font-size:15px}.configContainer .title{font-size:20px}.configContainer .bold{font-weight:bold;margin-bottom:5px}</style>");
-} else {
-    $('head').append("<style>.configContainer label{font-size:12px}.configContainer p{font-size:12px}.giveMeOneStar{font-size:15px}.configContainer .title{font-size:20px}.configContainer .bold{font-weight:bold;margin-bottom:5px}</style>");
-}
-*/
-// SVG
-//var save_svg = '<svg t="1595082650173" class="icon" viewBox="0 0 1075 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2078" width="140" height="140"><path d="M753.763902 685.830244a48.952195 48.952195 0 0 1 49.152-48.702439c81.420488 0 141.162146-65.386146 141.162147-146.057366 0-43.507512-13.037268-82.419512-43.457561-109.243317a142.360976 142.360976 0 0 0-20.280195-14.935415 158.045659 158.045659 0 0 0-11.239025-6.243902l-2.747317-1.298732a155.847805 155.847805 0 0 0-9.191024-3.996097c-1.348683-0.549463-2.697366-0.999024-4.096-1.498537a152.35122 152.35122 0 0 0-8.491707-2.847219c-1.948098-0.599415-3.896195-0.999024-5.844293-1.498537-2.497561-0.599415-4.945171-1.24878-7.492683-1.748293-2.597463-0.499512-5.34478-0.899122-8.042146-1.24878-1.948098-0.249756-3.846244-0.599415-5.844293-0.79922a153.150439 153.150439 0 0 0-14.435903-0.749268c-1.498537 0-2.997073 0.199805-4.545561 0.249756a265.390829 265.390829 0 0 0-5.594536-24.526049c-0.499512-1.998049-1.298732-3.846244-1.898146-5.844292a267.438829 267.438829 0 0 0-5.944196-17.982439c-0.649366-1.798244-1.498537-3.496585-2.197853-5.29483a283.123512 283.123512 0 0 0-7.742439-17.732683L772.745366 269.736585a282.973659 282.973659 0 0 0-9.790439-17.832585C714.302439 171.582439 625.88878 124.878049 524.487805 124.878049c-101.400976 0-189.914537 46.654439-238.517073 126.976-3.496585 5.794341-6.693463 11.788488-9.790439 17.832585l-2.197854 4.096a283.523122 283.523122 0 0 0-7.742439 17.732683l-2.197854 5.244878c-2.247805 5.894244-4.145951 11.988293-5.994146 18.03239-0.549463 1.998049-1.298732 3.846244-1.848195 5.844293a266.739512 266.739512 0 0 0-5.594537 24.476098c-1.498537 0-2.997073-0.199805-4.545561-0.199805-4.89522 0-9.690537 0.299707-14.485853 0.749268-1.998049 0.199805-3.846244 0.499512-5.794342 0.79922-2.697366 0.349659-5.444683 0.699317-8.092097 1.24878-2.497561 0.499512-4.995122 1.148878-7.492683 1.748293-1.898146 0.499512-3.846244 0.899122-5.794342 1.498536a153.649951 153.649951 0 0 0-8.491707 2.797269l-4.096 1.498536a164.289561 164.289561 0 0 0-9.240976 3.996098l-2.697366 1.348683a145.557854 145.557854 0 0 0-31.469268 21.179317C117.884878 408.600976 104.897561 447.562927 104.897561 491.070439c0 80.67122 59.741659 146.057366 141.162146 146.057366a48.952195 48.952195 0 0 1 49.152 48.702439 48.952195 48.952195 0 0 1-49.152 48.702439c-135.717463 0-245.710049-108.993561-245.710048-243.462244 0-109.692878 73.228488-202.402341 173.830243-232.872585A375.832976 375.832976 0 0 1 524.487805 20.330146a375.882927 375.882927 0 0 1 350.307902 237.867708c100.601756 30.470244 173.830244 123.179707 173.830244 232.872585 0 134.468683-109.992585 243.462244-245.710049 243.462244a48.952195 48.952195 0 0 1-49.102048-48.702439z" p-id="2079"></path><path d="M487.973463 386.122927a49.102049 49.102049 0 0 1 72.928781 0.099902l147.356097 162.041756c6.993171 7.742439 11.48878 19.431024 12.537757 30.120586l0.249756 12.937366c0 19.480976-20.48 39.661268-39.211708 39.661268h-104.897561v262.993171a52.44878 52.44878 0 1 1-104.897561 0v-262.993171h-104.897561c-13.886439 0-39.211707-21.72878-39.211707-39.661268v-12.987317c0-12.487805 4.795317-21.27922 12.637659-29.920781l147.356097-162.291512z" p-id="2080"></path></svg>';
 var star_svg_1 = '<svg t="1595083631685" class="icon" viewBox="0 0 1051 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2173" width="140" height="140"><path d="M525.837838 852.410811L199.264865 1001.859459l41.513513-357.016216L0 381.924324l351.481081-69.189189L525.837838 0l174.356757 312.735135L1051.675676 381.924324l-240.778379 262.918919 41.513514 357.016216z" fill="#FFD566" p-id="2174"></path></svg>';
 var star_svg_2 = ' <svg t="1595083715312" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7848" width="140" height="140"><path d="M1014.001347 866.090236L810.23569 662.324579l145.497643-84.126599c11.377778-6.550842 17.92862-18.962963 16.894276-32.064647-1.034343-13.101684-9.309091-24.479461-21.376431-29.306397l-648.188552-258.585859c-12.756902-5.171717-27.23771-2.068687-36.891582 7.585186-9.653872 9.653872-12.756902 24.13468-7.585185 36.891582l258.585858 648.533333c4.826936 12.06734 16.204714 20.686869 29.306397 21.376431 13.101684 1.034343 25.513805-5.516498 32.064647-16.894276l84.126599-145.497643 203.765657 203.765657c6.550842 6.550842 15.17037 9.998653 24.13468 9.998653 8.96431 0 17.92862-3.447811 24.13468-9.998653l99.29697-99.29697c13.446465-13.446465 13.446465-35.167677 0-48.614141zM150.324579 102.055219c-13.446465-13.446465-35.167677-13.446465-48.26936 0-13.446465 13.446465-13.446465 35.167677 0 48.26936l76.196633 76.196633c6.550842 6.550842 15.515152 9.998653 24.13468 9.998653s17.583838-3.447811 24.13468-9.998653c13.446465-13.446465 13.446465-35.167677 0-48.26936L150.324579 102.055219zM176.183165 338.575084c0-18.962963-15.17037-34.133333-34.133333-34.133333H34.133333c-18.962963 0-34.133333 15.17037-34.133333 34.133333s15.17037 34.133333 34.133333 34.133334h107.571718c18.962963 0 34.478114-15.17037 34.478114-34.133334zM162.391919 444.422896l-76.196633 75.851851c-13.446465 13.446465-13.446465 35.167677 0 48.269361 6.550842 6.550842 15.515152 9.998653 24.13468 9.998653s17.583838-3.447811 24.13468-9.998653l76.196633-76.196633c13.446465-13.446465 13.446465-35.167677 0-48.269361-13.446465-13.101684-35.167677-13.101684-48.26936 0.344782zM338.575084 176.183165c18.962963 0 34.133333-15.17037 34.133334-34.133333V34.133333c0-18.962963-15.17037-34.133333-34.133334-34.133333s-34.133333 15.17037-34.133333 34.133333v107.571718c0 18.962963 15.17037 34.478114 34.133333 34.478114zM468.557576 220.659933c8.619529 0 17.583838-3.447811 24.13468-9.998654L568.888889 134.464646c13.446465-13.446465 13.446465-35.167677 0-48.26936-13.446465-13.446465-35.167677-13.446465-48.26936 0l-76.196633 76.196633c-13.446465 13.446465-13.446465 35.167677 0 48.26936 6.550842 6.550842 15.515152 9.998653 24.13468 9.998654z" fill="#2c2c2c" p-id="7849"></path></svg>';
 var star_svg_3 = ' <svg t="1595083925438" class="icon" viewBox="0 0 1204 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4809" width="140" height="140"><path d="M1088.864348 618.13701a1555.009384 1555.009384 0 0 1-150.273004 167.137308c-52.881642 51.195212-107.931552 101.18583-163.643989 147.261521-33.849069 27.524955-60.229661 48.665566-76.190521 60.229661a162.981462 162.981462 0 0 1-191.891699 0c-15.539253-12.045932-42.160763-32.644476-76.190521-60.831957a2638.480754 2638.480754 0 0 1-164.366745-147.261521 1579.101249 1579.101249 0 0 1-150.273004-165.812257A468.104924 468.104924 0 0 1 0.152998 344.754579 315.543193 315.543193 0 0 1 109.048225 96.367457a399.443111 399.443111 0 0 1 493.883219-20.478084 398.660125 398.660125 0 0 1 493.883219 20.478084A315.482964 315.482964 0 0 1 1204.746215 343.309067a466.840101 466.840101 0 0 1-115.701178 274.647254z" fill="#FE4B83" p-id="4810"></path></svg>';
@@ -2270,8 +2342,6 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
     // 读取背景图（如果为空或只有空格，保存为空字符串，不设置背景）
     saveJss += "const bgImgValue = ($('#backgroundImgUrl').val() || '').trim();";
     saveJss += "window.configManager.set('custom.backgroundImage', bgImgValue);";
-    // 保存小广告设置（使用GM_setValue，因为不在ConfigManager中）
-    saveJss += "GM_setValue('ad', $('#toggle-ad-button').prop('checked'));";
     saveJss += "} catch(err) { console.error('保存配置失败:', err); }";
     // 刷新页面
     saveJss += "location.reload();";
@@ -2534,9 +2604,6 @@ function e(error) {
     console.error("[CSDNGreener] " + error);
 }
 
-// 旧的clear(), put(), clean(), loop()函数已被AdCleaner类替代
-// deletedLogin变量已在AdCleaner中使用window.deletedLogin
-
 function common(num, times) {
     var loop = setInterval(function () {
         --times;
@@ -2559,10 +2626,9 @@ function common(num, times) {
             $("#btnMoreComment").parent("div.opt-box").remove();
             // 展开内容
             $("div.comment-list-box").css("max-height", "none");
-            // 改回背景颜色
-            $(".login-mark").remove();
-            // 删除登录框
-            $(".login-box").remove();
+            // 隐藏登录遮罩层和登录框（使用hide而不是remove，保留给用户主动登录）
+            $(".login-mark").hide();
+            $(".login-box").hide();
         } else if (num === 2) {
             // 挡住评论的"出头推荐"
             if ($(".recommend-box").length > 1) {
@@ -2652,10 +2718,9 @@ function common(num, times) {
             $("a:contains('会员12.12')").parent().remove();
             $(".toolbar-btn-vip").remove();
         } else if (num == 5) {
-            // 改回背景颜色
-            $(".login-mark").remove();
-            // 删除登录框
-            $(".login-box").remove();
+            // 隐藏登录遮罩层和登录框（使用hide而不是remove，保留给用户主动登录）
+            $(".login-mark").hide();
+            $(".login-box").hide();
         } else if (num == 6) {
             let did = false;
             let configHTML = '';
@@ -2669,8 +2734,8 @@ function common(num, times) {
 
             configHTML += '<div class="config-grid">';
 
-            // 版式设置区域
-            configHTML += '<div class="config-section">';
+            // 版式设置区域 - 第一行，上边直角
+            configHTML += '<div class="config-section" style="border-radius: 0 0 14px 14px;">';
             configHTML += '<span class="bold">📐 屏幕版式适配</span>';
             configHTML += '<div style="display: grid; gap: 8px;">';
             configHTML += '<label style="color: #22c55e; font-weight: bold;"><input name="displayMode" type="radio" value="ai" id="scr-ai" /> ⭐⭐⭐ 智能模式 (推荐默认)</label>';
@@ -2682,8 +2747,8 @@ function common(num, times) {
             configHTML += '</div>';
             configHTML += '</div>';
 
-            // 通用设定
-            configHTML += '<div class="config-section">';
+            // 通用设定 - 第一行，上边直角
+            configHTML += '<div class="config-section" style="border-radius: 0 0 14px 14px;">';
             configHTML += '<span class="bold">🎨 通用设定</span>';
             configHTML += '<p style="margin-bottom: 10px; font-size: 13px;"><strong>自定义背景图：</strong></p>';
             configHTML += '<input type="text" id="backgroundImgUrl" placeholder="图片URL或Base64" style="border-radius: 4px; border: 1px solid #d1d5db; padding: 8px; width: 100%; margin-bottom: 8px; font-size: 13px;">';
@@ -2697,10 +2762,10 @@ function common(num, times) {
             configHTML += '<label><input type="checkbox" id="toggle-writeblog-button"> 显示发布按钮</label>';
             configHTML += '</div>';
 
-            // 右侧栏定制
+            // 右侧栏定制 - 横向多列布局
             configHTML += '<div class="config-section">';
             configHTML += '<span class="bold">📌 右侧栏定制</span>';
-            configHTML += '<label><input type="checkbox" id="toggle-ad-button"> 显示来自脚本的小广告（暂无）</label>';
+            configHTML += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 15px; margin-top: 10px;">';
             configHTML += '<label><input type="checkbox" id="toggle-authorcard-button"> 显示作者名片</label>';
             configHTML += '<label><input type="checkbox" id="toggle-searchblog-button"> 显示搜博主文章</label>';
             configHTML += '<label><input type="checkbox" id="toggle-newarticle-button"> 显示最新文章</label>';
@@ -2709,7 +2774,20 @@ function common(num, times) {
             configHTML += '<label><input type="checkbox" id="toggle-kindperson-button"> 显示分类专栏</label>';
             configHTML += '<label><input type="checkbox" id="toggle-recommendarticle-button"> 显示推荐文章</label>';
             configHTML += '<label><input type="checkbox" id="toggle-archive-button"> 显示归档</label>';
-            configHTML += '<label><input type="checkbox" id="toggle-content-button"> 显示目录</label>';
+            configHTML += '<label style="grid-column: 1 / -1;"><input type="checkbox" id="toggle-content-button"> 显示目录</label>';
+            configHTML += '</div>';
+            configHTML += '</div>';
+
+            // 配置管理
+            configHTML += '<div class="config-section" style="border-left-color: #8b5cf6;">';
+            configHTML += '<span class="bold">💾 配置管理</span>';
+            configHTML += '<p style="font-size: 12px; color: #6b7280; margin-bottom: 10px;">备份和恢复您的个性化设置</p>';
+            configHTML += '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            configHTML += '<button id="exportConfigBtn" class="saveButton" style="width: 100%;">📥 导出配置</button>';
+            configHTML += '<button id="importConfigBtn" class="saveButton" style="width: 100%;">📤 导入配置</button>';
+            configHTML += '<button id="resetConfigBtn" class="saveButton danger" style="width: 100%;">🔄 重置配置</button>';
+            configHTML += '</div>';
+            configHTML += '<input type="file" id="importConfigFile" accept=".json" style="display: none;">';
             configHTML += '</div>';
 
             configHTML += '</div>';
@@ -2734,18 +2812,6 @@ function common(num, times) {
 
             configHTML += '</div>';
             configHTML += '<p style="font-size: 11px; color: #9ca3af; margin-top: 15px;">CSDNGreener 不提供会员破解功能，仅用于前端优化</p>';
-            configHTML += '</div>';
-
-            // 配置管理
-            configHTML += '<div class="config-section" style="border-left-color: #8b5cf6;">';
-            configHTML += '<span class="bold">💾 配置管理</span>';
-            configHTML += '<p style="font-size: 12px; color: #6b7280; margin-bottom: 10px;">备份和恢复您的个性化设置</p>';
-            configHTML += '<div style="display: flex; flex-direction: column; gap: 10px;">';
-            configHTML += '<button id="exportConfigBtn" class="saveButton" style="width: 100%;">📥 导出配置</button>';
-            configHTML += '<button id="importConfigBtn" class="saveButton" style="width: 100%;">📤 导入配置</button>';
-            configHTML += '<button id="resetConfigBtn" class="saveButton danger" style="width: 100%;">🔄 重置配置</button>';
-            configHTML += '</div>';
-            configHTML += '<input type="file" id="importConfigFile" accept=".json" style="display: none;">';
             configHTML += '</div>';
 
             // 底部按钮栏
@@ -2797,18 +2863,6 @@ function common(num, times) {
                 $("#toggle-shop-button").prop("checked", true);
             } else {
                 $("#toggle-shop-button").prop("checked", false);
-            }
-            // 侧栏小广告 - 保留旧逻辑(使用GM_getValue，因为不在新配置结构中)
-            let adCookie = GM_getValue("ad", false);
-            if (adCookie) {
-                setTimeout(function() {
-                    // $("#recommend-right").append('<div id="asideArchive" class="aside-box" style="margin-top: 8px; width: 300px; display:block !important;"><h3 class="aside-title">来自 CSDN 脚本的小广告</h3><div class="aside-content"><ul class="inf_list clearfix"><li class="clearfix"><b>您可在 <a onclick="showConfig()" style="display: inline-block;">脚本设置</a> 中永久关闭小广告<br>感谢您的支持 ❤️</b><br><p style="font-size: 4px;margin-top: 10px;"><b>29元每月！</b>CTGNet GIA 回程五网高端CN2 GIA/GT网络，支持VPC高级网络<br>拒绝绕路，拒绝不稳定，助力企业拓展全球业务<br>安全，稳定，高性能</p></li><li class="clearfix"><a href="https://www.tsyvps.com/aff/HEHTPGYL" target="_blank"><img src="https://www.tsyvps.com/img/gg.png" style="width: 265px;height:149px"></a></li></ul></div></div>');
-                }, 500);
-            }
-            if (adCookie) {
-                $("#toggle-ad-button").prop("checked", true);
-            } else {
-                $("#toggle-ad-button").prop("checked", false);
             }
             // 显示作者名片
             let authorCardValue = configManager.get("sidebar.authorCard");
