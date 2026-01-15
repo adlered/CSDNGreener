@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         「CSDNGreener」🍃CSDN广告完全过滤|免登录|个性化排版|最强老牌脚本|持续更新
 // @namespace    https://github.com/adlered
-// @version      4.2.6
+// @version      5.0.0
 // @description  ⚡️全新4.0版本！拥有数项独家功能的最强CSDN脚本，不服比一比⚡️|🕶无需登录CSDN，获得比会员更佳的体验|🖥自定义背景图，分辨率自适配，分屏不用滚动|💾超级预优化|🏷原创文章免登录展开|🔌独家推荐内容自由开关|📠免登录复制|🔗防外链重定向|📝独家论坛未登录自动展开文章、评论|🌵全面净化|📈沉浸阅读|🧴净化剪贴板|📕作者信息文章顶部展示
 // @author       Adler
 // @connect      www.csdn.net
@@ -16,6 +16,14 @@
 // @grant        GM_getValue
 // @grant        GM_setClipboard
 // @license      AGPL-3.0-or-later
+// @note         26-01-15 5.0.0 重大更新！模块化重构+新增HD版式+实时预览功能
+// @note         26-01-15 5.0.0 新增：高分辨率版式（HD模式），专为1920px+屏幕优化，充分利用宽屏空间
+// @note         26-01-15 5.0.0 新增：实时预览功能，修改设置立即看到效果，无需刷新页面
+// @note         26-01-15 5.0.0 新增：配置导入/导出功能，方便备份和迁移设置
+// @note         26-01-15 5.0.0 改进：代码模块化重构，新增ConfigManager等核心类，更清晰易维护
+// @note         26-01-15 5.0.0 改进：配置从Cookie迁移到GM_setValue，更稳定可靠
+// @note         26-01-15 5.0.0 改进：样式管理优化，减少DOM操作，提升性能
+// @note         26-01-15 5.0.0 注意：首次运行需重新配置设置（旧配置不迁移，但不影响使用）
 // @note         25-09-03 4.2.6 修复无法正常使用的问题，更新jslib
 // @note         25-08-04 4.2.5 更新免登录复制
 // @note         24-07-18 4.2.4 描述更改
@@ -167,7 +175,7 @@
 // @downloadURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.user.js
 // @updateURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.meta.js
 // ==/UserScript==
-var version = "4.2.6";
+var version = "5.0.0";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -287,7 +295,944 @@ class Progress {
 }
 var progressor = new Progress();
 
-// 自定义 CSS
+// ============================================
+// 5.0.0 新增核心类 - 模块化架构
+// ============================================
+
+// 工具函数：防抖
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// 日志工具
+const Logger = {
+    prefix: '[CSDNGreener]',
+    log: function(msg) {
+        console.log(this.prefix, msg);
+    },
+    debug: function(msg) {
+        console.debug(this.prefix, msg);
+    },
+    warn: function(msg) {
+        console.warn(this.prefix, msg);
+    },
+    error: function(msg) {
+        console.error(this.prefix, msg);
+    }
+};
+
+// 1. ConfigManager - 配置管理器（使用GM_setValue/GM_getValue）
+class ConfigManager {
+    constructor() {
+        this.storageKey = 'csdngreener_config_v5';
+        this.defaultConfig = {
+            version: '5.0.0',
+            layout: 'sm', // sm | md | lg | fo | hd
+            display: {
+                recommend: false,
+                shop: false,
+                whiteTheme: false,
+                autoResize: true,
+            },
+            toolbar: {
+                autoHide: false,
+                showWrite: true,
+            },
+            sidebar: {
+                authorCard: false,
+                searchBlog: false,
+                newArticle: false,
+                hotArticle: false,
+                newComments: false,
+                category: false,
+                recommendArticle: false,
+                archive: false,
+                content: true,
+            },
+            bottomBar: {
+                alwaysHide: true,
+            },
+            custom: {
+                backgroundImage: '',
+            },
+        };
+    }
+
+    // 获取单个配置
+    get(key) {
+        const config = this.getAll();
+        return key ? this._getNestedValue(config, key) : config;
+    }
+
+    // 获取所有配置
+    getAll() {
+        try {
+            const stored = GM_getValue(this.storageKey, null);
+            if (!stored) {
+                Logger.log('初始化默认配置');
+                this.setAll(this.defaultConfig);
+                return this.defaultConfig;
+            }
+            const config = JSON.parse(stored);
+            // 合并默认配置（处理新增字段）
+            return this._mergeConfig(this.defaultConfig, config);
+        } catch (e) {
+            Logger.error('读取配置失败: ' + e.message);
+            return this.defaultConfig;
+        }
+    }
+
+    // 设置单个配置
+    set(key, value) {
+        const config = this.getAll();
+        this._setNestedValue(config, key, value);
+        this.setAll(config);
+    }
+
+    // 设置所有配置
+    setAll(config) {
+        try {
+            GM_setValue(this.storageKey, JSON.stringify(config));
+            Logger.debug('配置已保存');
+        } catch (e) {
+            Logger.error('保存配置失败: ' + e.message);
+        }
+    }
+
+    // 导出配置为JSON字符串
+    export() {
+        return JSON.stringify(this.getAll(), null, 2);
+    }
+
+    // 从JSON字符串导入配置
+    import(jsonString) {
+        try {
+            const config = JSON.parse(jsonString);
+            this.setAll(config);
+            Logger.log('配置导入成功');
+            return true;
+        } catch (e) {
+            Logger.error('配置导入失败: ' + e.message);
+            return false;
+        }
+    }
+
+    // 重置为默认配置
+    reset() {
+        this.setAll(this.defaultConfig);
+        Logger.log('配置已重置');
+    }
+
+    // 辅助方法：获取嵌套值
+    _getNestedValue(obj, path) {
+        const keys = path.split('.');
+        let value = obj;
+        for (let key of keys) {
+            value = value?.[key];
+        }
+        return value;
+    }
+
+    // 辅助方法：设置嵌套值
+    _setNestedValue(obj, path, value) {
+        const keys = path.split('.');
+        const lastKey = keys.pop();
+        let target = obj;
+        for (let key of keys) {
+            if (!(key in target)) {
+                target[key] = {};
+            }
+            target = target[key];
+        }
+        target[lastKey] = value;
+    }
+
+    // 辅助方法：合并配置
+    _mergeConfig(defaultConfig, userConfig) {
+        const merged = JSON.parse(JSON.stringify(defaultConfig));
+        const merge = (target, source) => {
+            for (let key in source) {
+                if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                    if (!target[key]) target[key] = {};
+                    merge(target[key], source[key]);
+                } else {
+                    target[key] = source[key];
+                }
+            }
+        };
+        merge(merged, userConfig);
+        return merged;
+    }
+}
+
+// 2. StyleManager - 样式管理器
+class StyleManager {
+    constructor() {
+        this.injectedStyles = new Map();
+        this.stylePrefix = 'csdngreener-style';
+    }
+
+    // 注入样式
+    inject(id, cssString, replace = false) {
+        if (this.injectedStyles.has(id) && !replace) {
+            return; // 已存在且不替换
+        }
+
+        // 移除旧样式
+        if (this.injectedStyles.has(id)) {
+            this.remove(id);
+        }
+
+        // 注入新样式
+        GM_addStyle(cssString);
+        this.injectedStyles.set(id, true);
+        Logger.debug(`样式已注入: ${id}`);
+    }
+
+    // 移除样式（注：GM_addStyle注入的样式无法直接移除，这里仅标记）
+    remove(id) {
+        // GM_addStyle注入的样式会直接添加到页面，无法通过ID移除
+        // 但我们可以标记为已移除
+        this.injectedStyles.delete(id);
+        Logger.debug(`样式已标记移除: ${id}`);
+    }
+
+    // 清空所有样式标记
+    clear() {
+        this.injectedStyles.clear();
+        Logger.debug('样式标记已清空');
+    }
+}
+
+// 3. LayoutEngine - 布局引擎
+class LayoutEngine {
+    constructor(configManager, styleManager) {
+        this.config = configManager;
+        this.style = styleManager;
+        this.currentLayout = null;
+        this.layouts = {}; // 将在后续初始化版式类
+    }
+
+    // 注册版式
+    registerLayout(name, layoutInstance) {
+        this.layouts[name] = layoutInstance;
+        Logger.debug(`版式已注册: ${name}`);
+    }
+
+    // 应用版式
+    apply(layoutType) {
+        const layout = this.layouts[layoutType];
+        if (!layout) {
+            Logger.error(`未知版式: ${layoutType}`);
+            return false;
+        }
+
+        Logger.log(`应用版式: ${layoutType}`);
+
+        // 清除当前版式
+        if (this.currentLayout) {
+            this.currentLayout.cleanup();
+        }
+
+        // 应用新版式
+        layout.apply(this.style);
+        this.currentLayout = layout;
+
+        // 保存配置
+        this.config.set('layout', layoutType);
+
+        return true;
+    }
+
+    // 获取当前版式
+    getCurrent() {
+        return this.currentLayout;
+    }
+
+    // 获取当前版式名称
+    getCurrentName() {
+        const currentConfig = this.config.get('layout');
+        return currentConfig || 'sm';
+    }
+}
+
+// 4. PreviewManager - 实时预览管理器
+class PreviewManager {
+    constructor(layoutEngine, styleManager, configManager) {
+        this.layout = layoutEngine;
+        this.style = styleManager;
+        this.config = configManager;
+        this.previewMode = false;
+        this.originalConfig = null;
+    }
+
+    // 进入预览模式
+    enter() {
+        if (this.previewMode) return;
+
+        this.previewMode = true;
+        this.originalConfig = JSON.parse(JSON.stringify(this.config.getAll()));
+        Logger.log('进入预览模式');
+    }
+
+    // 退出预览模式（不保存）
+    exit() {
+        if (!this.previewMode) return;
+
+        Logger.log('退出预览模式，恢复原配置');
+
+        // 恢复原始配置
+        this.config.setAll(this.originalConfig);
+        this.applyCurrentConfig();
+
+        this.previewMode = false;
+        this.originalConfig = null;
+    }
+
+    // 保存预览配置
+    save() {
+        if (!this.previewMode) return;
+
+        Logger.log('保存预览配置');
+        this.previewMode = false;
+        this.originalConfig = null;
+        // 配置已经在预览过程中更新到configManager，无需额外操作
+    }
+
+    // 实时预览版式变化
+    previewLayout(layoutType) {
+        Logger.debug(`预览版式: ${layoutType}`);
+        this.layout.apply(layoutType);
+    }
+
+    // 实时预览侧边栏变化
+    previewSidebar(sidebarConfig) {
+        Logger.debug('预览侧边栏配置');
+        Object.keys(sidebarConfig).forEach(key => {
+            const element = this._getSidebarElement(key);
+            if (element) {
+                element.style.display = sidebarConfig[key] ? 'block' : 'none';
+            }
+        });
+    }
+
+    // 实时预览背景图
+    previewBackground(imageUrl) {
+        Logger.debug('预览背景图');
+        const mainFather = $('.main_father')[0];
+        if (mainFather) {
+            if (imageUrl) {
+                mainFather.style.backgroundImage = `url(${imageUrl})`;
+                mainFather.style.backgroundAttachment = 'fixed';
+                mainFather.style.backgroundSize = '100%';
+            } else {
+                mainFather.style.backgroundImage = '';
+            }
+        }
+    }
+
+    // 应用当前配置
+    applyCurrentConfig() {
+        const config = this.config.getAll();
+        this.layout.apply(config.layout);
+        this.previewSidebar(config.sidebar);
+        this.previewBackground(config.custom.backgroundImage);
+    }
+
+    // 获取侧边栏元素
+    _getSidebarElement(key) {
+        const mapping = {
+            authorCard: '#asideProfile',
+            searchBlog: '#asideSearchArticle',
+            newArticle: '#asideNewArticle',
+            hotArticle: '#asideHotArticle',
+            newComments: '#asideNewComments',
+            category: '#asideCategory',
+            recommendArticle: '.recommend-list-box',
+            archive: '#asideArchive',
+            content: '.align-items-stretch.group_item',
+        };
+        const selector = mapping[key];
+        return selector ? $(selector)[0] : null;
+    }
+}
+
+// 初始化核心实例
+const configManager = new ConfigManager();
+const styleManager = new StyleManager();
+const layoutEngine = new LayoutEngine(configManager, styleManager);
+const previewManager = new PreviewManager(layoutEngine, styleManager, configManager);
+
+Logger.log('核心类初始化完成 V' + version);
+
+// ============================================
+// 5.0.0 核心类结束
+// ============================================
+
+// ============================================
+// CSS样式常量定义
+// ============================================
+
+// 基础样式
+const BASE_STYLES = {
+    // 进度条样式
+    nprogress: `
+        #nprogress {
+            pointer-events: none;
+        }
+        #nprogress .bar {
+            background: #f44444;
+            position: fixed;
+            z-index: 1031;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+        }
+        #nprogress .peg {
+            display: block;
+            position: absolute;
+            right: 0;
+            width: 100px;
+            height: 100%;
+            box-shadow: 0 0 10px #f44444, 0 0 5px #f44444;
+            opacity: 1;
+            -webkit-transform: rotate(3deg) translate(0, -4px);
+            -ms-transform: rotate(3deg) translate(0, -4px);
+            transform: rotate(3deg) translate(0, -4px);
+        }
+        #nprogress .spinner {
+            display: block;
+            position: fixed;
+            z-index: 1031;
+            top: 15px;
+            right: 15px;
+        }
+        #nprogress .spinner-icon {
+            width: 18px;
+            height: 18px;
+            box-sizing: border-box;
+            border: solid 2px transparent;
+            border-top-color: #f44444;
+            border-left-color: #f44444;
+            border-radius: 50%;
+            -webkit-animation: nprogress-spinner .4s linear infinite;
+            animation: nprogress-spinner .4s linear infinite;
+        }
+        .nprogress-custom-parent {
+            overflow: hidden;
+            position: relative;
+        }
+        .nprogress-custom-parent #nprogress .bar,
+        .nprogress-custom-parent #nprogress .spinner {
+            position: absolute;
+        }
+        @-webkit-keyframes nprogress-spinner {
+            0% { -webkit-transform: rotate(0); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes nprogress-spinner {
+            0% { transform: rotate(0); }
+            100% { transform: rotate(360deg); }
+        }
+    `,
+
+    // 设置窗口样式
+    modal: `
+        .black_overlay {
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .10;
+            filter: alpha(opacity=88);
+            display: none;
+            position: absolute;
+        }
+        .white_content {
+            display: none;
+            position: absolute;
+            z-index: 9999 !important;
+            top: 25%;
+            left: 25%;
+            width: 650px;
+            height: 60%;
+            padding: 20px;
+            border: 0px;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 1002;
+            overflow: auto;
+        }
+    `,
+
+    // 提示条样式
+    tips: `
+        .tripscon {
+            padding: 10px;
+        }
+    `,
+
+    // 切换按钮样式（旧）
+    toggleButton: `
+        #toggle-button {
+            display: none;
+        }
+        .button-label {
+            position: relative;
+            display: inline-block;
+            width: 82px;
+            background-color: #ccc;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .circle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #fff;
+        }
+        .button-label .text {
+            line-height: 30px;
+            font-size: 18px;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .on {
+            color: #fff;
+            display: none;
+            text-indent: 10px;
+        }
+        .off {
+            color: #fff;
+            display: inline-block;
+            text-indent: 53px;
+        }
+        .button-label .circle {
+            left: 0;
+            transition: all .3s;
+        }
+        #toggle-button:checked + label.button-label .circle {
+            left: 50px;
+        }
+        #toggle-button:checked + label.button-label .on {
+            display: inline-block;
+        }
+        #toggle-button:checked + label.button-label .off {
+            display: none;
+        }
+        #toggle-button:checked + label.button-label {
+            background-color: #78d690;
+        }
+    `,
+
+    // 保存按钮样式
+    saveButton: `
+        .saveButton {
+            background-color: #19a4ed;
+            border: none;
+            color: #fff;
+            padding: 5px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    `,
+
+    // Star样式
+    star: `
+        .giveMeOneStar:hover {
+            color: #FF69B4;
+        }
+    `,
+
+    // 设置窗口文字样式（Firefox）
+    configTextFirefox: `
+        .configContainer label {
+            font-size: 15px;
+        }
+        .configContainer p {
+            font-size: 15px;
+        }
+        .giveMeOneStar {
+            font-size: 15px;
+        }
+        .configContainer .title {
+            font-size: 20px;
+        }
+        .configContainer .bold {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    `,
+
+    // 设置窗口文字样式（Chrome）
+    configTextChrome: `
+        .configContainer label {
+            font-size: 12px;
+        }
+        .configContainer p {
+            font-size: 12px;
+        }
+        .giveMeOneStar {
+            font-size: 15px;
+        }
+        .configContainer .title {
+            font-size: 20px;
+        }
+        .configContainer .bold {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    `
+};
+
+// 注入基础样式
+styleManager.inject('nprogress', BASE_STYLES.nprogress);
+styleManager.inject('modal', BASE_STYLES.modal);
+styleManager.inject('tips', BASE_STYLES.tips);
+styleManager.inject('toggle-button', BASE_STYLES.toggleButton);
+styleManager.inject('save-button', BASE_STYLES.saveButton);
+styleManager.inject('star', BASE_STYLES.star);
+
+// 根据浏览器类型注入配置文字样式
+if (isFirefox()) {
+    styleManager.inject('config-text', BASE_STYLES.configTextFirefox);
+} else {
+    styleManager.inject('config-text', BASE_STYLES.configTextChrome);
+}
+
+Logger.log('基础样式已注入');
+
+// ============================================
+// CSS样式常量结束
+// ============================================
+
+// ============================================
+// 版式系统 - Layout Classes
+// ============================================
+
+// 版式基类
+class BaseLayout {
+    constructor() {
+        this.name = 'base';
+        this.breakpoint = null;
+    }
+
+    apply(styleManager) {
+        const css = this.getCSS();
+        styleManager.inject(`layout-${this.name}`, css, true);
+        this.applyDOM();
+        Logger.log(`应用版式: ${this.name}`);
+    }
+
+    cleanup() {
+        // 子类可覆盖以清理DOM修改
+    }
+
+    getCSS() {
+        return ''; // 子类实现
+    }
+
+    applyDOM() {
+        // 子类实现DOM操作
+    }
+}
+
+// 1. SmallLayout - 平铺模式（<1200px）
+class SmallLayout extends BaseLayout {
+    constructor() {
+        super();
+        this.name = 'sm';
+        this.breakpoint = 1200;
+    }
+
+    getCSS() {
+        return `
+            /* CSDNGreener - SmallLayout 平铺模式 */
+            .main_father {
+                justify-content: flex-start !important;
+            }
+
+            main {
+                width: auto !important;
+                max-width: 90vw !important;
+                float: none !important;
+            }
+
+            #mainBox {
+                width: 100% !important;
+            }
+
+            main article img {
+                margin: 0 auto;
+                max-width: 100%;
+                object-fit: cover;
+            }
+
+            .recommend-right {
+                width: 100% !important;
+                margin-top: 20px;
+            }
+
+            @media screen and (max-width: 768px) {
+                main {
+                    max-width: 100vw !important;
+                    padding: 0 10px;
+                }
+            }
+        `;
+    }
+
+    applyDOM() {
+        $('.main_father').removeClass('justify-content-center');
+        $('#mainBox').css('width', '100%');
+    }
+}
+
+// 2. MediumLayout - 适应模式（1200-1380px）
+class MediumLayout extends BaseLayout {
+    constructor() {
+        super();
+        this.name = 'md';
+        this.breakpoint = 1380;
+    }
+
+    getCSS() {
+        return `
+            /* CSDNGreener - MediumLayout 适应模式 */
+            .main_father {
+                justify-content: flex-start !important;
+            }
+
+            .container {
+                max-width: 1200px !important;
+                margin: 0 auto;
+            }
+
+            main {
+                width: 768px !important;
+            }
+
+            .recommend-right {
+                width: 300px !important;
+            }
+
+            #content_views {
+                width: 100% !important;
+            }
+        `;
+    }
+
+    applyDOM() {
+        $('.main_father').removeClass('justify-content-center');
+    }
+}
+
+// 3. LargeLayout - 居中模式（1380-1550px）
+class LargeLayout extends BaseLayout {
+    constructor() {
+        super();
+        this.name = 'lg';
+        this.breakpoint = 1550;
+    }
+
+    getCSS() {
+        return `
+            /* CSDNGreener - LargeLayout 居中模式 */
+            .main_father {
+                justify-content: center !important;
+            }
+
+            .container {
+                max-width: 1318px !important;
+                margin: 0 auto !important;
+            }
+
+            main {
+                width: 1010px !important;
+            }
+
+            .recommend-right {
+                width: 300px !important;
+            }
+        `;
+    }
+
+    applyDOM() {
+        $('.container').css('margin', '0 auto');
+    }
+}
+
+// 4. FocusLayout - 沉浸模式（无侧边栏，任意分辨率）
+class FocusLayout extends BaseLayout {
+    constructor() {
+        super();
+        this.name = 'fo';
+        this.breakpoint = null;
+    }
+
+    getCSS() {
+        return `
+            /* CSDNGreener - FocusLayout 沉浸模式 */
+            .recommend-right,
+            #rightAside {
+                display: none !important;
+            }
+
+            .container {
+                width: 100% !important;
+                max-width: 1400px !important;
+                margin: 0 auto !important;
+            }
+
+            .container > main {
+                width: 100% !important;
+                max-width: 1200px !important;
+                margin: 0 auto !important;
+            }
+
+            #article_content,
+            #content_views {
+                max-width: 900px !important;
+                margin: 0 auto !important;
+            }
+        `;
+    }
+
+    applyDOM() {
+        $('.recommend-right').hide();
+        $('.container').css('width', '100%');
+        $('.container > main').css('width', '100%');
+    }
+
+    cleanup() {
+        $('.recommend-right').show();
+    }
+}
+
+// 5. HDLayout - 高分辨率模式（1920px+，新增⭐）
+class HDLayout extends BaseLayout {
+    constructor() {
+        super();
+        this.name = 'hd';
+        this.breakpoint = 1920;
+    }
+
+    getCSS() {
+        return `
+            /* CSDNGreener - HDLayout 高分辨率模式（新增） */
+            .main_father {
+                justify-content: center !important;
+            }
+
+            .container {
+                max-width: 1600px !important;
+                margin: 0 auto !important;
+                display: flex !important;
+                justify-content: space-between !important;
+            }
+
+            main {
+                width: 1200px !important;
+                flex: 0 0 1200px !important;
+            }
+
+            .recommend-right {
+                width: 380px !important;
+                flex: 0 0 380px !important;
+            }
+
+            #article_content,
+            #content_views {
+                max-width: 100% !important;
+            }
+
+            pre {
+                max-width: 100% !important;
+            }
+
+            main article img {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+
+            .recommend-right .aside-box {
+                width: 100% !important;
+            }
+
+            /* 4K优化 (2560px+) */
+            @media screen and (min-width: 2560px) {
+                .container {
+                    max-width: 2000px !important;
+                }
+
+                main {
+                    width: 1500px !important;
+                    flex: 0 0 1500px !important;
+                }
+
+                .recommend-right {
+                    width: 480px !important;
+                    flex: 0 0 480px !important;
+                }
+            }
+        `;
+    }
+
+    applyDOM() {
+        // 确保侧边栏存在
+        if (!$('#rightAside').length && $('.recommend-right').length === 0) {
+            $('#mainBox').after(
+                '<div class="recommend-right align-items-stretch clearfix" id="rightAside">' +
+                '<aside class="recommend-right_aside">' +
+                '<div id="recommend-right" style="width: 100%;"></div>' +
+                '</aside></div>'
+            );
+        }
+        $('.recommend-right').show();
+    }
+
+    cleanup() {
+        // 清理时不移除侧边栏，保持兼容
+    }
+}
+
+// 注册所有版式到LayoutEngine
+layoutEngine.registerLayout('sm', new SmallLayout());
+layoutEngine.registerLayout('md', new MediumLayout());
+layoutEngine.registerLayout('lg', new LargeLayout());
+layoutEngine.registerLayout('fo', new FocusLayout());
+layoutEngine.registerLayout('hd', new HDLayout());
+
+Logger.log('版式系统已初始化：sm, md, lg, fo, hd');
+
+// 应用默认版式或用户配置的版式
+const currentLayout = configManager.get('layout') || 'sm';
+layoutEngine.apply(currentLayout);
+
+// ============================================
+// 版式系统结束
+// ============================================
+
+// 自定义 CSS（旧代码，已迁移到StyleManager，注释保留作参考）
+/*
 // 进度条
 $('head').append("<style>#nprogress{pointer-events:none}#nprogress .bar{background:#f44444;position:fixed;z-index:1031;top:0;left:0;width:100%;height:2px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #f44444,0 0 5px #f44444;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1031;top:15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:solid 2px transparent;border-top-color:#f44444;border-left-color:#f44444;border-radius:50%;-webkit-animation:nprogress-spinner .4s linear infinite;animation:nprogress-spinner .4s linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>");
 // 设置窗口
@@ -306,6 +1251,7 @@ if (isFirefox()) {
 } else {
     $('head').append("<style>.configContainer label{font-size:12px}.configContainer p{font-size:12px}.giveMeOneStar{font-size:15px}.configContainer .title{font-size:20px}.configContainer .bold{font-weight:bold;margin-bottom:5px}</style>");
 }
+*/
 // SVG
 //var save_svg = '<svg t="1595082650173" class="icon" viewBox="0 0 1075 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2078" width="140" height="140"><path d="M753.763902 685.830244a48.952195 48.952195 0 0 1 49.152-48.702439c81.420488 0 141.162146-65.386146 141.162147-146.057366 0-43.507512-13.037268-82.419512-43.457561-109.243317a142.360976 142.360976 0 0 0-20.280195-14.935415 158.045659 158.045659 0 0 0-11.239025-6.243902l-2.747317-1.298732a155.847805 155.847805 0 0 0-9.191024-3.996097c-1.348683-0.549463-2.697366-0.999024-4.096-1.498537a152.35122 152.35122 0 0 0-8.491707-2.847219c-1.948098-0.599415-3.896195-0.999024-5.844293-1.498537-2.497561-0.599415-4.945171-1.24878-7.492683-1.748293-2.597463-0.499512-5.34478-0.899122-8.042146-1.24878-1.948098-0.249756-3.846244-0.599415-5.844293-0.79922a153.150439 153.150439 0 0 0-14.435903-0.749268c-1.498537 0-2.997073 0.199805-4.545561 0.249756a265.390829 265.390829 0 0 0-5.594536-24.526049c-0.499512-1.998049-1.298732-3.846244-1.898146-5.844292a267.438829 267.438829 0 0 0-5.944196-17.982439c-0.649366-1.798244-1.498537-3.496585-2.197853-5.29483a283.123512 283.123512 0 0 0-7.742439-17.732683L772.745366 269.736585a282.973659 282.973659 0 0 0-9.790439-17.832585C714.302439 171.582439 625.88878 124.878049 524.487805 124.878049c-101.400976 0-189.914537 46.654439-238.517073 126.976-3.496585 5.794341-6.693463 11.788488-9.790439 17.832585l-2.197854 4.096a283.523122 283.523122 0 0 0-7.742439 17.732683l-2.197854 5.244878c-2.247805 5.894244-4.145951 11.988293-5.994146 18.03239-0.549463 1.998049-1.298732 3.846244-1.848195 5.844293a266.739512 266.739512 0 0 0-5.594537 24.476098c-1.498537 0-2.997073-0.199805-4.545561-0.199805-4.89522 0-9.690537 0.299707-14.485853 0.749268-1.998049 0.199805-3.846244 0.499512-5.794342 0.79922-2.697366 0.349659-5.444683 0.699317-8.092097 1.24878-2.497561 0.499512-4.995122 1.148878-7.492683 1.748293-1.898146 0.499512-3.846244 0.899122-5.794342 1.498536a153.649951 153.649951 0 0 0-8.491707 2.797269l-4.096 1.498536a164.289561 164.289561 0 0 0-9.240976 3.996098l-2.697366 1.348683a145.557854 145.557854 0 0 0-31.469268 21.179317C117.884878 408.600976 104.897561 447.562927 104.897561 491.070439c0 80.67122 59.741659 146.057366 141.162146 146.057366a48.952195 48.952195 0 0 1 49.152 48.702439 48.952195 48.952195 0 0 1-49.152 48.702439c-135.717463 0-245.710049-108.993561-245.710048-243.462244 0-109.692878 73.228488-202.402341 173.830243-232.872585A375.832976 375.832976 0 0 1 524.487805 20.330146a375.882927 375.882927 0 0 1 350.307902 237.867708c100.601756 30.470244 173.830244 123.179707 173.830244 232.872585 0 134.468683-109.992585 243.462244-245.710049 243.462244a48.952195 48.952195 0 0 1-49.102048-48.702439z" p-id="2079"></path><path d="M487.973463 386.122927a49.102049 49.102049 0 0 1 72.928781 0.099902l147.356097 162.041756c6.993171 7.742439 11.48878 19.431024 12.537757 30.120586l0.249756 12.937366c0 19.480976-20.48 39.661268-39.211708 39.661268h-104.897561v262.993171a52.44878 52.44878 0 1 1-104.897561 0v-262.993171h-104.897561c-13.886439 0-39.211707-21.72878-39.211707-39.661268v-12.987317c0-12.487805 4.795317-21.27922 12.637659-29.920781l147.356097-162.291512z" p-id="2080"></path></svg>';
 var star_svg_1 = '<svg t="1595083631685" class="icon" viewBox="0 0 1051 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2173" width="140" height="140"><path d="M525.837838 852.410811L199.264865 1001.859459l41.513513-357.016216L0 381.924324l351.481081-69.189189L525.837838 0l174.356757 312.735135L1051.675676 381.924324l-240.778379 262.918919 41.513514 357.016216z" fill="#FFD566" p-id="2174"></path></svg>';
@@ -1068,71 +2014,40 @@ function common(num, times) {
             //论坛自动展开
             $(".js_show_topic").click();
         } else if (num == 4) {
-            /** 配置控制 **/
-            let config = new Config();
-            let smCookie = config.get("scr-sm", true);
-            let mdCookie = config.get("scr-md", false);
-            let lgCookie = config.get("scr-lg", false);
-            let foCookie = config.get("scr-fo", false)
+            /** 配置控制 - 使用新的ConfigManager **/
+            // 从新的ConfigManager读取当前版式
+            const currentLayout = configManager.get('layout') || 'sm';
 
-            $("#scr-sm").prop("checked", smCookie);
-            $("#scr-md").prop("checked", mdCookie);
-            $("#scr-lg").prop("checked", lgCookie);
-            $("#scr-fo").prop("checked", foCookie);
+            // 设置单选框状态
+            $("#scr-sm").prop("checked", currentLayout === 'sm');
+            $("#scr-md").prop("checked", currentLayout === 'md');
+            $("#scr-lg").prop("checked", currentLayout === 'lg');
+            $("#scr-fo").prop("checked", currentLayout === 'fo');
+            $("#scr-hd").prop("checked", currentLayout === 'hd');
 
-            if (smCookie) {
-                // Small Screen Mode
-                $(".main_father").removeClass("justify-content-center");
-                GM_addStyle(`
-                main{
-                    width: auto!important;
-                    float: none!important;
-                    max-width: 90vw;
-                }
-                main article img{
-                    margin: 0 auto;
-                    max-width: 100%;
-                    object-fit: cover;
-                }
-                `);
-                $("#mainBox").css("width", "100%");
-            } else if (mdCookie) {
-                // Middle Screen Mode
-                $(".main_father").removeClass("justify-content-center");
-            } else if (lgCookie) {
-                // Large Screen Mode
-                $(".container").css("margin", "0 auto")
-            } else if (foCookie) {
-                // Focus mode
-                $(".recommend-right").remove();
-                $(".container").css("width", "100%");
-                $(".container > main").css("width", "100%");
-            }
+            // 版式已在初始化时应用，这里不需要重复应用CSS
+            // layoutEngine.apply() 已在脚本加载时执行
 
-            // 屏幕尺寸单选监听
+            // 屏幕尺寸单选监听 - 使用新的ConfigManager和LayoutEngine
             $("#scr-sm").click(function () {
-                new Config().set("scr-sm", true);
-                new Config().set("scr-md", false);
-                new Config().set("scr-lg", false);
-                new Config().set("scr-fo", false);
+                configManager.set("layout", "sm");
+                layoutEngine.apply("sm");
             });
             $("#scr-md").click(function () {
-                new Config().set("scr-md", true);
-                new Config().set("scr-sm", false);
-                new Config().set("scr-lg", false);
-                new Config().set("scr-fo", false);
+                configManager.set("layout", "md");
+                layoutEngine.apply("md");
             });
             $("#scr-lg").click(function () {
-                new Config().set("scr-lg", true);
-                new Config().set("scr-sm", false);
-                new Config().set("scr-md", false);
-                new Config().set("scr-fo", false);
+                configManager.set("layout", "lg");
+                layoutEngine.apply("lg");
             });
             $("#scr-fo").click(function () {
-                new Config().set("scr-fo", true);
-                new Config().set("scr-sm", false);
-                new Config().set("scr-md", false);
-                new Config().set("scr-lg", false);
+                configManager.set("layout", "fo");
+                layoutEngine.apply("fo");
+            });
+            $("#scr-hd").click(function () {
+                configManager.set("layout", "hd");
+                layoutEngine.apply("hd");
             });
             // 判断是否为登录状态
             if ($('.toolbar-btn-loginfun').text() === '登录') {
@@ -1161,6 +2076,7 @@ function common(num, times) {
             configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-md" /> 适应模式 </label>';
             configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-lg" /> 居中模式 </label>';
             configHTML += '<label><input name="displayMode" type="radio" value="" id="scr-fo" /> 沉浸模式(无侧栏)</label>';
+            configHTML += '<label style="color: #ff6b35; font-weight: bold;"><input name="displayMode" type="radio" value="" id="scr-hd" /> ⭐高分辨率模式(1920px+)</label>';
             configHTML += '<hr style="height:1px;border:none;border-top:1px solid #cccccc;margin: 5px 0px 5px 0px;" />';
             configHTML += '<p class="bold">通用设定</p>';
             configHTML += '<p>自定义背景图： <input type="text" id="backgroundImgUrl" placeholder="图片所在网址或Base64" style="border-radius: 2px;border: 1px solid #f0f0f0;padding:5px;width:100%;margin-bottom:5px;"> <input style="margin-bottom:5px;" accept="image/*" id="upload_bg" type="file"></p>';
