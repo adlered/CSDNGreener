@@ -1745,6 +1745,33 @@ class AILayout extends BaseLayout {
                 display: block !important;
                 float: none !important;
                 margin-left: 0 !important;
+                max-height: calc(100vh - 80px) !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                position: sticky !important;
+                top: 70px !important;
+            }
+
+            /* 优化侧边栏滚动条样式 */
+            .recommend-right::-webkit-scrollbar,
+            #rightAside::-webkit-scrollbar {
+                width: 6px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb,
+            #rightAside::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2) !important;
+                border-radius: 3px !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-thumb:hover,
+            #rightAside::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(0, 0, 0, 0.4) !important;
+            }
+
+            .recommend-right::-webkit-scrollbar-track,
+            #rightAside::-webkit-scrollbar-track {
+                background: transparent !important;
             }
 
             #article_content,
@@ -1777,6 +1804,8 @@ class AILayout extends BaseLayout {
                     width: 100% !important;
                     max-width: 780px !important;
                     margin-top: 16px !important;
+                    position: static !important;
+                    max-height: none !important;
                 }
             }
 
