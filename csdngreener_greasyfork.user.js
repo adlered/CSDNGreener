@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         「CSDNGreener」🍃CSDN广告完全过滤|免登录|个性化排版|最强老牌脚本|持续更新
 // @namespace    https://github.com/adlered
-// @version      5.0.0
+// @version      5.0.1
 // @description  ⚡️全新5.0版本！模块化重构+AI智能模式+HD版式⚡️|🤖智能自适应布局，完美适配各种分辨率|🖥HD高分辨率优化，1920px+屏幕体验更佳|⚙️实时预览配置，修改立即生效|🕶无需登录CSDN，获得比会员更佳的体验|📠免登录复制|🌵全面净化广告|🔗防外链重定向|📈沉浸阅读体验
 // @author       Adler
 // @connect      www.csdn.net
@@ -17,6 +17,7 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @license      AGPL-3.0-or-later
+// @note         26-01-16 5.0.1 博客页AI相关内容屏蔽
 // @note         26-01-15 5.0.0 新增：模块化重构+新增HD版式+实时预览功能+AI智能模式（基于CSDN官方CSS断点优化），自适应居中布局，默认推荐使用
 // @note         25-09-03 4.2.6 修复无法正常使用的问题，更新jslib
 // @note         25-08-04 4.2.5 更新免登录复制
@@ -169,7 +170,7 @@
 // @downloadURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.user.js
 // @updateURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.meta.js
 // ==/UserScript==
-var version = "5.0.0";
+var version = "5.0.1";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -1136,7 +1137,10 @@ const AD_SELECTORS = {
         '.option-box[data-type="guide"],.option-box[data-type="cs"],.option-box[data-type="app"],.csdn-common-logo-advert', // 右侧悬浮栏按钮（保留gotop）
         ".sidecolumn-deepseek",         // DeepSeek广告
         ".option-box.sidecolumn.sidecolumn-deepseek", // DeepSeek广告选项盒子
-        ".gitcode-qc-right-box.aside-box" // GitCode广告盒子
+        ".gitcode-qc-right-box.aside-box", // GitCode广告盒子
+        ".csdn-toolbar-creative-mp", // 2025年终总结广告
+        "#blogAiChat", // AI聊天
+        ".runner-box.box3.ins-code-runner-btn" // 本项目已经生成可运行文件
     ],
 
     // 文章内容区广告
@@ -2407,11 +2411,8 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
                     const title = $li.attr('title') || '';
                     const text = $li.text().trim();
 
-                    // 保留"博客"和"社区"，删除其他所有项
-                    if (title.indexOf('阅读深度') === -1 &&
-                        title.indexOf('DevPress') === -1 &&
-                        text.indexOf('博客') === -1 &&
-                        text.indexOf('社区') === -1) {
+                    // 保留"博客"，删除其他所有项
+                    if (text.indexOf('博客') === -1) {
                         $li.remove();
                     }
                 });
@@ -2677,11 +2678,8 @@ function common(num, times) {
                 const title = $li.attr('title') || '';
                 const text = $li.text().trim();
 
-                // 保留"博客"和"社区"，删除其他所有项
-                if (title.indexOf('阅读深度') === -1 &&
-                    title.indexOf('DevPress') === -1 &&
-                    text.indexOf('博客') === -1 &&
-                    text.indexOf('社区') === -1) {
+                // 保留"博客"，删除其他所有项
+                if (text.indexOf('博客') === -1) {
                     $li.remove();
                 }
             });

@@ -7,7 +7,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      5.0.0
+// @version      5.0.1
 // @description  全新5.0版本！模块化重构+AI智能模式+HD高分辨率版式|智能自适应布局，完美适配各种分辨率|1920px+屏幕体验更佳|实时预览配置，修改立即生效|无需登录CSDN，获得比会员更佳的体验|免登录复制|全面净化广告|防外链重定向|沉浸阅读体验
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -21,6 +21,7 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @license      AGPL-3.0-or-later
+// @note         26-01-16 5.0.1 博客页AI相关内容屏蔽
 // @note         26-01-15 5.0.0 新增：模块化重构+新增HD版式+实时预览功能+AI智能模式（基于CSDN官方CSS断点优化），自适应居中布局，默认推荐使用
 // @note         25-09-03 4.2.6 修复无法正常使用的问题，更新jslib
 // @note         25-08-04 4.2.5 更新免登录复制
@@ -178,7 +179,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "5.0.0";
+var version = "5.0.1";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -1145,7 +1146,10 @@ const AD_SELECTORS = {
         '.option-box[data-type="guide"],.option-box[data-type="cs"],.option-box[data-type="app"],.csdn-common-logo-advert', // 右侧悬浮栏按钮（保留gotop）
         ".sidecolumn-deepseek",         // DeepSeek广告
         ".option-box.sidecolumn.sidecolumn-deepseek", // DeepSeek广告选项盒子
-        ".gitcode-qc-right-box.aside-box" // GitCode广告盒子
+        ".gitcode-qc-right-box.aside-box", // GitCode广告盒子
+        ".csdn-toolbar-creative-mp", // 2025年终总结广告
+        "#blogAiChat", // AI聊天
+        ".runner-box.box3.ins-code-runner-btn" // 本项目已经生成可运行文件
     ],
 
     // 文章内容区广告
@@ -2416,11 +2420,8 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
                     const title = $li.attr('title') || '';
                     const text = $li.text().trim();
 
-                    // 保留"博客"和"社区"，删除其他所有项
-                    if (title.indexOf('阅读深度') === -1 &&
-                        title.indexOf('DevPress') === -1 &&
-                        text.indexOf('博客') === -1 &&
-                        text.indexOf('社区') === -1) {
+                    // 保留"博客"，删除其他所有项
+                    if (text.indexOf('博客') === -1) {
                         $li.remove();
                     }
                 });
@@ -2686,11 +2687,8 @@ function common(num, times) {
                 const title = $li.attr('title') || '';
                 const text = $li.text().trim();
 
-                // 保留"博客"和"社区"，删除其他所有项
-                if (title.indexOf('阅读深度') === -1 &&
-                    title.indexOf('DevPress') === -1 &&
-                    text.indexOf('博客') === -1 &&
-                    text.indexOf('社区') === -1) {
+                // 保留"博客"，删除其他所有项
+                if (text.indexOf('博客') === -1) {
                     $li.remove();
                 }
             });
