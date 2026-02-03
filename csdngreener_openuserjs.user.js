@@ -7,7 +7,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      5.0.1
+// @version      5.0.2
 // @description  全新5.0版本！模块化重构+AI智能模式+HD高分辨率版式|智能自适应布局，完美适配各种分辨率|1920px+屏幕体验更佳|实时预览配置，修改立即生效|无需登录CSDN，获得比会员更佳的体验|免登录复制|全面净化广告|防外链重定向|沉浸阅读体验
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -21,6 +21,7 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @license      AGPL-3.0-or-later
+// @note         26-01-23 5.0.2 AI智能模式：修正特例文章左右割裂，明确容器/侧栏宽度
 // @note         26-01-16 5.0.1 博客页AI相关内容屏蔽
 // @note         26-01-15 5.0.0 新增：模块化重构+新增HD版式+实时预览功能+AI智能模式（基于CSDN官方CSS断点优化），自适应居中布局，默认推荐使用
 // @note         25-09-03 4.2.6 修复无法正常使用的问题，更新jslib
@@ -179,7 +180,7 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "5.0.1";
+var version = "5.0.2";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -260,6 +261,7 @@ class Progress {
         NProgress.start();
         $("#greenerProgress").text("绿化中...");
         $(".toolbar-search").hide();
+        $(".search-container").hide();
     }
 
     setProgress(p) {
@@ -285,6 +287,7 @@ class Progress {
             $("#greenerProgress").fadeOut(500);
             setTimeout(function() {
                 $(".toolbar-search").fadeIn(500);
+                $(".search-container").fadeIn(500);
                 if (!isFirefox()) {
                     // 提示
                     let tipsCookie = GM_getValue("showTip", true);
@@ -1929,14 +1932,17 @@ class AILayout extends BaseLayout {
                 justify-content: center !important;
                 align-items: flex-start !important;
                 padding: 8px 12px 0 12px !important;
+                column-gap: 20px !important;
             }
 
             .container {
                 display: flex !important;
                 justify-content: center !important;
                 align-items: flex-start !important;
-                gap: 20px !important;
+                gap: 0 !important;
                 margin: 0 auto !important;
+                width: auto !important;
+                max-width: none !important;
             }
 
             main {
@@ -1951,6 +1957,7 @@ class AILayout extends BaseLayout {
                 flex-grow: 0 !important;
                 display: block !important;
                 float: none !important;
+                width: 300px !important;
                 margin-left: 0 !important;
                 max-height: calc(100vh - 80px) !important;
                 overflow-y: auto !important;
@@ -2013,6 +2020,7 @@ class AILayout extends BaseLayout {
             @media screen and (max-width: 1319px) {
                 .container {
                     max-width: 1100px !important;
+                    width: 100% !important;
                     flex-direction: column !important;
                     align-items: center !important;
                 }
@@ -2033,87 +2041,72 @@ class AILayout extends BaseLayout {
             /* 中等屏幕 (1320px - 1379px) - 基于CSDN官方断点 */
             @media screen and (min-width: 1320px) and (max-width: 1379px) {
                 .container {
-                    max-width: 1260px !important;
+                    width: 920px !important;
+                    max-width: 920px !important;
                 }
                 main {
                     width: 920px !important;
                     flex: 0 0 920px !important;
-                }
-                .recommend-right,
-                #rightAside {
-                    width: 300px !important;
-                    flex: 0 0 300px !important;
                 }
             }
 
             /* 标准屏幕 (1380px - 1549px) - 基于CSDN官方断点 */
             @media screen and (min-width: 1380px) and (max-width: 1549px) {
                 .container {
-                    max-width: 1380px !important;
+                    width: 1040px !important;
+                    max-width: 1040px !important;
                 }
                 main {
                     width: 1040px !important;
                     flex: 0 0 1040px !important;
-                }
-                .recommend-right,
-                #rightAside {
-                    width: 300px !important;
-                    flex: 0 0 300px !important;
                 }
             }
 
             /* 大屏幕 (1550px - 1699px) - 基于CSDN官方断点 */
             @media screen and (min-width: 1550px) and (max-width: 1699px) {
                 .container {
-                    max-width: 1200px !important;
+                    width: 1160px !important;
+                    max-width: 1160px !important;
                 }
                 main {
-                    width: 860px !important;
-                    flex: 0 0 860px !important;
-                }
-                .recommend-right,
-                #rightAside {
-                    width: 300px !important;
-                    flex: 0 0 300px !important;
+                    width: 1160px !important;
+                    flex: 0 0 1160px !important;
                 }
             }
 
             /* 超大屏幕 (1700px - 1919px) - 基于CSDN官方断点优化 */
             @media screen and (min-width: 1700px) and (max-width: 1919px) {
                 .container {
-                    max-width: 1400px !important;
+                    width: 1260px !important;
+                    max-width: 1260px !important;
                 }
                 main {
-                    width: 1060px !important;
-                    flex: 0 0 1060px !important;
-                }
-                .recommend-right,
-                #rightAside {
-                    width: 300px !important;
-                    flex: 0 0 300px !important;
+                    width: 1260px !important;
+                    flex: 0 0 1260px !important;
                 }
             }
 
             /* 全高清屏幕 (1920px - 2559px) - HD优化 */
             @media screen and (min-width: 1920px) and (max-width: 2559px) {
                 .container {
-                    max-width: 1680px !important;
+                    width: 1400px !important;
+                    max-width: 1400px !important;
                 }
                 main {
-                    width: 1320px !important;
-                    flex: 0 0 1320px !important;
+                    width: 1400px !important;
+                    flex: 0 0 1400px !important;
                 }
                 .recommend-right,
                 #rightAside {
                     width: 320px !important;
-                    flex: 0 0 320px !important;
                 }
             }
 
             /* 4K屏幕 (>= 2560px) */
             @media screen and (min-width: 2560px) {
                 .container {
-                    max-width: 2100px !important;
+                    width: 1700px !important;
+                    max-width: 1700px !important;
                 }
                 main {
                     width: 1700px !important;
@@ -2122,7 +2115,6 @@ class AILayout extends BaseLayout {
                 .recommend-right,
                 #rightAside {
                     width: 360px !important;
-                    flex: 0 0 360px !important;
                 }
             }
         `;
