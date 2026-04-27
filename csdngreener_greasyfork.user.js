@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         「CSDNGreener」🍃CSDN广告完全过滤|免登录|个性化排版|最强老牌脚本|持续更新
 // @namespace    https://github.com/adlered
-// @version      5.0.3
+// @version      5.0.4
 // @description  ⚡️全新5.0版本！模块化重构+AI智能模式+HD版式⚡️|🤖智能自适应布局，完美适配各种分辨率|🖥HD高分辨率优化，1920px+屏幕体验更佳|⚙️实时预览配置，修改立即生效|🕶无需登录CSDN，获得比会员更佳的体验|📠免登录复制|🌵全面净化广告|🔗防外链重定向|📈沉浸阅读体验
 // @author       Adler
 // @connect      www.csdn.net
@@ -17,6 +17,7 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @license      AGPL-3.0-or-later
+// @note         26-04-27 5.0.4 屏蔽底部悬浮AI聊天栏，修复未登录下触发重定向
 // @note         26-02-03 5.0.3 AI智能模式：检测原生侧栏避免重复插入（修复双右栏）
 // @note         26-01-23 5.0.2 AI智能模式：修正特例文章左右割裂，明确容器/侧栏宽度
 // @note         26-01-16 5.0.1 博客页AI相关内容屏蔽
@@ -172,7 +173,7 @@
 // @downloadURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.user.js
 // @updateURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.meta.js
 // ==/UserScript==
-var version = "5.0.3";
+var version = "5.0.4";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -1169,7 +1170,8 @@ const AD_SELECTORS = {
         ".recommend-tit-mod",           // 推荐内容标题
         ".tool-active-list",            // 底栏"觉得还不错"
         "#treeSkill",                   // 文章底部archive推荐
-        "#recommendNps"                 // 推荐问卷调查
+        "#recommendNps",                // 推荐问卷调查
+        ".pcContainer_nyhkht5n"         // 底部AI悬浮聊天栏
     ],
 
     // 底部广告
@@ -2607,12 +2609,12 @@ function common(num, times) {
         }
         if (num === 1) {
             // 查看更多
-            $(".btn-readmore").removeClass("no-login");
-            $(".btn-readmore").addClass("fans-read-more");
-            $(".btn-readmore").removeAttr("href");
-            $(".btn-readmore").removeAttr("target");
-            $(".btn-readmore").removeAttr("rel");
-            $(".btn-readmore").click();
+            $("#article_content, .article_content, #content_views, .blog-content-box, main article").css({
+                "height": "auto",
+                "max-height": "none",
+                "overflow": "visible"
+            });
+            $(".hide-article-box, .readall_box, .btn-readmore").remove();
             // 已登录用户展开评论
             try {
                 document.getElementById("btnMoreComment").click();
