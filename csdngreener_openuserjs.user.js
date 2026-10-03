@@ -7,7 +7,7 @@
 // @contributionURL https://doc.stackoverflow.wiki/web/#/21?page_id=138
 // @name         最强的老牌脚本CSDNGreener：CSDN广告完全过滤、人性化脚本优化
 // @namespace    https://github.com/adlered
-// @version      5.0.4
+// @version      5.0.5
 // @description  全新5.0版本！模块化重构+AI智能模式+HD高分辨率版式|智能自适应布局，完美适配各种分辨率|1920px+屏幕体验更佳|实时预览配置，修改立即生效|无需登录CSDN，获得比会员更佳的体验|免登录复制|全面净化广告|防外链重定向|沉浸阅读体验
 // @connect      www.csdn.net
 // @include      *://*.csdn.net/*
@@ -21,6 +21,7 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @license      AGPL-3.0-or-later
+// @note         26-10-03 5.0.5 屏蔽新用户礼包气泡弹窗；拦截自动跳转登录页(#333)；文章页侧栏滚动固定(#329)；设置面板UI美化
 // @note         26-05-09 5.0.4 屏蔽文章页 C 知道入口
 // @note         26-02-03 5.0.3 AI智能模式：检测原生侧栏避免重复插入（修复双右栏）
 // @note         26-01-23 5.0.2 AI智能模式：修正特例文章左右割裂，明确容器/侧栏宽度
@@ -182,11 +183,79 @@
 // @note         19-03-01 1.0.1 修复了排版问题, 优化了代码结构
 // @note         19-02-26 1.0.0 初版发布
 // ==/UserScript==
-var version = "5.0.4";
+var version = "5.0.5";
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
 }
+
+// ============================================
+// 登录跳转守卫 - 拦截非用户主动的强制登录跳转 (Issue #333)
+// ============================================
+var loginGuard = {
+    // 用户点击登录链接时记录时间戳，放行其主动登录行为
+    // 注意：sessionStorage 按域名隔离，跨域标记必须用 GM_setValue
+    trackManualLogin: function () {
+        document.addEventListener('click', function (e) {
+            try {
+                var t = e.target;
+                var a = t && t.closest ? t.closest('a[href*="passport.csdn.net"]') : null;
+                if (a) GM_setValue('cg_manual_login', Date.now());
+            } catch (err) {}
+        }, true);
+    },
+    // 提示条：拦截后给用户一个手动登录入口
+    showTip: function () {
+        if (!document.body || document.getElementById('cg-login-guard-tip')) return;
+        var tip = document.createElement('div');
+        tip.id = 'cg-login-guard-tip';
+        tip.style.cssText = 'position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:999999;background:linear-gradient(135deg,#0ea5e9,#3b82f6);color:#fff;font-size:13px;padding:9px 16px;border-radius:10px;box-shadow:0 8px 24px rgba(59,130,246,.35);cursor:pointer;user-select:none;';
+        tip.textContent = '🍃 已拦截自动跳转登录页（点我手动登录）';
+        tip.onclick = function () {
+            // 标记手动登录意图：放行拦截 + 登录页不再自动返回
+            loginGuard.allowOnce = true;
+            try { GM_setValue('cg_manual_login', Date.now()); } catch (err) {}
+            window.location.href = 'https://passport.csdn.net/account/login';
+        };
+        document.body.appendChild(tip);
+        setTimeout(function () { if (tip.parentNode) tip.parentNode.removeChild(tip); }, 8000);
+    },
+    // Navigation API（Chrome 102+）：拦截 JS/Meta 触发的非主动跳转
+    intercept: function () {
+        if (!window.navigation || typeof window.navigation.addEventListener !== 'function') return;
+        try {
+            window.navigation.addEventListener('navigate', function (e) {
+                try {
+                    if (e.userInitiated) return; // 用户主动点击，放行
+                    if (loginGuard.allowOnce) { loginGuard.allowOnce = false; return; } // 提示条触发的手动登录，放行一次
+                    var dest = e.destination && e.destination.url ? e.destination.url : '';
+                    if (/^https?:\/\/passport\.csdn\.net\//.test(dest)) {
+                        e.preventDefault();
+                        l('已拦截自动跳转登录页: ' + dest);
+                        loginGuard.showTip();
+                    }
+                } catch (err) {}
+            });
+        } catch (err) {}
+    },
+    // 登录页侧：被自动跳转过来（非点击登录）时自动返回上一页
+    autoBack: function () {
+        try {
+            var manual = Date.now() - (GM_getValue('cg_manual_login', 0)) < 8000;
+            var backed = Date.now() - parseInt(sessionStorage.getItem('cg_auto_back') || '0', 10) < 30000;
+            var refHost = '';
+            try { refHost = new URL(document.referrer).hostname; } catch (err) {}
+            var fromCsdn = /(^|\.)csdn\.net$/.test(refHost);
+            if (!manual && !backed && fromCsdn && window.history.length > 1) {
+                sessionStorage.setItem('cg_auto_back', String(Date.now()));
+                l('检测到非主动跳转登录页，自动返回上一页');
+                window.history.back();
+            }
+        } catch (err) {}
+    }
+};
+loginGuard.trackManualLogin();
+loginGuard.intercept();
 
 var windowTop = 0;
 var startTimeMilli = Date.now();
@@ -906,10 +975,84 @@ const BASE_STYLES = {
         .config-section input[type="radio"] {
             margin-right: 12px;
             cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* 复选框 -> 现代开关样式 */
+        .config-section input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 36px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 999px;
+            background: #cbd5e1;
+            position: relative;
+            transition: background 0.25s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+
+        .config-section input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .config-section input[type="checkbox"]:checked {
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1),
+                        0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .config-section input[type="checkbox"]:checked::after {
+            transform: translateX(16px);
+        }
+
+        /* 单选框 -> 填充圆点样式 */
+        .config-section input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
             width: 18px;
             height: 18px;
-            flex-shrink: 0;
-            accent-color: #3b82f6;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            background: #ffffff;
+            position: relative;
+            transition: border-color 0.2s ease;
+        }
+
+        .config-section input[type="radio"]:checked {
+            border-color: #3b82f6;
+        }
+
+        .config-section input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+            transform: translate(-50%, -50%);
+        }
+
+        /* 选中的单选卡片整行高亮 */
+        .config-section label:has(input[type="radio"]:checked) {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.35);
+        }
+
+        .config-section label:has(input[type="checkbox"]:checked) {
+            color: #1e40af;
         }
 
         .config-section input[type="text"],
@@ -943,6 +1086,52 @@ const BASE_STYLES = {
     tips: `
         .tripscon {
             padding: 10px;
+        }
+    `,
+
+    // 侧栏滚动固定（Issue #329）
+    // 只修复祖先 overflow:hidden（让 sticky 生效），不动右侧栏原有 fixed 方案
+    stickySidebar: `
+        .main_father,
+        .container,
+        #mainBox {
+            overflow: visible !important;
+        }
+
+        @media screen and (min-width: 1320px) {
+            /* 博客主页左侧栏固定 */
+            .blog_container_aside {
+                position: sticky !important;
+                top: 70px !important;
+            }
+
+            /* 目录卡片自带 sticky top:56px（原本相对窗口），在外层滚动容器里
+               会被二次偏移 56px 压住下方 article-previous 卡片，归零修复重叠 */
+            #rightAside #groupfile {
+                top: 0 !important;
+            }
+        }
+
+        /* 右栏内容容器被内联 min-height 撑成整篇文章高度（数万像素），
+           导致外层出现无意义的细长滚动条（小药丸滑块），这里归零 */
+        #recommend-right {
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+
+        /* 隐藏外层侧栏滚动条（滚轮滚动不受影响） */
+        #rightAside {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        #rightAside::-webkit-scrollbar,
+        #rightAside::-webkit-scrollbar-track,
+        #rightAside::-webkit-scrollbar-thumb {
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
+            display: none !important;
         }
     `,
 
@@ -1097,6 +1286,7 @@ const BASE_STYLES = {
 styleManager.inject('nprogress', BASE_STYLES.nprogress);
 styleManager.inject('modal', BASE_STYLES.modal);
 styleManager.inject('tips', BASE_STYLES.tips);
+styleManager.inject('sticky-sidebar', BASE_STYLES.stickySidebar);
 styleManager.inject('toggle-button', BASE_STYLES.toggleButton);
 styleManager.inject('save-button', BASE_STYLES.saveButton);
 styleManager.inject('star', BASE_STYLES.star);
@@ -1143,6 +1333,8 @@ const AD_SELECTORS = {
         ".advert-bg",               // 顶部广告背景
         ".toolbar-advert",          // 工具栏横幅广告
         ".toolbar-notice-bubble",   // 顶部通知气泡
+        "#csdn-new-user-gift-bubble",   // 新用户礼包气泡（每次启动弹出）
+        ".toolbar-btns .msg-bubble",    // 顶栏按钮区的气泡提示
         ".icon-fire"                // 搜索框fire emoji
     ],
 
@@ -1213,7 +1405,10 @@ const AD_SELECTORS = {
         ".csdn-highschool-window",          // 学生认证
         ".leftPop",                         // 缩放提示
         ".totast-box",                      // 发帖减半提示（BBS）
-        ".fouce_close_btn"                  // 学院弹出广告（需点击）
+        ".fouce_close_btn",                 // 学院弹出广告（需点击）
+        "#csdn-new-user-gift-bubble",       // 新用户礼包气泡（每次启动弹出）
+        ".csdn-new-user-gift-bubble",       // 同上 class 兜底
+        ".toolbar-btns .msg-bubble"         // 顶栏按钮区的气泡提示
     ],
 
     // 主页专用
@@ -1412,6 +1607,9 @@ class AdCleaner {
                 }
                 // 红包雨
                 $("#csdn-redpack").remove();
+                // 新用户礼包气泡（每次启动弹出，动态注入需持续清理）
+                $("#csdn-new-user-gift-bubble").remove();
+                $(".toolbar-btns .msg-bubble").remove();
             }
         }, 500);
 
@@ -2491,7 +2689,7 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
                $(".sidetool-writeguide-box").remove();
             }, 1500);
             // 主动加入右侧栏
-            // 页面已有原生 #rightAside 时避免重复插入，防止双侧栏（智能模式）
+            // 页面原生已有 #rightAside 时不要再插入，否则会出现双侧栏（智能模式反馈）
             if ($(".recommend-right").length === 0 && $("#rightAside").length === 0) {
                 $("#mainBox").after('<div class="recommend-right  align-items-stretch clearfix" id="rightAside"><aside class="recommend-right_aside"><div id="recommend-right" style="height: 100%; position: fixed; top: 52px; overflow: scroll;"></div></aside></div>');
             }
@@ -2563,6 +2761,9 @@ var protect_svg = '<svg t="1629560538805" class="icon" viewBox="0 0 1024 1024" v
 
         } else if (login.test(currentURL)) {
             l("正在优化登录页体验...");
+
+            // Issue #333: 非主动跳转到登录页时自动返回
+            loginGuard.autoBack();
 
             // 添加登录页专用广告
             adCleaner.addCategory('login');
@@ -2753,8 +2954,8 @@ function common(num, times) {
 
             configHTML += '<div class="config-grid">';
 
-            // 版式设置区域 - 第一行，上边直角
-            configHTML += '<div class="config-section" style="border-radius: 0 0 14px 14px;">';
+            // 版式设置区域
+            configHTML += '<div class="config-section">';
             configHTML += '<span class="bold">📐 屏幕版式适配</span>';
             configHTML += '<div style="display: grid; gap: 8px;">';
             configHTML += '<label style="color: #22c55e; font-weight: bold;"><input name="displayMode" type="radio" value="ai" id="scr-ai" /> ⭐⭐⭐ 智能模式 (推荐默认)</label>';
@@ -2766,8 +2967,8 @@ function common(num, times) {
             configHTML += '</div>';
             configHTML += '</div>';
 
-            // 通用设定 - 第一行，上边直角
-            configHTML += '<div class="config-section" style="border-radius: 0 0 14px 14px;">';
+            // 通用设定
+            configHTML += '<div class="config-section">';
             configHTML += '<span class="bold">🎨 通用设定</span>';
             configHTML += '<p style="margin-bottom: 10px; font-size: 13px;"><strong>自定义背景图：</strong></p>';
             configHTML += '<input type="text" id="backgroundImgUrl" placeholder="图片URL或Base64" style="border-radius: 4px; border: 1px solid #d1d5db; padding: 8px; width: 100%; margin-bottom: 8px; font-size: 13px;">';
