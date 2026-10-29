@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         「CSDNGreener」🍃CSDN广告完全过滤|免登录|个性化排版|最强老牌脚本|持续更新
 // @namespace    https://github.com/adlered
-// @version      5.0.5
+// @version      5.0.6
 // @description  ⚡️全新5.0版本！模块化重构+AI智能模式+HD版式⚡️|🤖智能自适应布局，完美适配各种分辨率|🖥HD高分辨率优化，1920px+屏幕体验更佳|⚙️实时预览配置，修改立即生效|🕶无需登录CSDN，获得比会员更佳的体验|📠免登录复制|🌵全面净化广告|🔗防外链重定向|📈沉浸阅读体验
 // @author       Adler
 // @connect      www.csdn.net
@@ -17,6 +17,7 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @license      AGPL-3.0-or-later
+// @note		 26-10-28 5.0.6 当使用自定义背景时在文字区域设置磨砂遮罩，提升阅读体验
 // @note         26-10-03 5.0.5 屏蔽新用户礼包气泡弹窗；拦截自动跳转登录页(#333)；文章页侧栏滚动固定(#329)；设置面板UI美化
 // @note         26-05-09 5.0.4 屏蔽文章页 C 知道入口
 // @note         26-02-03 5.0.3 AI智能模式：检测原生侧栏避免重复插入（修复双右栏）
@@ -174,7 +175,9 @@
 // @downloadURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.user.js
 // @updateURL https://update.greasyfork.org/scripts/378351/%E3%80%8CCSDNGreener%E3%80%8D%F0%9F%8D%83CSDN%E5%B9%BF%E5%91%8A%E5%AE%8C%E5%85%A8%E8%BF%87%E6%BB%A4%7C%E5%85%8D%E7%99%BB%E5%BD%95%7C%E4%B8%AA%E6%80%A7%E5%8C%96%E6%8E%92%E7%89%88%7C%E6%9C%80%E5%BC%BA%E8%80%81%E7%89%8C%E8%84%9A%E6%9C%AC%7C%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0.meta.js
 // ==/UserScript==
-var version = "5.0.5";
+var version = "5.0.6";
+// 自定义背景图启用时，正文磨砂遮罩的基础透明度（0-1）
+var READING_MASK_OPACITY = 0.72;
 var currentURL = window.location.href;
 if (currentURL.indexOf("?") !== -1) {
     currentURL = currentURL.substring(0, currentURL.indexOf("?"));
@@ -2818,6 +2821,115 @@ function e(error) {
     console.error("[CSDNGreener] " + error);
 }
 
+var readingMaskState = null;
+var readingMaskRetryTimer = null;
+var READING_MASK_STYLE_PROPERTIES = [
+    "background-color",
+    "background-image",
+    "backdrop-filter",
+    "-webkit-backdrop-filter",
+    "border",
+    "border-radius",
+    "box-shadow",
+    "box-sizing"
+];
+
+function restoreReadingMask() {
+    if (!readingMaskState || !readingMaskState.element) {
+        $(".cg-reading-mask").removeClass("cg-reading-mask");
+        return;
+    }
+
+    var element = readingMaskState.element;
+    READING_MASK_STYLE_PROPERTIES.forEach(function(property) {
+        var original = readingMaskState.styles[property];
+        if (original && original.value) {
+            element.style.setProperty(property, original.value, original.priority);
+        } else {
+            element.style.removeProperty(property);
+        }
+    });
+    element.classList.remove("cg-reading-mask");
+    readingMaskState = null;
+}
+
+function applyReadingMask(enabled, attempt) {
+    attempt = attempt || 0;
+
+    if (readingMaskRetryTimer) {
+        clearTimeout(readingMaskRetryTimer);
+        readingMaskRetryTimer = null;
+    }
+
+    restoreReadingMask();
+    styleManager.remove("reading-mask");
+
+    if (!enabled) {
+        return;
+    }
+
+    var opacity = Number(READING_MASK_OPACITY);
+    if (!isFinite(opacity)) {
+        opacity = 0.72;
+    }
+    opacity = Math.min(0.95, Math.max(0.05, opacity));
+
+    // 直接覆盖正文容器，避免外层透明容器导致遮罩不可见。
+    var element = document.getElementById("content_views") ||
+        document.getElementById("article_content") ||
+        document.querySelector("main .blog-content-box") ||
+        document.querySelector("main article") ||
+        document.querySelector("main");
+
+    if (!element) {
+        if (attempt < 40) {
+            readingMaskRetryTimer = setTimeout(function() {
+                applyReadingMask(true, attempt + 1);
+            }, 250);
+        }
+        return;
+    }
+
+    var styles = {};
+    READING_MASK_STYLE_PROPERTIES.forEach(function(property) {
+        styles[property] = {
+            value: element.style.getPropertyValue(property),
+            priority: element.style.getPropertyPriority(property)
+        };
+    });
+
+    readingMaskState = {
+        element: element,
+        styles: styles
+    };
+
+    var topAlpha = Math.min(0.95, opacity + 0.06);
+    var bottomAlpha = Math.max(0.05, opacity - 0.06);
+    var maskColor = "rgba(255, 255, 255, " + opacity + ")";
+    var glassGradient =
+        "linear-gradient(135deg, " +
+        "rgba(255, 255, 255, " + topAlpha + ") 0%, " +
+        "rgba(255, 255, 255, " + opacity + ") 45%, " +
+        "rgba(255, 255, 255, " + bottomAlpha + ") 100%)";
+    var backdropFilter = "blur(7px) saturate(115%)";
+
+    element.classList.add("cg-reading-mask");
+    element.style.setProperty("background-color", maskColor, "important");
+    element.style.setProperty("background-image", glassGradient, "important");
+    element.style.setProperty("backdrop-filter", backdropFilter, "important");
+    element.style.setProperty("-webkit-backdrop-filter", backdropFilter, "important");
+    element.style.setProperty("border", "1px solid rgba(255, 255, 255, 0.55)", "important");
+    element.style.setProperty("border-radius", "10px", "important");
+    element.style.setProperty(
+        "box-shadow",
+        "0 10px 30px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.75)",
+        "important"
+    );
+    element.style.setProperty("box-sizing", "border-box", "important");
+
+    Logger.log("正文磨砂遮罩已应用，透明度: " + opacity);
+}
+
 function common(num, times) {
     var loop = setInterval(function () {
         --times;
@@ -3111,6 +3223,9 @@ function common(num, times) {
             if (backgroundImage !== "") {
                 $("#backgroundImgUrl").val(backgroundImage);
                 $(".main_father").attr('style', 'background-image:url(' + backgroundImage + ');background-attachment:fixed;background-size:100%;');
+                applyReadingMask(true);
+            } else {
+                applyReadingMask(false);
             }
             $("#upload_bg").on('change', function() {
                 let file = $("#upload_bg")[0].files[0];
