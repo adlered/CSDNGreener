@@ -17,6 +17,7 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @license      AGPL-3.0-or-later
+// @note         26-11-01 本地补丁：新增 simple-ad-slot / simple-ad-slot__fixed 贴边悬浮广告位清理
 // @note         26-10-03 5.0.5 屏蔽新用户礼包气泡弹窗；拦截自动跳转登录页(#333)；文章页侧栏滚动固定(#329)；设置面板UI美化
 // @note         26-05-09 5.0.4 屏蔽文章页 C 知道入口
 // @note         26-02-03 5.0.3 AI智能模式：检测原生侧栏避免重复插入（修复双右栏）
@@ -1313,6 +1314,24 @@ function removeCknowBlogAiPanel() {
     });
 }
 
+// 悬浮广告位：simple-ad-slot 及其 __fixed 固定定位变体
+// （class="simple-ad-slot simple-ad-slot__fixed" 是页面右下角的贴边悬浮广告）
+const AD_SLOT_SELECTORS = [
+    ".simple-ad-slot",                  // 基础类名（覆盖所有变体）
+    ".simple-ad-slot__fixed",           // 固定定位变体
+    "[class*='simple-ad-slot']"         // 类名被拼接/哈希化时的兜底
+];
+
+function removeAdSlots() {
+    AD_SLOT_SELECTORS.forEach(selector => {
+        try {
+            $(selector).remove();
+        } catch (e) {
+            // 忽略无效选择器错误
+        }
+    });
+}
+
 // 广告选择器配置 - 按功能分类
 const AD_SELECTORS = {
     // 头部和导航栏
@@ -1356,6 +1375,7 @@ const AD_SELECTORS = {
 
     // 文章内容区广告
     article: [
+        ...AD_SLOT_SELECTORS,           // 悬浮广告位（simple-ad-slot / __fixed）
         ".blog_tip_box",                // 快来写博客吧
         ".mediav_ad",                   // mediav广告
         ".recommend-ad-box",            // 推荐广告
@@ -1390,6 +1410,7 @@ const AD_SELECTORS = {
 
     // 弹窗和浮层（注意：不删除真正的登录框，保留给用户主动登录使用）
     modal: [
+        ...AD_SLOT_SELECTORS,               // 贴边悬浮广告位（simple-ad-slot / __fixed）
         "#csdn-redpack",                    // 红包雨
         ".passport-login-tip-container",    // 登录后权益提示
         ".csdn-redpack-lottery-btn-box",    // 红包提醒
@@ -1540,6 +1561,9 @@ class AdCleaner {
      */
     startContinuousCleaning(type) {
         const interval = setInterval(() => {
+            // 贴边悬浮广告位（simple-ad-slot / simple-ad-slot__fixed）
+            // 该广告位可能在页面加载后才注入，故无论页面类型都持续清理
+            removeAdSlots();
             if (type === 1) {
                 // 主页中间的广告
                 $(".J_adv").remove();
